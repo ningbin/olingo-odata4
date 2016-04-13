@@ -54,6 +54,7 @@ import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.http.HttpHeader;
 import org.apache.olingo.commons.api.http.HttpStatusCode;
 import org.apache.olingo.fit.tecsvc.TecSvcConst;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ConditionalITCase extends AbstractParamTecSvcITCase {
@@ -90,6 +91,7 @@ public class ConditionalITCase extends AbstractParamTecSvcITCase {
   }
 
   @Test
+  @Ignore
   public void readMetadataDocument() throws Exception {
     EdmMetadataRequest request = getClient().getRetrieveRequestFactory().getMetadataRequest(TecSvcConst.BASE_URI);
     setCookieHeader(request);

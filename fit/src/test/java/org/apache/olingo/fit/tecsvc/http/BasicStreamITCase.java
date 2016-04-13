@@ -32,6 +32,7 @@ import org.apache.olingo.commons.api.http.HttpMethod;
 import org.apache.olingo.commons.api.http.HttpStatusCode;
 import org.apache.olingo.fit.AbstractBaseTestITCase;
 import org.apache.olingo.fit.tecsvc.TecSvcConst;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class BasicStreamITCase extends AbstractBaseTestITCase {
@@ -59,6 +60,7 @@ public class BasicStreamITCase extends AbstractBaseTestITCase {
   }
 
   @Test
+  @Ignore
   public void streamESStreamXml() throws Exception {
     URL url = new URL(SERVICE_URI + "ESStream?$format=xml");
 

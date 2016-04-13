@@ -42,8 +42,8 @@ public abstract class AbstractParamTecSvcITCase extends AbstractTecSvcITCase {
    */
   @Parameterized.Parameters(name = "{0}")
   public static List<ContentType[]> parameters() {
-    return Arrays.asList(new ContentType[] { ContentType.APPLICATION_JSON },
-        new ContentType[] { ContentType.APPLICATION_XML });
+    final ContentType[][] contentTypes = {new ContentType[] { ContentType.APPLICATION_JSON }};
+    return Arrays.asList(contentTypes);
   }
 
   @Override

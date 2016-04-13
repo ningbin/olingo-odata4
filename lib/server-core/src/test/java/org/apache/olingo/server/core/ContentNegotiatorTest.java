@@ -74,10 +74,7 @@ public class ContentNegotiatorTest {
       { ACCEPT_CASE_FULL,             null,             ACCEPT_CASE_FULL,               ACCEPT_CASE_FULL      },
       { ACCEPT_CASE_MIN_UTF8,         null,             ACCEPT_CASE_MIN_UTF8,           null                  },
       { ACCEPT_CASE_MIN_IEEE754,      null,             ACCEPT_CASE_MIN_IEEE754,        null                  },
-      { ACCEPT_CASE_MIN_UTF8_IEEE754, null,             ACCEPT_CASE_MIN_UTF8_IEEE754,   null                  },
-      { ACCEPT_CASE_MIN_IEEE754,      ACCEPT_CASE_MIN_IEEE754, ACCEPT_CASE_MIN ,        null                  },
-      { ACCEPT_CASE_XML,              "xml",            null,                           null                  },
-      { ACCEPT_CASE_XML,              null,             ACCEPT_CASE_XML,                null                  }
+      { ACCEPT_CASE_MIN_UTF8_IEEE754, null,             ACCEPT_CASE_MIN_UTF8_IEEE754,   null                  }
   };
 
   String[][] casesMetadata = {

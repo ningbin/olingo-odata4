@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -47,7 +47,6 @@ import org.apache.olingo.server.core.debug.DebugResponseHelperImpl;
 import org.apache.olingo.server.core.debug.ServerCoreDebugger;
 import org.apache.olingo.server.core.deserializer.FixedFormatDeserializerImpl;
 import org.apache.olingo.server.core.deserializer.json.ODataJsonDeserializer;
-import org.apache.olingo.server.core.deserializer.xml.ODataXmlDeserializer;
 import org.apache.olingo.server.core.etag.ETagHelperImpl;
 import org.apache.olingo.server.core.prefer.PreferencesImpl;
 import org.apache.olingo.server.core.serializer.FixedFormatSerializerImpl;
@@ -133,23 +132,22 @@ public class ODataImpl extends OData {
   public ODataDeserializer createDeserializer(final ContentType contentType) throws DeserializerException {
     if (contentType.isCompatible(ContentType.JSON)) {
       return new ODataJsonDeserializer(contentType);
-    } else if (contentType.isCompatible(ContentType.APPLICATION_XML)
-        || contentType.isCompatible(ContentType.APPLICATION_ATOM_XML)) {
-      return new ODataXmlDeserializer();
     } else {
+      // We do not support XML deserialization right now so this must lead
+      // to an error.
       throw new DeserializerException("Unsupported format: " + contentType.toContentTypeString(),
           DeserializerException.MessageKeys.UNSUPPORTED_FORMAT, contentType.toContentTypeString());
     }
-  }  
+  }
+
   @Override
   public ODataDeserializer createDeserializer(final ContentType contentType,
       ServiceMetadata metadata) throws DeserializerException {
     if (contentType.isCompatible(ContentType.JSON)) {
       return new ODataJsonDeserializer(contentType, metadata);
-    } else if (contentType.isCompatible(ContentType.APPLICATION_XML)
-        || contentType.isCompatible(ContentType.APPLICATION_ATOM_XML)) {
-      return new ODataXmlDeserializer(metadata);
     } else {
+      // We do not support XML deserialization right now so this must lead
+      // to an error.
       throw new DeserializerException("Unsupported format: " + contentType.toContentTypeString(),
           DeserializerException.MessageKeys.UNSUPPORTED_FORMAT, contentType.toContentTypeString());
     }

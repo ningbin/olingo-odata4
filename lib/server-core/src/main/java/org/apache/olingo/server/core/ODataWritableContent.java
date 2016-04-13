@@ -27,17 +27,16 @@ import org.apache.olingo.commons.api.data.EntityIterator;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.ODataContent;
-import org.apache.olingo.server.api.ODataLibraryException;
-import org.apache.olingo.server.api.ServiceMetadata;
 import org.apache.olingo.server.api.ODataContentWriteErrorCallback;
 import org.apache.olingo.server.api.ODataContentWriteErrorContext;
+import org.apache.olingo.server.api.ODataLibraryException;
+import org.apache.olingo.server.api.ServiceMetadata;
 import org.apache.olingo.server.api.serializer.EntityCollectionSerializerOptions;
 import org.apache.olingo.server.api.serializer.ODataSerializer;
 import org.apache.olingo.server.api.serializer.SerializerException;
 import org.apache.olingo.server.api.serializer.SerializerStreamResult;
 import org.apache.olingo.server.core.serializer.SerializerStreamResultImpl;
 import org.apache.olingo.server.core.serializer.json.ODataJsonSerializer;
-import org.apache.olingo.server.core.serializer.xml.ODataXmlSerializer;
 
 /**
  * Stream supporting implementation of the ODataContent
@@ -93,27 +92,6 @@ public class ODataWritableContent implements ODataContent {
     protected void writeEntity(EntityIterator entity, OutputStream outputStream) throws SerializerException {
       try {
         jsonSerializer.entityCollectionIntoStream(metadata, entityType, entity, options, outputStream);
-        outputStream.flush();
-      } catch (final IOException e) {
-        throw new ODataRuntimeException("Failed entity serialization", e);
-      }
-    }
-  }
-
-  private static class StreamContentForXml extends StreamContent {
-    private ODataXmlSerializer xmlSerializer;
-
-    public StreamContentForXml(EntityIterator iterator, EdmEntityType entityType,
-        ODataXmlSerializer xmlSerializer, ServiceMetadata metadata,
-        EntityCollectionSerializerOptions options) {
-      super(iterator, entityType, metadata, options);
-
-      this.xmlSerializer = xmlSerializer;
-    }
-
-    protected void writeEntity(EntityIterator entity, OutputStream outputStream) throws SerializerException {
-      try {
-        xmlSerializer.entityCollectionIntoStream(metadata, entityType, entity, options, outputStream);
         outputStream.flush();
       } catch (final IOException e) {
         throw new ODataRuntimeException("Failed entity serialization", e);
@@ -180,10 +158,6 @@ public class ODataWritableContent implements ODataContent {
       if (serializer instanceof ODataJsonSerializer) {
         StreamContent input = new StreamContentForJson(entities, entityType,
             (ODataJsonSerializer) serializer, metadata, options);
-        return new ODataWritableContent(input);
-      } else if (serializer instanceof ODataXmlSerializer) {
-        StreamContentForXml input = new StreamContentForXml(entities, entityType,
-            (ODataXmlSerializer) serializer, metadata, options);
         return new ODataWritableContent(input);
       }
       throw new ODataRuntimeException("No suitable serializer found");

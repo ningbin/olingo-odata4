@@ -74,7 +74,7 @@ public abstract class OData {
    * Creates a new serializer object for rendering content in the specified format.
    * Serializers are used in Processor implementations.
    *
-   * @param contentType any format supported by Olingo (XML, JSON ...)
+   * @param contentType any format supported by Olingo (JSON)
    */
   public abstract ODataSerializer createSerializer(ContentType contentType) throws SerializerException;
 
@@ -135,7 +135,7 @@ public abstract class OData {
    * Creates a new deserializer object for reading content in the specified format.
    * Deserializers are used in Processor implementations.
    *
-   * @param contentType any content type supported by Olingo (XML, JSON ...)
+   * @param contentType any content type supported by Olingo (JSON)
    */
   public abstract ODataDeserializer createDeserializer(ContentType contentType) throws DeserializerException;
 
