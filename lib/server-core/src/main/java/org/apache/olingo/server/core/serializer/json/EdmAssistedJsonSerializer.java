@@ -56,13 +56,12 @@ import org.apache.olingo.server.core.serializer.SerializerResultImpl;
 import org.apache.olingo.server.core.serializer.utils.CircleStreamBuffer;
 import org.apache.olingo.server.core.serializer.utils.ContentTypeHelper;
 import org.apache.olingo.server.core.serializer.utils.ContextURLBuilder;
+import org.apache.olingo.server.core.serializer.utils.OutputStreamHelper;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 public class EdmAssistedJsonSerializer implements EdmAssistedSerializer {
-
-  private static final String IO_EXCEPTION_TEXT = "An I/O exception occurred.";
 
   protected final boolean isIEEE754Compatible;
   protected final boolean isODataMetadataNone;
@@ -109,17 +108,11 @@ public class EdmAssistedJsonSerializer implements EdmAssistedSerializer {
       outputStream.close();
       return SerializerResultImpl.with().content(buffer.getInputStream()).build();
     } catch (final IOException e) {
-      cachedException = new SerializerException(IO_EXCEPTION_TEXT, e, SerializerException.MessageKeys.IO_EXCEPTION);
+      cachedException = new SerializerException(OutputStreamHelper.IO_EXCEPTION_TEXT, e,
+          SerializerException.MessageKeys.IO_EXCEPTION);
       throw cachedException;
     } finally {
-      if (outputStream != null) {
-        try {
-          outputStream.close();
-        } catch (final IOException e) {
-          throw cachedException == null ? new SerializerException(IO_EXCEPTION_TEXT, e,
-              SerializerException.MessageKeys.IO_EXCEPTION) : cachedException;
-        }
-      }
+      OutputStreamHelper.closeCircleStreamBufferOutput(outputStream, cachedException);
     }
   }
 

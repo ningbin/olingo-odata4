@@ -35,7 +35,7 @@ import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.constants.EdmTypeKind;
 
 /** A dynamic structured type used to incorporate dynamic properties containing aggregations. */
-public class DynamicStructuredType implements EdmStructuredType, Cloneable {
+public class DynamicStructuredType implements EdmStructuredType {
 
   private final EdmStructuredType startType;
   private Map<String, EdmProperty> properties;

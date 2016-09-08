@@ -16,19 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.olingo.server.core.serializer;
+package org.apache.olingo.server.core.serializer.utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.olingo.server.api.serializer.ODataSerializer;
 import org.apache.olingo.server.api.serializer.SerializerException;
 
-public abstract class AbstractODataSerializer implements ODataSerializer {
+public class OutputStreamHelper {
 
-  protected static final String IO_EXCEPTION_TEXT = "An I/O exception occurred.";
+  public static final String IO_EXCEPTION_TEXT = "An I/O exception occurred.";
 
-  protected void closeCircleStreamBufferOutput(final OutputStream outputStream,
+  public static void closeCircleStreamBufferOutput(final OutputStream outputStream,
       final SerializerException cachedException)
       throws SerializerException {
     if (outputStream != null) {
@@ -44,4 +43,5 @@ public abstract class AbstractODataSerializer implements ODataSerializer {
       }
     }
   }
+
 }

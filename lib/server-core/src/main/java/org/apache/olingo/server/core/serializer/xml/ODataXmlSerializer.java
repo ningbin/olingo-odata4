@@ -39,17 +39,18 @@ import org.apache.olingo.server.api.ServiceMetadata;
 import org.apache.olingo.server.api.serializer.ComplexSerializerOptions;
 import org.apache.olingo.server.api.serializer.EntityCollectionSerializerOptions;
 import org.apache.olingo.server.api.serializer.EntitySerializerOptions;
+import org.apache.olingo.server.api.serializer.ODataSerializer;
 import org.apache.olingo.server.api.serializer.PrimitiveSerializerOptions;
 import org.apache.olingo.server.api.serializer.ReferenceCollectionSerializerOptions;
 import org.apache.olingo.server.api.serializer.ReferenceSerializerOptions;
 import org.apache.olingo.server.api.serializer.SerializerException;
 import org.apache.olingo.server.api.serializer.SerializerResult;
 import org.apache.olingo.server.api.serializer.SerializerStreamResult;
-import org.apache.olingo.server.core.serializer.AbstractODataSerializer;
 import org.apache.olingo.server.core.serializer.SerializerResultImpl;
 import org.apache.olingo.server.core.serializer.utils.CircleStreamBuffer;
+import org.apache.olingo.server.core.serializer.utils.OutputStreamHelper;
 
-public class ODataXmlSerializer extends AbstractODataSerializer {
+public class ODataXmlSerializer implements ODataSerializer {
 
   /** The default character set is UTF-8. */
   public static final String DEFAULT_CHARSET = Constants.UTF8;
@@ -79,14 +80,16 @@ public class ODataXmlSerializer extends AbstractODataSerializer {
       return SerializerResultImpl.with().content(buffer.getInputStream()).build();
     } catch (final XMLStreamException e) {
       cachedException =
-          new SerializerException(IO_EXCEPTION_TEXT, e, SerializerException.MessageKeys.IO_EXCEPTION);
+          new SerializerException(OutputStreamHelper.IO_EXCEPTION_TEXT, e,
+              SerializerException.MessageKeys.IO_EXCEPTION);
       throw cachedException;
     } catch (IOException e) {
       cachedException =
-          new SerializerException(IO_EXCEPTION_TEXT, e, SerializerException.MessageKeys.IO_EXCEPTION);
+          new SerializerException(OutputStreamHelper.IO_EXCEPTION_TEXT, e,
+              SerializerException.MessageKeys.IO_EXCEPTION);
       throw cachedException;
     } finally {
-      closeCircleStreamBufferOutput(outputStream, cachedException);
+      OutputStreamHelper.closeCircleStreamBufferOutput(outputStream, cachedException);
     }
   }
 
