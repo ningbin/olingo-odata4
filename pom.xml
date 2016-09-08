@@ -575,6 +575,7 @@
                 <exclude>**/server-ref/**</exclude>
                 <exclude>**/dependency-reduced-pom.xml</exclude>
                 <exclude>**/.jobinfo/**</exclude>
+                <exclude>**/.xmake/**</exclude>
               </excludes>
             </configuration>
           </execution>
