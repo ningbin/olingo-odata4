@@ -87,6 +87,8 @@ public class EntityTypeProvider {
       "ETWithStream");
   public static final FullQualifiedName nameETDelta =
       new FullQualifiedName(SchemaProvider.NAMESPACE, "ETDelta"); 
+  
+  public static final FullQualifiedName nameETPeople = new FullQualifiedName(SchemaProvider.NAMESPACE, "ETPeople");
 
   public CsdlEntityType getEntityType(final FullQualifiedName entityTypeName) throws ODataException {
     if(entityTypeName.equals(nameETAllPrimDefaultValues)){        
@@ -385,7 +387,7 @@ public class EntityTypeProvider {
           PropertyProvider.navPropertyETTwoKeyNavContOneCT_ETTwoKeyNav,
           PropertyProvider.collectionNavPropertyETTwoKeyNavContMany_CT_ETTwoKeyNav
           ));
-} else if (entityTypeName.equals(nameETTwoKeyNav)) {
+    } else if (entityTypeName.equals(nameETTwoKeyNav)) {
       return new CsdlEntityType()
           .setName("ETTwoKeyNav")
           .setKey(Arrays.asList(
@@ -484,7 +486,7 @@ public class EntityTypeProvider {
                   .setName("PropertyInt16")))
           .setProperties(Arrays.asList(
               PropertyProvider.propertyInt16_NotNullable,
-              PropertyProvider.propertyStream));      
+              PropertyProvider.propertyStream));
     } else if (entityTypeName.equals(nameETDelta)) {
       return new CsdlEntityType()
           .setName("ETDelta")
@@ -494,7 +496,15 @@ public class EntityTypeProvider {
           .setNavigationProperties(
               Arrays.asList(PropertyProvider.navPropertyETAllPrimOne_ETAllPrim,
                   PropertyProvider.collectionNavPropertyETAllPrimMany_ETAllPrim));
-    } 
+    } else if (entityTypeName.equals(nameETPeople)) {
+        return new CsdlEntityType()
+          .setName(nameETPeople.getName())
+          .setKey(Arrays.asList(new CsdlPropertyRef().setName("id")))
+          .setProperties(Arrays.asList(
+            PropertyProvider.propertyId,
+            PropertyProvider.propertyName))
+          .setNavigationProperties(Arrays.asList(PropertyProvider.navPropertyFriends));
+    }
     return null;
   }
 }

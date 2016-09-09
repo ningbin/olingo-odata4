@@ -106,7 +106,7 @@ public class ContainerProvider {
     entitySets.add(prov.getEntitySet(ContainerProvider.nameContainer, "ESWithStream"));
     entitySets.add(prov.getEntitySet(ContainerProvider.nameContainer, ES_STREAM));
     entitySets.add(prov.getEntitySet(ContainerProvider.nameContainer, "ESDelta")); 
-    
+    entitySets.add(prov.getEntitySet(ContainerProvider.nameContainer, "ESPeople"));
     // Singletons
     List<CsdlSingleton> singletons = new ArrayList<CsdlSingleton>();
     container.setSingletons(singletons);
@@ -656,9 +656,14 @@ public class ContainerProvider {
                 new CsdlNavigationPropertyBinding()
                     .setPath("NavPropertyETAllPrimMany")
                     .setTarget("ESAllPrim")));
+      } else if (name.equals("ESPeople")) {
+        return new CsdlEntitySet()
+          .setName("ESPeople")
+          .setType(EntityTypeProvider.nameETPeople)
+          .setNavigationPropertyBindings(Arrays.asList(new CsdlNavigationPropertyBinding().setPath("friends")
+            .setTarget("ESPeople")));
       }
     }
-
     return null;
   }
 
