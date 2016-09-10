@@ -321,13 +321,6 @@ public class ODataJsonSerializer implements ODataSerializer {
     return true;
   }
 
-  private boolean cycleDetected(final Set<String> ancestors, String child) {
-      if (ancestors == null) {
-          return false;
-      }
-      return ancestors.contains(child);
-  }
-  
   protected void writeEntity(final ServiceMetadata metadata, final EdmEntityType entityType, final Entity entity,
       final ContextURL contextURL, final ExpandOption expand, Integer toDepth, 
       final SelectOption select, final boolean onlyReference, Set<String> ancestors, final JsonGenerator json)
