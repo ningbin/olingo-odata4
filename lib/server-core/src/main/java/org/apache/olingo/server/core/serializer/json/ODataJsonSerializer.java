@@ -333,13 +333,11 @@ public class ODataJsonSerializer implements ODataSerializer {
       final SelectOption select, final boolean onlyReference, Set<String> ancestors, final JsonGenerator json)
       throws IOException, SerializerException {
     boolean cycle = false;
-    if (expand != null && cycleDetected(ancestors, getEntityId(entity))) {
-        cycle = true;
-    } else {
+    if (expand != null) {
       if (ancestors == null) {
         ancestors = new HashSet<String>();
       }
-      ancestors.add(getEntityId(entity));
+      cycle = !ancestors.add(getEntityId(entity));
     }
     try {
       json.writeStartObject();
@@ -393,7 +391,7 @@ public class ODataJsonSerializer implements ODataSerializer {
       }
       json.writeEndObject();
     } finally {
-      if (!cycle && ancestors != null) {
+      if (expand != null && !cycle && ancestors != null) {
         ancestors.remove(getEntityId(entity));
       }
     }
