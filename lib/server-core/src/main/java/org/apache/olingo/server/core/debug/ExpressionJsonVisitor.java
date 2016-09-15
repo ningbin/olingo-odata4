@@ -33,7 +33,6 @@ import org.apache.olingo.server.api.uri.UriResourceLambdaAll;
 import org.apache.olingo.server.api.uri.UriResourceLambdaAny;
 import org.apache.olingo.server.api.uri.UriResourceNavigation;
 import org.apache.olingo.server.api.uri.UriResourcePartTyped;
-import org.apache.olingo.server.api.uri.queryoption.expression.*;
 import org.apache.olingo.server.api.uri.UriResourceSingleton;
 import org.apache.olingo.server.api.uri.queryoption.expression.BinaryOperatorKind;
 import org.apache.olingo.server.api.uri.queryoption.expression.Expression;

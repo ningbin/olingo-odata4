@@ -689,17 +689,17 @@ public class ODataJsonSerializer implements ODataSerializer {
   }
 
   private void writeComplex(final ServiceMetadata metadata, final EdmComplexType type,
-      final Property property, final Set<List<String>> selectedPaths, final JsonGenerator json)
-      throws IOException, SerializerException {
-    json.writeStartObject();
-    String derivedName = property.getType();
-    final EdmComplexType resolvedType = resolveComplexType(metadata, (EdmComplexType) type, derivedName);
-    if (!isODataMetadataNone && !resolvedType.equals(type) || isODataMetadataFull) {
-      json.writeStringField(Constants.JSON_TYPE, "#" + property.getType());
-    }
-    writeComplexValue(metadata, resolvedType, property.asComplex().getValue(), selectedPaths,
-        json);
-    json.writeEndObject();
+      final Property property, final Set<List<String>> selectedPaths, final JsonGenerator json) 
+          throws IOException, SerializerException{
+        json.writeStartObject();        
+        String derivedName = property.getType();
+        final EdmComplexType resolvedType = resolveComplexType(metadata, type, derivedName);
+        if (!isODataMetadataNone && !resolvedType.equals(type) || isODataMetadataFull) {
+           json.writeStringField(Constants.JSON_TYPE, "#" + property.getType());
+        }          
+        writeComplexValue(metadata, resolvedType, property.asComplex().getValue(), selectedPaths,
+             json);
+        json.writeEndObject();
   }
 
   private void writePrimitiveCollection(final EdmPrimitiveType type, final Property property,
