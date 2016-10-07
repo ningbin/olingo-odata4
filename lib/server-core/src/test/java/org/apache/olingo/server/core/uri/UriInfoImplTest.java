@@ -33,6 +33,7 @@ import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.apache.olingo.server.api.uri.queryoption.AliasQueryOption;
 import org.apache.olingo.server.api.uri.queryoption.QueryOption;
 import org.apache.olingo.server.core.uri.queryoption.AliasQueryOptionImpl;
+import org.apache.olingo.server.core.uri.queryoption.ApplyOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.CountOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.DeltaTokenOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.CustomQueryOptionImpl;
@@ -108,6 +109,7 @@ public class UriInfoImplTest {
 
   @Test
   public void customQueryOption() {
+    final QueryOption apply = new ApplyOptionImpl().setName("");
     final QueryOption expand = new ExpandOptionImpl().setName("");
     final QueryOption filter = new FilterOptionImpl().setName("");
     final QueryOption format = new FormatOptionImpl().setName("");
@@ -130,6 +132,7 @@ public class UriInfoImplTest {
     final QueryOption alias = new AliasQueryOptionImpl().setName("alias").setText("C");
 
     final UriInfo uriInfo = new UriInfoImpl()
+        .setQueryOption(apply)
         .setQueryOption(expand)
         .setQueryOption(filter)
         .setQueryOption(format)
@@ -149,6 +152,7 @@ public class UriInfoImplTest {
         .setQueryOption(deltaToken);
 
     assertEquals(13, uriInfo.getSystemQueryOptions().size());
+    assertEquals(apply, uriInfo.getApplyOption());
     assertEquals(expand, uriInfo.getExpandOption());
     assertEquals(filter, uriInfo.getFilterOption());
     assertEquals(format, uriInfo.getFormatOption());
