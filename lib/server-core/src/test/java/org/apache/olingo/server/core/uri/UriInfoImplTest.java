@@ -151,7 +151,7 @@ public class UriInfoImplTest {
         .setQueryOption(alias)
         .setQueryOption(deltaToken);
 
-    assertEquals(13, uriInfo.getSystemQueryOptions().size());
+    assertEquals(14, uriInfo.getSystemQueryOptions().size());
     assertEquals(apply, uriInfo.getApplyOption());
     assertEquals(expand, uriInfo.getExpandOption());
     assertEquals(filter, uriInfo.getFilterOption());
