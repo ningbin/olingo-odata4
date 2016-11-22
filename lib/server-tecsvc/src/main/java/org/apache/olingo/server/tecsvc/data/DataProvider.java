@@ -54,6 +54,7 @@ import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeException;
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
 import org.apache.olingo.commons.api.edm.EdmProperty;
 import org.apache.olingo.commons.api.edm.EdmStructuredType;
+import org.apache.olingo.commons.api.edm.EdmSingleton;
 import org.apache.olingo.commons.api.edm.EdmType;
 import org.apache.olingo.commons.api.edm.EdmTypeDefinition;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
@@ -784,5 +785,13 @@ public class DataProvider {
     entities.add(entity1);
     entities.add(entity3);
     return entities;
+}
+
+  public Entity read(EdmSingleton singleton) {
+    if (data.containsKey(singleton.getName())) {
+    EntityCollection entitySet = data.get(singleton.getName());
+    return entitySet.getEntities().get(0);
+    }
+    return null;
   }
 }
