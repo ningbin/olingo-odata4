@@ -704,7 +704,8 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
    */
   private boolean isStreaming(EdmEntitySet edmEntitySet, ContentType contentType) {
     return (ContainerProvider.ES_STREAM.equalsIgnoreCase(edmEntitySet.getName())||
-      ContainerProvider.ES_STREAM_SERVER_PAGINATION.equalsIgnoreCase(edmEntitySet.getName()));}
+        ContainerProvider.ES_STREAM_SERVER_PAGINATION.equalsIgnoreCase(edmEntitySet.getName()));
+  }
 
   private SerializerResult serializeEntityCollection(final ODataRequest request, final EntityCollection
       entityCollection, final EdmEntitySet edmEntitySet, final EdmEntityType edmEntityType,
@@ -737,14 +738,14 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
       private URI next = entityCollection.getNext();
       private Integer count = entityCollection.getCount();
       
-      public URI getNext() {
-        return next;
-      }
-      
       @Override
       public List<Operation> getOperations() {
         return entityCollection.getOperations();
       } 
+      
+      public URI getNext() {
+        return next;
+      }
       
       @Override
       public boolean hasNext() {

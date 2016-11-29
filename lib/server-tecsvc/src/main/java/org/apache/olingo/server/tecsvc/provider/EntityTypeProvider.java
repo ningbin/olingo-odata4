@@ -280,7 +280,6 @@ public class EntityTypeProvider {
           .setKey(Arrays.asList(new CsdlPropertyRef().setName("PropertyInt16")))
           .setProperties(Arrays.asList(PropertyProvider.propertyInt16_NotNullable,
               PropertyProvider.propertyString_NotNullable));
-      
     }else if (entityTypeName.equals(nameETStreamServerSidePaging)) {
       return new CsdlEntityType()
           .setName(nameETStreamServerSidePaging.getName())
@@ -289,8 +288,7 @@ public class EntityTypeProvider {
                   .setName("PropertyInt16")))
           .setProperties(Arrays.asList(
               PropertyProvider.propertyInt16_NotNullable,
-              PropertyProvider.propertyStream));  
-      
+              PropertyProvider.propertyStream));
     } else if (entityTypeName.equals(nameETAllNullable)) {
       return new CsdlEntityType()
           .setName("ETAllNullable")
