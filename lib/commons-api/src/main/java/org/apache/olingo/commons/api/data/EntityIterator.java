@@ -29,6 +29,7 @@ import java.util.List;
  */
 public abstract class EntityIterator extends AbstractEntityCollection implements Iterator<Entity> {
 
+  private URI next;
   /**
    * {@inheritDoc}
    */
@@ -79,15 +80,13 @@ public abstract class EntityIterator extends AbstractEntityCollection implements
     throw new ODataNotSupportedException("Entity Iterator does not support getCount()");
   }
 
-  /**
-   * {@inheritDoc}
-   * <p/>
-   * <b>ATTENTION:</b> <code>getNext</code> is not supported by default.
-   */
-  public URI getNext() {
-    throw new ODataNotSupportedException("Entity Iterator does not support getNext()");
-  }
-
+ /** Gets next link.
+  *
+  * @param next next link.
+  */
+ public URI getNext() {
+   return next;
+ }
   /**
    * {@inheritDoc}
    * <p/>
@@ -95,5 +94,14 @@ public abstract class EntityIterator extends AbstractEntityCollection implements
    */
   public URI getDeltaLink() {
     throw new ODataNotSupportedException("Entity Iterator does not support getDeltaLink()");
+  }
+  
+  /**
+   * Sets next link.
+   *
+   * @param next next link.
+   */
+  public void setNext(final URI next) {
+    this.next = next;
   }
 }

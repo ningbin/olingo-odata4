@@ -219,8 +219,8 @@ public class ODataJsonSerializer implements ODataSerializer {
         writeEntitySet(metadata, entityType, entitySet,
             options.getExpand(), options.getSelect(), options.getWriteOnlyReferences(), json);
       }
-      // next link not supported by default for streaming results
-//      writeNextLink(entitySet, json);
+      // next link supported for streaming results
+      writeNextLink(entitySet, json);
 
       json.close();
     } catch (final IOException e) {
