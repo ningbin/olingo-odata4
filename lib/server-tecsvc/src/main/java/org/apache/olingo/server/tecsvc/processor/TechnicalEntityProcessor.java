@@ -18,6 +18,7 @@
  */
 package org.apache.olingo.server.tecsvc.processor;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -569,8 +570,8 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
    *          otherwise <code>FALSE</code>.
    */
   private boolean isStreaming(EdmEntitySet edmEntitySet, ContentType contentType) {
-    return ContainerProvider.ES_STREAM.equalsIgnoreCase(edmEntitySet.getName());
-  }
+    return (ContainerProvider.ES_STREAM.equalsIgnoreCase(edmEntitySet.getName())||
+      ContainerProvider.ES_STREAM_SERVER_PAGINATION.equalsIgnoreCase(edmEntitySet.getName()));}
 
   private SerializerResult serializeEntityCollection(final ODataRequest request, final EntityCollection
       entityCollection, final EdmEntitySet edmEntitySet, final EdmEntityType edmEntityType,
@@ -600,6 +601,12 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
     EntityIterator streamCollection = new EntityIterator() {
       Iterator<Entity> entityIterator = entityCollection.iterator();
 
+      private URI next = entityCollection.getNext();
+      
+      public URI getNext() {
+        return next;
+      }
+      
       @Override
       public List<Operation> getOperations() {
         return entityCollection.getOperations();
