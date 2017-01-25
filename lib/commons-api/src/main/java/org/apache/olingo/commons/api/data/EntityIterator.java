@@ -30,10 +30,14 @@ import java.util.List;
 public abstract class EntityIterator extends AbstractEntityCollection implements Iterator<Entity> {
 
   private URI next;
+
+  private Integer count;
+
   /**
    * {@inheritDoc}
    */
   public abstract boolean hasNext();
+
   /**
    * {@inheritDoc}
    * <p/>
@@ -48,7 +52,7 @@ public abstract class EntityIterator extends AbstractEntityCollection implements
    */
   @Override
   public void remove() {
-    //"Remove is not supported for iteration over Entities."
+    // "Remove is not supported for iteration over Entities."
     throw new ODataNotSupportedException("Entity Iterator does not support remove()");
   }
 
@@ -59,7 +63,7 @@ public abstract class EntityIterator extends AbstractEntityCollection implements
    */
   @Override
   public List<Operation> getOperations() {
-    //"Remove is not supported for iteration over Entities."
+    // "Remove is not supported for iteration over Entities."
     throw new ODataNotSupportedException("Entity Iterator does not support getOperations() by default");
   }
 
@@ -72,21 +76,21 @@ public abstract class EntityIterator extends AbstractEntityCollection implements
   }
 
   /**
-   * {@inheritDoc}
-   * <p/>
-   * <b>ATTENTION:</b> <code>getCount</code> is not supported by default.
+   * Gets count
+   * 
    */
   public Integer getCount() {
-    throw new ODataNotSupportedException("Entity Iterator does not support getCount()");
+    return count;
   }
 
- /** Gets next link.
-  *
-  * @param next next link.
-  */
- public URI getNext() {
-   return next;
- }
+  /**
+   * Gets next link.
+   *
+   */
+  public URI getNext() {
+    return next;
+  }
+
   /**
    * {@inheritDoc}
    * <p/>
@@ -95,7 +99,7 @@ public abstract class EntityIterator extends AbstractEntityCollection implements
   public URI getDeltaLink() {
     throw new ODataNotSupportedException("Entity Iterator does not support getDeltaLink()");
   }
-  
+
   /**
    * Sets next link.
    *
@@ -103,5 +107,14 @@ public abstract class EntityIterator extends AbstractEntityCollection implements
    */
   public void setNext(final URI next) {
     this.next = next;
+  }
+
+  /**
+   * Sets count.
+   *
+   * @param count count value.
+   */
+  public void setCount(final Integer count) {
+    this.count = count;
   }
 }

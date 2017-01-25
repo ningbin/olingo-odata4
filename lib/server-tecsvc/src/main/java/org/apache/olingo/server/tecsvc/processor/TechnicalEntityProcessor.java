@@ -602,6 +602,7 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
       Iterator<Entity> entityIterator = entityCollection.iterator();
 
       private URI next = entityCollection.getNext();
+      private Integer count = entityCollection.getCount();
       
       public URI getNext() {
         return next;
@@ -620,6 +621,10 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
       @Override
       public Entity next() {
         return addToPrimitiveProperty(entityIterator.next(), "PropertyString", "->streamed");
+      }
+      
+      public Integer getCount() {
+        return count;
       }
 
       private Entity addToPrimitiveProperty(Entity entity, String name, Object data) {
