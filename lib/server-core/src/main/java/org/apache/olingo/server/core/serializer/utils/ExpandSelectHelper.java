@@ -122,6 +122,15 @@ public abstract class ExpandSelectHelper {
     return false;
   }
 
+  public static ExpandItem getExpandAll(final ExpandOption expand) {
+      for (final ExpandItem item : expand.getExpandItems()) {
+        if (item.isStar()) {
+          return item;
+        }
+      }
+      return null;
+    }
+  
   public static Set<String> getExpandedPropertyNames(final List<ExpandItem> expandItems)
       throws SerializerException {
     Set<String> expanded = new HashSet<String>();
@@ -135,15 +144,6 @@ public abstract class ExpandSelectHelper {
     return expanded;
   }
 
-  public static ExpandItem getExpandAll(final ExpandOption expand) {
-    for (final ExpandItem item : expand.getExpandItems()) {
-      if (item.isStar()) {
-        return item;
-      }
-    }
-   return null;
-  }
-  
   public static ExpandItem getExpandItem(final List<ExpandItem> expandItems, final String propertyName) {
     for (final ExpandItem item : expandItems) {
       if (item.isStar()) {
