@@ -34,6 +34,7 @@ import org.apache.olingo.server.api.uri.queryoption.AliasQueryOption;
 import org.apache.olingo.server.api.uri.queryoption.QueryOption;
 import org.apache.olingo.server.core.uri.queryoption.AliasQueryOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.CountOptionImpl;
+import org.apache.olingo.server.core.uri.queryoption.DeltaTokenOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.CustomQueryOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.ExpandOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.FilterOptionImpl;
@@ -119,6 +120,7 @@ public class UriInfoImplTest {
     final QueryOption skipToken = new SkipTokenOptionImpl().setName("");
     final QueryOption top = new TopOptionImpl().setName("");
     final QueryOption levels = new LevelsOptionImpl().setName("");
+    final QueryOption deltaToken = new DeltaTokenOptionImpl().setName("");
 
     final QueryOption customOption0 = new CustomQueryOptionImpl().setName("0").setText("A");
     final QueryOption customOption1 = new CustomQueryOptionImpl().setName("1").setText("B");
@@ -143,9 +145,10 @@ public class UriInfoImplTest {
         .setQueryOption(customOption1)
         .setQueryOption(levels)
         .setQueryOption(initialQueryOption)
-        .setQueryOption(alias);
+        .setQueryOption(alias)
+        .setQueryOption(deltaToken);
 
-    assertEquals(12, uriInfo.getSystemQueryOptions().size());
+    assertEquals(13, uriInfo.getSystemQueryOptions().size());
     assertEquals(expand, uriInfo.getExpandOption());
     assertEquals(filter, uriInfo.getFilterOption());
     assertEquals(format, uriInfo.getFormatOption());
@@ -157,6 +160,7 @@ public class UriInfoImplTest {
     assertEquals(skip, uriInfo.getSkipOption());
     assertEquals(skipToken, uriInfo.getSkipTokenOption());
     assertEquals(top, uriInfo.getTopOption());
+    assertEquals(deltaToken, uriInfo.getDeltaTokenOption());
 
     assertArrayEquals(new QueryOption[] { alias }, uriInfo.getAliases().toArray());
     assertEquals("C", uriInfo.getValueForAlias("alias"));

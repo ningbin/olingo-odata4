@@ -21,6 +21,8 @@ package org.apache.olingo.server.tecsvc.processor;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.olingo.commons.api.data.DeletedEntity;
+import org.apache.olingo.commons.api.data.DeltaLink;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
 import org.apache.olingo.commons.api.data.Link;
@@ -187,7 +189,23 @@ public abstract class TechnicalProcessor implements Processor {
 
     return entity;
   }
+  protected List<DeletedEntity> readDeletedEntities(final UriInfoResource uriInfo) throws ODataApplicationException {
+    final List<UriResource> resourcePaths = uriInfo.getUriResourceParts();
+    return dataProvider.readDeletedEntities(((UriResourceEntitySet) resourcePaths.get(0)).getEntitySet());
+  }
 
+
+  protected List<DeltaLink> readAddedLinks(final UriInfoResource uriInfo) throws ODataApplicationException {
+    final List<UriResource> resourcePaths = uriInfo.getUriResourceParts();
+    return dataProvider.readAddedLinks(((UriResourceEntitySet) resourcePaths.get(0)).getEntitySet());
+  }
+  
+  protected List<DeltaLink> readDeletedLinks(final UriInfoResource uriInfo) throws ODataApplicationException {
+    final List<UriResource> resourcePaths = uriInfo.getUriResourceParts();
+    return dataProvider.readDeletedLinks(((UriResourceEntitySet) resourcePaths.get(0)).getEntitySet());
+  }
+  
+  
   protected EntityCollection readEntityCollection(final UriInfoResource uriInfo) throws ODataApplicationException {
     final List<UriResource> resourcePaths = uriInfo.getUriResourceParts();
     if (resourcePaths.size() > 1 && resourcePaths.get(1) instanceof UriResourceNavigation) {

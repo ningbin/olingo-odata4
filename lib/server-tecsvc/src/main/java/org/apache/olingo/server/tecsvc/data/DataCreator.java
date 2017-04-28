@@ -88,12 +88,45 @@ public class DataCreator {
     data.put("ESMixEnumDefCollComp", createESMixEnumDefCollComp(edm, odata));
     data.put("ESStream", createESStream(edm, odata));
     data.put("ESWithStream", createESWithStream(edm, odata));
-
+    data.put("ESDelta", createESDelta(edm, odata)); 
+    
     linkESTwoPrim(data);
     linkESAllPrim(data);
     linkESKeyNav(data);
     linkESTwoKeyNav(data);
+    linkESDelta(data);
   }
+  
+  private EntityCollection createESDelta(final Edm edm, final OData odata) {
+    
+
+    
+    
+   EntityCollection entityCollection = new EntityCollection();
+
+    entityCollection.getEntities().add(new Entity()
+        .addProperty(createPrimitive("PropertyInt16", Short.MAX_VALUE))
+        .addProperty(createPrimitive("PropertyString", "Number:" + Short.MAX_VALUE)));
+    entityCollection.getEntities().add(new Entity()
+        .addProperty(createPrimitive("PropertyInt16", Short.MIN_VALUE))
+        .addProperty(createPrimitive("PropertyString", "Number:" + Short.MIN_VALUE)));
+    entityCollection.getEntities().add(new Entity()
+        .addProperty(createPrimitive("PropertyInt16", 0))
+        .addProperty(createPrimitive("PropertyString", "Number:" + 0)));
+    entityCollection.getEntities().add(new Entity()
+        .addProperty(createPrimitive("PropertyInt16", 100))
+        .addProperty(createPrimitive("PropertyString", "Number:" + 100)));
+    entityCollection.getEntities().add(new Entity()
+        .addProperty(createPrimitive("PropertyInt16", -1))
+        .addProperty(createPrimitive("PropertyString", "Number:" + -1)));
+  
+
+    setEntityType(entityCollection, edm.getEntityType(EntityTypeProvider.nameETDelta));
+    createEntityId(edm, odata, "ESDelta", entityCollection);
+    createOperations("ESDelta", entityCollection, EntityTypeProvider.nameETDelta);
+    return entityCollection;
+  }
+
 
   private EntityCollection createESMixEnumDefCollComp(Edm edm, OData odata) {
     final EntityCollection entityCollection = new EntityCollection();
@@ -1295,6 +1328,15 @@ public class DataCreator {
     final List<Entity> targetEntities = data.get("ESAllPrim").getEntities();
 
     setLinks(entityCollection.getEntities().get(1), "NavPropertyETAllPrimMany", targetEntities.get(1),
+        targetEntities.get(2));
+    setLink(entityCollection.getEntities().get(3), "NavPropertyETAllPrimOne", targetEntities.get(0));
+  }
+  
+  private void linkESDelta(final Map<String, EntityCollection> data) {
+    final EntityCollection entityCollection = data.get("ESDelta");
+    final List<Entity> targetEntities = data.get("ESAllPrim").getEntities();
+
+    setLinks(entityCollection.getEntities().get(0), "NavPropertyETAllPrimMany", targetEntities.get(1),
         targetEntities.get(2));
     setLink(entityCollection.getEntities().get(3), "NavPropertyETAllPrimOne", targetEntities.get(0));
   }

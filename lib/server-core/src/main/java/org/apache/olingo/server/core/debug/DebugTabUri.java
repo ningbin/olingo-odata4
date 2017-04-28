@@ -105,7 +105,10 @@ public class DebugTabUri implements DebugTab {
     if (uriInfo.getSkipTokenOption() != null) {
       gen.writeStringField("skiptoken", uriInfo.getSkipTokenOption().getValue());
     }
-
+    
+    if (uriInfo.getDeltaTokenOption() != null) {
+      gen.writeStringField("deltatoken", uriInfo.getDeltaTokenOption().getValue());
+    }
     appendCommonJsonObjects(gen, uriInfo.getCountOption(), uriInfo.getSkipOption(), uriInfo.getTopOption(),
         uriInfo.getFilterOption(), uriInfo.getOrderByOption(), uriInfo.getSelectOption(), uriInfo.getExpandOption(),
         uriInfo.getSearchOption(), uriInfo.getApplyOption());

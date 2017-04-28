@@ -19,11 +19,17 @@
 package org.apache.olingo.commons.api.data;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A deleted entity contains the reason for deletion and the id.
  */
-public class DeletedEntity {
+/**
+ * @author I319426
+ *
+ */
+public class DeletedEntity extends Entity{
   
   /**
    * Reason of the removal from the list

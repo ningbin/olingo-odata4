@@ -150,6 +150,7 @@ public class ODataJsonSerializer implements ODataSerializer {
       final EntityCollectionSerializerOptions options) throws SerializerException {
     OutputStream outputStream = null;
     SerializerException cachedException = null;
+    boolean pagination = false;
     try {
       CircleStreamBuffer buffer = new CircleStreamBuffer();
       outputStream = buffer.getOutputStream();
@@ -172,7 +173,8 @@ public class ODataJsonSerializer implements ODataSerializer {
         writeEntitySet(metadata, entityType, entitySet,
             options.getExpand(), options.getSelect(), options.getWriteOnlyReferences(), json);
       }
-      writeNextLink(entitySet, json);
+      writeNextLink(entitySet, json, pagination);
+      writeDeltaLink(entitySet, json, pagination);
 
       json.close();
       outputStream.close();
@@ -200,6 +202,7 @@ public class ODataJsonSerializer implements ODataSerializer {
       throws SerializerException {
 
     SerializerException cachedException;
+    boolean pagination = false;
     try {
       JsonGenerator json = new JsonFactory().createGenerator(outputStream);
       json.writeStartObject();
@@ -220,7 +223,7 @@ public class ODataJsonSerializer implements ODataSerializer {
             options.getExpand(), options.getSelect(), options.getWriteOnlyReferences(), json);
       }
       // next link supported for streaming results
-      writeNextLink(entitySet, json);
+      writeNextLink(entitySet, json, pagination);
 
       json.close();
     } catch (final IOException e) {
@@ -982,6 +985,7 @@ public class ODataJsonSerializer implements ODataSerializer {
       throws SerializerException {
     OutputStream outputStream = null;
     SerializerException cachedException = null;
+    boolean pagination = false ;
 
     try {
       final ContextURL contextURL = checkContextURL(options == null ? null : options.getContextURL());
@@ -1004,7 +1008,7 @@ public class ODataJsonSerializer implements ODataSerializer {
       }
       json.writeEndArray();
 
-      writeNextLink(entityCollection, json);
+      writeNextLink(entityCollection, json, pagination);
 
       json.writeEndObject();
 
@@ -1049,9 +1053,20 @@ public class ODataJsonSerializer implements ODataSerializer {
     }
   }
 
-  void writeNextLink(final AbstractEntityCollection entitySet, final JsonGenerator json) throws IOException {
+  void writeNextLink(final AbstractEntityCollection entitySet, final JsonGenerator json, boolean pagination)
+      throws IOException {
     if (entitySet.getNext() != null) {
+      pagination = true;
       json.writeStringField(Constants.JSON_NEXT_LINK, entitySet.getNext().toASCIIString());
+    }else{
+      pagination = false;
+    }
+  }
+  
+  void writeDeltaLink(final AbstractEntityCollection entitySet, final JsonGenerator json, boolean pagination)
+      throws IOException {
+    if (entitySet.getDeltaLink() != null && !pagination) {
+      json.writeStringField(Constants.JSON_DELTA_LINK, entitySet.getDeltaLink().toASCIIString());
     }
   }
 }

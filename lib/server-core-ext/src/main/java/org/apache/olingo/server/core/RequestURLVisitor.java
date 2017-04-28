@@ -42,6 +42,7 @@ import org.apache.olingo.server.api.uri.UriResourceRef;
 import org.apache.olingo.server.api.uri.UriResourceRoot;
 import org.apache.olingo.server.api.uri.UriResourceSingleton;
 import org.apache.olingo.server.api.uri.UriResourceValue;
+import org.apache.olingo.server.api.uri.queryoption.DeltaTokenOption;
 import org.apache.olingo.server.api.uri.queryoption.CountOption;
 import org.apache.olingo.server.api.uri.queryoption.ExpandOption;
 import org.apache.olingo.server.api.uri.queryoption.FilterOption;
@@ -93,7 +94,9 @@ public interface RequestURLVisitor {
 
   void visit(SkipTokenOption option);
 
-  void visit(TopOption option);
+  void visit(TopOption option);  
+  
+  void visit(DeltaTokenOption option);
 
   void visit(UriResourceCount option);
 

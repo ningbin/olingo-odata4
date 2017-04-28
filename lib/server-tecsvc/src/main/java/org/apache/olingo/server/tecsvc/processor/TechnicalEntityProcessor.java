@@ -19,7 +19,9 @@
 package org.apache.olingo.server.tecsvc.processor;
 
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -28,6 +30,9 @@ import org.apache.olingo.commons.api.data.ComplexValue;
 import org.apache.olingo.commons.api.data.ContextURL;
 import org.apache.olingo.commons.api.data.ContextURL.Builder;
 import org.apache.olingo.commons.api.data.ContextURL.Suffix;
+import org.apache.olingo.commons.api.data.DeletedEntity;
+import org.apache.olingo.commons.api.data.Delta;
+import org.apache.olingo.commons.api.data.DeltaLink;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
 import org.apache.olingo.commons.api.data.EntityIterator;
@@ -62,6 +67,7 @@ import org.apache.olingo.server.api.serializer.ReferenceSerializerOptions;
 import org.apache.olingo.server.api.serializer.SerializerResult;
 import org.apache.olingo.server.api.serializer.SerializerStreamResult;
 import org.apache.olingo.server.api.uri.UriInfo;
+import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.apache.olingo.server.api.uri.UriResourceNavigation;
 import org.apache.olingo.server.api.uri.UriResourcePartTyped;
@@ -69,12 +75,14 @@ import org.apache.olingo.server.api.uri.queryoption.CountOption;
 import org.apache.olingo.server.api.uri.queryoption.ExpandOption;
 import org.apache.olingo.server.api.uri.queryoption.IdOption;
 import org.apache.olingo.server.api.uri.queryoption.SelectOption;
+import org.apache.olingo.server.api.uri.queryoption.SystemQueryOption;
 import org.apache.olingo.server.tecsvc.async.AsyncProcessor;
 import org.apache.olingo.server.tecsvc.async.TechnicalAsyncService;
 import org.apache.olingo.server.tecsvc.data.DataProvider;
 import org.apache.olingo.server.tecsvc.data.RequestValidator;
 import org.apache.olingo.server.tecsvc.processor.queryoptions.ExpandSystemQueryOptionHandler;
 import org.apache.olingo.server.tecsvc.processor.queryoptions.options.CountHandler;
+import org.apache.olingo.server.tecsvc.processor.queryoptions.options.DeltaTokenHandler;
 import org.apache.olingo.server.tecsvc.processor.queryoptions.options.FilterHandler;
 import org.apache.olingo.server.tecsvc.processor.queryoptions.options.OrderByHandler;
 import org.apache.olingo.server.tecsvc.processor.queryoptions.options.SearchHandler;
@@ -89,6 +97,8 @@ import org.apache.olingo.server.tecsvc.provider.ContainerProvider;
 public class TechnicalEntityProcessor extends TechnicalProcessor
     implements EntityCollectionProcessor, CountEntityCollectionProcessor, EntityProcessor, MediaEntityProcessor,
     ReferenceCollectionProcessor, ReferenceProcessor {
+
+  private static final String DELTATOKEN = "deltatoken";
 
   public TechnicalEntityProcessor(final DataProvider dataProvider, final ServiceMetadata serviceMetadata) {
     super(dataProvider, serviceMetadata);
@@ -109,13 +119,26 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
     getEdmEntitySet(uriInfo); // including checks
     final EntityCollection entitySetInitial = readEntityCollection(uriInfo);
     EntityCollection entitySet = new EntityCollection();
-
     entitySet.getEntities().addAll(entitySetInitial.getEntities());
+    int count =  entitySet.getEntities().size();
+    for (SystemQueryOption systemQueryOption : uriInfo.getSystemQueryOptions()) {
+      if (systemQueryOption.getName().contains(DELTATOKEN)) {
+        count = count + getDeltaCount(uriInfo);
+        break;
+      }
+    }
     FilterHandler.applyFilterSystemQuery(uriInfo.getFilterOption(), entitySet, uriInfo, serviceMetadata.getEdm());
     response.setContent(odata.createFixedFormatSerializer().count(
-        entitySet.getEntities().size()));
+        count));
     response.setStatusCode(HttpStatusCode.OK.getStatusCode());
     response.setHeader(HttpHeader.CONTENT_TYPE, ContentType.TEXT_PLAIN.toContentTypeString());
+  }
+
+  private int getDeltaCount(UriInfo uriInfo) throws ODataApplicationException {
+    List<DeletedEntity> deletedEntity = readDeletedEntities(uriInfo);
+    List<DeltaLink> addedLink = readAddedLinks(uriInfo);
+    List<DeltaLink> deletedLink = readDeletedLinks(uriInfo);
+    return deletedEntity.size() + addedLink.size() + deletedLink.size();
   }
 
   @Override
@@ -482,6 +505,7 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
         edmEntitySet.getEntityType();
 
     EntityCollection entitySetInitial = readEntityCollection(uriInfo);
+    Delta delta = null;
     if (entitySetInitial == null) {
       entitySetInitial = new EntityCollection();
     }
@@ -522,7 +546,35 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
     expandHandler.applyExpandQueryOptions(entitySetSerialization, edmEntitySet, expand, uriInfo,
         serviceMetadata.getEdm());
     final CountOption countOption = uriInfo.getCountOption();
-
+    final List<SystemQueryOption> systemQueryOptions = uriInfo.getSystemQueryOptions();
+    String deltaToken = null;
+    for (SystemQueryOption systemQueryOption : systemQueryOptions) {
+      if (systemQueryOption.getName().contains(DELTATOKEN)) {
+        deltaToken = systemQueryOption.getText();
+        delta = new Delta();
+        Integer count = 0;
+        if (deltaToken != null) {
+          String deltaTokenValue = generateDeltaToken();
+          List<DeletedEntity> listOfDeletedEntities = readDeletedEntities(uriInfo);
+          List<DeltaLink> listOfAddedLinks = readAddedLinks(uriInfo);
+          List<DeltaLink> listOfDeletedLinks = readDeletedLinks(uriInfo);
+          List<Entity> listofNavigationEntities = readNavigationEntities(uriInfo);
+          delta.getDeletedEntities().addAll(listOfDeletedEntities);
+          delta.getAddedLinks().addAll(listOfAddedLinks);
+          delta.getDeletedLinks().addAll(listOfDeletedLinks);
+          delta.getEntities().addAll(listofNavigationEntities);
+          count = listOfDeletedLinks.size()+listOfAddedLinks.size()+listOfDeletedEntities.size();
+          delta.setDeltaLink(DeltaTokenHandler.createDeltaLink(
+          request.getRawRequestUri(),
+          deltaTokenValue));
+        }
+        
+        delta.getEntities().addAll(entitySetSerialization.getEntities()); 
+        count = count +  delta.getEntities().size();
+        delta.setCount(count);
+        break;
+      }
+    } 
     String id;
     if (edmEntitySet == null) {
       // Used for functions, function imports etc.
@@ -530,19 +582,30 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
     } else {
       id = request.getRawBaseUri() + edmEntitySet.getName();
     }
-
+    if(odata.createPreferences(request.getHeaders(HttpHeader.PREFER)).hasTrackChanges()) {
+      String deltaTokenValue = generateDeltaToken();
+      entitySetSerialization.setDeltaLink(DeltaTokenHandler.createDeltaLink(
+          request.getRawRequestUri(),
+          deltaTokenValue));
+    }
     if(isReference) {
       final SerializerResult serializerResult =
           serializeReferenceCollection(entitySetSerialization, edmEntitySet, requestedContentType, countOption);
       response.setContent(serializerResult.getContent());
-    } else if(isStreaming(edmEntitySet, requestedContentType)) {
+    }else if(isStreaming(edmEntitySet, requestedContentType)) {
       final SerializerStreamResult serializerResult =
           serializeEntityCollectionStreamed(request,
               entitySetSerialization, edmEntitySet, edmEntityType, requestedContentType,
               expand, select, countOption, id);
 
       response.setODataContent(serializerResult.getODataContent());
-    } else {
+    }else if(delta != null){ 
+      final SerializerResult serializerResult =
+          serializeDeltaPayloads(request,
+          delta, edmEntitySet, edmEntityType, requestedContentType,
+          expand, select, countOption, id);
+      response.setContent(serializerResult.getContent());
+    }else {
       final SerializerResult serializerResult =
           serializeEntityCollection(request,
               entitySetSerialization, edmEntitySet, edmEntityType, requestedContentType,
@@ -556,9 +619,44 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
     if (pageSize != null) {
       response.setHeader(HttpHeader.PREFERENCE_APPLIED,
           PreferencesApplied.with().maxPageSize(serverPageSize).build().toValueString());
-    }
+    }else if (odata.createPreferences(request.getHeaders(HttpHeader.PREFER)).hasTrackChanges()) {
+      response.setHeader(HttpHeader.PREFERENCE_APPLIED,
+          PreferencesApplied.with().trackChanges().build().toValueString());
+    } 
+  }
+  private List<Entity> readNavigationEntities(final UriInfo uriInfo) {   
+
+    final List<UriResource> resourcePaths = uriInfo.getUriResourceParts();
+    return dataProvider.readNavigationEntities(((UriResourceEntitySet) resourcePaths.get(0)).getEntitySet());
+  
   }
 
+  private String generateDeltaToken() {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.000");
+
+    Date date = new Date(System.currentTimeMillis());
+    return dateFormat.format(date);
+  } 
+  
+  private SerializerResult serializeDeltaPayloads(final ODataRequest request, final Delta delta, 
+      final EdmEntitySet edmEntitySet, final EdmEntityType edmEntityType,
+      final ContentType requestedFormat, final ExpandOption expand, final SelectOption select,
+      final CountOption countOption, String id) throws ODataLibraryException {
+
+    return odata.createEdmDeltaSerializer(requestedFormat, request.getHeaders(HttpHeader.ODATA_VERSION))
+        .entityCollection(serviceMetadata,
+        edmEntityType, delta,
+        EntityCollectionSerializerOptions.with()
+        .contextURL(isODataMetadataNone(requestedFormat) ? null :
+          getContextUrl(request.getRawODataPath(), edmEntitySet, edmEntityType, false, expand, select))
+      .count(countOption)
+      .expand(expand).select(select)
+      .id(id)
+      .build());
+   
+
+  }
+  
   /**
    * Check is streaming is enabled for this entity set in combination with the given content type.
    * <code>TRUE</code> if the technical scenario supports streaming for this combination,

@@ -27,6 +27,7 @@ import org.apache.olingo.server.api.uri.queryoption.SearchOption;
 import org.apache.olingo.server.api.uri.queryoption.SkipOption;
 import org.apache.olingo.server.api.uri.queryoption.SkipTokenOption;
 import org.apache.olingo.server.api.uri.queryoption.TopOption;
+import org.apache.olingo.server.api.uri.queryoption.DeltaTokenOption;
 
 /**
  * Used for URI info kind {@link UriInfoKind#all} to describe URIs like
@@ -67,5 +68,10 @@ public interface UriInfoAll {
   /**
    * @return Object containing information of the $top option
    */
-  TopOption getTopOption();
+  TopOption getTopOption();  
+  
+  /**
+   * @return Object containing information of the $deltatoken option
+   */
+  DeltaTokenOption getDeltaTokenOption();
 }
