@@ -62,7 +62,7 @@ import org.mockito.Mockito;
 
 public class JsonDeltaSerializerWithNavigationsTest {
 
-  final EdmDeltaSerializer ser;
+  EdmDeltaSerializer ser;
   private static final OData odata = OData.newInstance();
   private static final ServiceMetadata metadata = odata.createServiceMetadata(
       new EdmTechProvider(), Collections.<EdmxReference> emptyList(), new MetadataETagSupport("W/\"metadataETag\""));
@@ -73,7 +73,7 @@ public class JsonDeltaSerializerWithNavigationsTest {
 
   public JsonDeltaSerializerWithNavigationsTest() throws SerializerException {
     List<String> versions = new ArrayList<String>();
-    versions.add("4.1");
+    versions.add("4.01");
     ser = OData.newInstance().createEdmDeltaSerializer(ContentType.JSON, versions);
     serializerFullMetadata = OData.newInstance().createEdmDeltaSerializer(ContentType.JSON_FULL_METADATA, versions);
   }
@@ -610,7 +610,7 @@ public class JsonDeltaSerializerWithNavigationsTest {
     Assert.assertEquals("{"
         + "\"@context\":\"$metadata#ESDelta(PropertyString,NavPropertyETAllPrimOne(PropertyString))/$delta\","
         + "\"value\":[{\"@id\":\"ESDelta(100)\",\"PropertyInt16\":100,\"PropertyString\":\"Number:100\","
-        + "\"NavPropertyETAllPrimOne\":{\"@id\":\"ESAllPrim(32767)\","
+        + "\"NavPropertyETAllPrimOne@delta\":{\"@id\":\"ESAllPrim(32767)\","
         + "\"PropertyString\":\"First Resource - positive values\"}}]}",
         jsonString);
   }
@@ -840,7 +840,7 @@ public class JsonDeltaSerializerWithNavigationsTest {
            + "\"@context\":\"$metadata#ESDelta/$delta\",\"value\":[{\"@id\":\"ESDelta(32767)\","
            + "\"PropertyInt16\":32767,\"PropertyString\":\"Number:32767\"},{\"@id\":\"ESDelta(100)\","
            + "\"PropertyInt16\":100,\"PropertyString\":\"Number:100\","
-           + "\"NavPropertyETAllPrimOne\":"
+           + "\"NavPropertyETAllPrimOne@delta\":"
            + "{\"@id\":\"ESAllPrim(32767)\",\"PropertyInt16\":32767,\"PropertyString\":"
            + "\"First Resource - positive values\","
            + "\"PropertyBoolean\":true,\"PropertyByte\":255,\"PropertySByte\":127,\"PropertyInt32\":2147483647,"
@@ -976,4 +976,37 @@ public class JsonDeltaSerializerWithNavigationsTest {
         .build()).getContent();
       
      } 
+  
+  @Test
+  public void testDeltaTokenWithBothVersions() throws Exception {
+    List<String> versions = new ArrayList<String>();
+    versions.add("4.01");
+    versions.add("4.0");
+    ser = OData.newInstance().createEdmDeltaSerializer(ContentType.JSON, versions);
+    final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESDelta");
+    Delta delta = new Delta();
+    List<DeltaLink> addedLinks = new ArrayList<DeltaLink>();
+    DeltaLink link1 = new DeltaLink();
+    link1.setRelationship("NavPropertyETAllPrimOne");
+    link1.setSource(new URI("ESDelta(100)"));
+    link1.setTarget(new URI("ESAllPrim(0)"));
+    addedLinks.add(link1 );
+    delta.getAddedLinks().addAll(addedLinks );
+    delta.setDeltaLink(new URI("23042017"));
+     InputStream stream = ser.entityCollection(metadata, edmEntitySet.getEntityType(), delta ,
+        EntityCollectionSerializerOptions.with()
+        .contextURL(ContextURL.with().entitySet(edmEntitySet).build())
+        .build()).getContent();
+       String jsonString = IOUtils.toString(stream);
+       final String expectedResult = "{"
+           + "\"@context\":\"$metadata#ESDelta/$delta\",\"value\":[{"
+           + "\"@context\":\"#ESDelta/$link\",\"source\":\"ESDelta(100)\","
+           + "\"relationship\":\"NavPropertyETAllPrimOne\","
+           + "\"target\":\"ESAllPrim(0)\"}],"          
+           + "\"@deltaLink\":\"23042017\""
+           + "}";
+       Assert.assertNotNull(jsonString);
+       Assert.assertEquals(expectedResult, jsonString);
+     } 
+  
 }

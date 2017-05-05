@@ -554,7 +554,7 @@ public class JsonDeltaSerializerWithNavigations implements EdmDeltaSerializer {
       }
 
     } else {
-      json.writeFieldName(property.getName());
+      json.writeFieldName(property.getName()+ Constants.AT + Constants.DELTAVALUE);
       if (navigationLink != null && navigationLink.getInlineEntity() != null) {
         if (navigationLink.getInlineEntity() instanceof DeletedEntity) {
           writeDeletedEntity(navigationLink.getInlineEntity(), json);

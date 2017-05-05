@@ -138,7 +138,8 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
     List<DeletedEntity> deletedEntity = readDeletedEntities(uriInfo);
     List<DeltaLink> addedLink = readAddedLinks(uriInfo);
     List<DeltaLink> deletedLink = readDeletedLinks(uriInfo);
-    return deletedEntity.size() + addedLink.size() + deletedLink.size();
+    List<Entity> listofNavigationEntities = readNavigationEntities(uriInfo);
+    return deletedEntity.size() + addedLink.size() + deletedLink.size() + listofNavigationEntities.size();
   }
 
   @Override
@@ -622,6 +623,7 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
     }else if (odata.createPreferences(request.getHeaders(HttpHeader.PREFER)).hasTrackChanges()) {
       response.setHeader(HttpHeader.PREFERENCE_APPLIED,
           PreferencesApplied.with().trackChanges().build().toValueString());
+      response.setHeader(HttpHeader.ODATA_VERSION,request.getHeaders(HttpHeader.ODATA_MAX_VERSION).get(0));
     } 
   }
   private List<Entity> readNavigationEntities(final UriInfo uriInfo) {   
@@ -643,7 +645,7 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
       final ContentType requestedFormat, final ExpandOption expand, final SelectOption select,
       final CountOption countOption, String id) throws ODataLibraryException {
 
-    return odata.createEdmDeltaSerializer(requestedFormat, request.getHeaders(HttpHeader.ODATA_VERSION))
+    return odata.createEdmDeltaSerializer(requestedFormat, request.getHeaders(HttpHeader.ODATA_MAX_VERSION))
         .entityCollection(serviceMetadata,
         edmEntityType, delta,
         EntityCollectionSerializerOptions.with()
