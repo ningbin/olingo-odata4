@@ -623,8 +623,10 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
     }else if (odata.createPreferences(request.getHeaders(HttpHeader.PREFER)).hasTrackChanges()) {
       response.setHeader(HttpHeader.PREFERENCE_APPLIED,
           PreferencesApplied.with().trackChanges().build().toValueString());
-      response.setHeader(HttpHeader.ODATA_VERSION,request.getHeaders(HttpHeader.ODATA_MAX_VERSION).get(0));
     } 
+    if(delta!=null){
+      response.setHeader(HttpHeader.ODATA_VERSION,request.getHeaders(HttpHeader.ODATA_MAX_VERSION).get(0));
+    }
   }
   private List<Entity> readNavigationEntities(final UriInfo uriInfo) {   
 
