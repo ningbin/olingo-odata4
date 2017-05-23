@@ -69,8 +69,6 @@ import org.apache.olingo.client.api.domain.ClientObjectFactory;
 import org.apache.olingo.client.api.domain.ClientPrimitiveValue;
 import org.apache.olingo.client.api.domain.ClientProperty;
 import org.apache.olingo.client.api.domain.ClientServiceDocument;
-import org.apache.olingo.client.api.domain.ClientSingleton;
-import org.apache.olingo.client.api.domain.ClientValuable;
 import org.apache.olingo.client.api.domain.ClientValue;
 import org.apache.olingo.client.api.edm.xml.Reference;
 import org.apache.olingo.client.api.edm.xml.XMLMetadata;
@@ -88,7 +86,6 @@ import org.apache.olingo.commons.api.ex.ODataError;
 import org.apache.olingo.commons.api.format.ContentType;
 import org.apache.olingo.commons.api.http.HttpHeader;
 import org.apache.olingo.commons.api.http.HttpStatusCode;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -408,7 +405,7 @@ public class BasicITCase extends AbstractParamTecSvcITCase {
         property2.getPrimitiveValue().toValue());
     final ClientProperty property3 = entity.getProperty(PROPERTY_INT64);
     assertNotNull(property3);
-    assertNull(property3.getPrimitiveValue());
+    assertNull(property3.getPrimitiveValue().toValue());
     final ClientProperty property4 = entity.getProperty("PropertyDuration");
     assertNotNull(property4);
     assertEquals(isJson() ? "PT6S" : BigDecimal.valueOf(6), property4.getPrimitiveValue().toValue());
@@ -435,7 +432,7 @@ public class BasicITCase extends AbstractParamTecSvcITCase {
     assertShortOrInt(42, property1.getPrimitiveValue().toValue());
     final ClientProperty property2 = entity.getProperty(PROPERTY_DECIMAL);
     assertNotNull(property2);
-    assertNull(property2.getPrimitiveValue());
+    assertNull(property2.getPrimitiveValue().toValue());
   }
 
   @Test
@@ -500,7 +497,7 @@ public class BasicITCase extends AbstractParamTecSvcITCase {
     assertNotNull(complex);
     final ClientProperty property = complex.get(PROPERTY_INT16);
     assertNotNull(property);
-    assertNull(property.getPrimitiveValue());
+    assertNull(property.getPrimitiveValue().toValue());
   }
 
   @Test
@@ -530,7 +527,7 @@ public class BasicITCase extends AbstractParamTecSvcITCase {
     assertShortOrInt(42, property1.getPrimitiveValue().toValue());
     final ClientProperty property2 = createdEntity.getProperty(PROPERTY_DECIMAL);
     assertNotNull(property2);
-    assertNull(property2.getPrimitiveValue());
+    assertNull(property2.getPrimitiveValue().toValue());
   }
 
   @Test
