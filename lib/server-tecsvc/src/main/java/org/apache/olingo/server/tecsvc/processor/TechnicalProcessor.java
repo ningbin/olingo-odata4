@@ -82,7 +82,7 @@ public abstract class TechnicalProcessor implements Processor {
     // First must be an entity, an entity collection, a function import, or an action import.
     blockTypeFilters(resourcePaths.get(0));
     if (resourcePaths.get(0) instanceof UriResourceEntitySet) {
-      entitySet = ((UriResourceEntitySet) resourcePaths.get(0)).getEntitySet();
+      entitySet = getEntitySetBasedOnTypeCast(((UriResourceEntitySet)resourcePaths.get(0)));
     } else if (resourcePaths.get(0) instanceof UriResourceFunction) {
       entitySet = ((UriResourceFunction) resourcePaths.get(0)).getFunctionImport().getReturnedEntitySet();
     } else if (resourcePaths.get(0) instanceof UriResourceAction) {
@@ -146,7 +146,8 @@ public abstract class TechnicalProcessor implements Processor {
     Entity entity = null;
     if (resourcePaths.get(0) instanceof UriResourceEntitySet) {
       final UriResourceEntitySet uriResource = (UriResourceEntitySet) resourcePaths.get(0);
-      entity = dataProvider.read(uriResource.getEntitySet(), uriResource.getKeyPredicates());
+      EdmEntitySet entitySet = getEntitySetBasedOnTypeCast(uriResource);
+      entity = dataProvider.read(entitySet, uriResource.getKeyPredicates());
     }else if (resourcePaths.get(0) instanceof UriResourceSingleton) {
       final UriResourceSingleton uriResource = (UriResourceSingleton) resourcePaths.get(0);
       entity = dataProvider.read( uriResource.getSingleton());
@@ -256,7 +257,8 @@ public abstract class TechnicalProcessor implements Processor {
         return dataProvider.readFunctionEntityCollection(uriResource.getFunction(), uriResource.getParameters(),
             uriInfo);
       } else {
-        return dataProvider.readAll(((UriResourceEntitySet) resourcePaths.get(0)).getEntitySet());
+        EdmEntitySet entitySet = getEntitySetBasedOnTypeCast(((UriResourceEntitySet)resourcePaths.get(0)));
+        return dataProvider.readAll(entitySet);
       }
     }
   }
@@ -274,10 +276,7 @@ public abstract class TechnicalProcessor implements Processor {
   }
 
   private void blockTypeFilters(final UriResource uriResource) throws ODataApplicationException {
-    if (uriResource instanceof UriResourceEntitySet
-        && (((UriResourceEntitySet) uriResource).getTypeFilterOnCollection() != null
-        || ((UriResourceEntitySet) uriResource).getTypeFilterOnEntry() != null)
-        || uriResource instanceof UriResourceFunction
+    if (uriResource instanceof UriResourceFunction
         && (((UriResourceFunction) uriResource).getTypeFilterOnCollection() != null
         || ((UriResourceFunction) uriResource).getTypeFilterOnEntry() != null)
         || uriResource instanceof UriResourceNavigation
