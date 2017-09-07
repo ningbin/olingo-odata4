@@ -197,7 +197,7 @@ public class BasicBatchITCase extends AbstractBaseTestITCase {
   private HttpURLConnection batchWithCustomQuery(final String content, final String query) 
       throws IOException {
     HttpURLConnection connection = getConnectionForCustomQuery(content, query);
-    assertEquals(HttpStatusCode.ACCEPTED.getStatusCode(), connection.getResponseCode());
+    assertEquals(HttpStatusCode.OK.getStatusCode(), connection.getResponseCode());
     return connection;
   }
 
