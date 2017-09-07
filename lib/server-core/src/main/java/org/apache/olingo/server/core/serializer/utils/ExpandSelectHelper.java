@@ -135,8 +135,20 @@ public abstract class ExpandSelectHelper {
     return expanded;
   }
 
+  public static ExpandItem getExpandAll(final ExpandOption expand) {
+    for (final ExpandItem item : expand.getExpandItems()) {
+      if (item.isStar()) {
+        return item;
+      }
+    }
+   return null;
+  }
+  
   public static ExpandItem getExpandItem(final List<ExpandItem> expandItems, final String propertyName) {
     for (final ExpandItem item : expandItems) {
+      if (item.isStar()) {
+        continue;
+      }
       final UriResource resource = item.getResourcePath().getUriResourceParts().get(0);
       if (resource instanceof UriResourceNavigation
           && propertyName.equals(((UriResourceNavigation) resource).getProperty().getName())) {
