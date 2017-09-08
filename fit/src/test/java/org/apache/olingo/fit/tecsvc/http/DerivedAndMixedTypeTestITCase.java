@@ -61,28 +61,6 @@ public class DerivedAndMixedTypeTestITCase extends AbstractBaseTestITCase {
   }
 
   @Test
-  public void queryESCompCollDerivedXml() throws Exception {
-    URL url = new URL(SERVICE_URI + "ESCompCollDerived?$format=xml");
-
-    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-    connection.setRequestMethod(HttpMethod.GET.name());
-    connection.connect();
-
-    assertEquals(HttpStatusCode.OK.getStatusCode(), connection.getResponseCode());
-    assertEquals(ContentType.APPLICATION_XML, ContentType.create(connection.getHeaderField(HttpHeader.CONTENT_TYPE)));
-
-    final String content = IOUtils.toString(connection.getInputStream());
-    assertTrue(content.contains("<d:PropertyCompAno m:type=\"#olingo.odata.test1.CTBaseAno\">" +
-        "<d:PropertyString>Num111</d:PropertyString>" +
-        "<d:AdditionalPropString>Test123</d:AdditionalPropString>" +
-        "</d:PropertyCompAno>" +
-        "<d:CollPropertyCompAno m:type=\"#Collection(olingo.odata.test1.CTTwoPrimAno)\">" +
-        "<m:element m:type=\"olingo.odata.test1.CTBaseAno\">" +
-        "<d:PropertyString>TEST12345</d:PropertyString>" +
-        "<d:AdditionalPropString>Additional12345</d:AdditionalPropString>" ));
-  }
-
-  @Test
   public void queryESAllPrimDerivedJson() throws Exception {
     URL url = new URL(SERVICE_URI + "ESAllPrimDerived(0)?$expand=NavPropertyETTwoPrimMany&$format=json");
 
@@ -97,24 +75,6 @@ public class DerivedAndMixedTypeTestITCase extends AbstractBaseTestITCase {
         "\"PropertyInt16\":32766," +
         "\"PropertyString\":\"Test String1\"," +
         "\"AdditionalPropertyString_5\":\"Additional String1\"" ));
-  }
-  
-  @Test
-  public void queryESAllPrimDerivedXml() throws Exception {
-    URL url = new URL(SERVICE_URI + "ESAllPrimDerived(0)?$expand=NavPropertyETTwoPrimMany&$format=xml");
-
-    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-    connection.setRequestMethod(HttpMethod.GET.name());
-    connection.connect();
-
-    assertEquals(HttpStatusCode.OK.getStatusCode(), connection.getResponseCode());
-
-    final String content = IOUtils.toString(connection.getInputStream());
-    assertTrue(content.contains("term=\"#olingo.odata.test1.ETBase\"/>"));
-    assertTrue(content.contains(
-        "<d:PropertyInt16 m:type=\"Int16\">32766</d:PropertyInt16>" +
-        "<d:PropertyString>Test String1</d:PropertyString>" +
-        "<d:AdditionalPropertyString_5>Additional String1</d:AdditionalPropertyString_5>"));
   }
   
   @Test

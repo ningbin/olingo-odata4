@@ -121,6 +121,7 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
     final EntityCollection entitySetInitial = readEntityCollection(uriInfo);
     EntityCollection entitySet = new EntityCollection();
     entitySet.getEntities().addAll(entitySetInitial.getEntities());
+    FilterHandler.applyFilterSystemQuery(uriInfo.getFilterOption(), entitySet, uriInfo, serviceMetadata.getEdm());
     int count =  entitySet.getEntities().size();
     for (SystemQueryOption systemQueryOption : uriInfo.getSystemQueryOptions()) {
       if (systemQueryOption.getName().contains(DELTATOKEN)) {
@@ -128,7 +129,6 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
         break;
       }
     }
-    FilterHandler.applyFilterSystemQuery(uriInfo.getFilterOption(), entitySet, uriInfo, serviceMetadata.getEdm());
     response.setContent(odata.createFixedFormatSerializer().count(
         count));
     response.setStatusCode(HttpStatusCode.OK.getStatusCode());
