@@ -38,16 +38,16 @@ import org.apache.olingo.commons.api.edm.provider.CsdlStructuralType;
 
 public class CsdlTypeValidator {
 
-  public Map<String, String> aliasNamespaceMap = new HashMap<String, String>();
-  public Map<FullQualifiedName, CsdlEntityContainer> csdlContainersMap = 
+  private Map<String, String> aliasNamespaceMap = new HashMap<String, String>();
+  private Map<FullQualifiedName, CsdlEntityContainer> csdlContainersMap = 
       new HashMap<FullQualifiedName, CsdlEntityContainer>();
-  public Map<FullQualifiedName, CsdlEntityType> csdlEntityTypesMap = 
+  private Map<FullQualifiedName, CsdlEntityType> csdlEntityTypesMap = 
       new HashMap<FullQualifiedName, CsdlEntityType>();
-  public Map<FullQualifiedName, CsdlComplexType> csdlComplexTypesMap = 
+  private Map<FullQualifiedName, CsdlComplexType> csdlComplexTypesMap = 
       new HashMap<FullQualifiedName, CsdlComplexType>();
-  public Map<FullQualifiedName, CsdlAction> csdlActionsMap = 
+  private Map<FullQualifiedName, CsdlAction> csdlActionsMap = 
       new HashMap<FullQualifiedName, CsdlAction>();
-  public Map<FullQualifiedName, CsdlFunction> csdlFunctionsMap = 
+  private Map<FullQualifiedName, CsdlFunction> csdlFunctionsMap = 
       new HashMap<FullQualifiedName, CsdlFunction>();
   
   /**
@@ -156,6 +156,9 @@ public class CsdlTypeValidator {
       } else if (baseEntityType.getBaseType() == null) {
         break;
       }
+    }
+    if (baseEntityType == null) {
+      throw new RuntimeException("Entity TYpe is null with fully qualified name:" + baseTypeFQName);
     }
     return baseEntityType.getNavigationProperty(navBindingProperty);
   }
@@ -413,8 +416,10 @@ public class CsdlTypeValidator {
       } else if (sourceTypeHavingNavProp instanceof CsdlEntityType) {
         fqName = ((CsdlEntityType)sourceTypeHavingNavProp).getProperty(path).getTypeAsFQNObject();
       }
-      String namespace = aliasNamespaceMap.get(fqName.getNamespace());
-      fqName = namespace != null ? new FullQualifiedName(namespace, fqName.getName()) : fqName;
+      if (fqName != null) {
+        String namespace = aliasNamespaceMap.get(fqName.getNamespace());
+        fqName = namespace != null ? new FullQualifiedName(namespace, fqName.getName()) : fqName;
+      }
       
       sourceTypeHavingNavProp = csdlEntityTypesMap.get(fqName) != null ? 
           csdlEntityTypesMap.get(fqName) : 
