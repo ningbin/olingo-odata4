@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.olingo.commons.api.edm.EdmAction;
 import org.apache.olingo.commons.api.edm.EdmBindingTarget;
 import org.apache.olingo.commons.api.edm.EdmComplexType;
 import org.apache.olingo.commons.api.edm.EdmEntityContainer;
@@ -38,16 +37,14 @@ import org.apache.olingo.commons.api.edm.FullQualifiedName;
 
 public class EdmTypeValidator {
   
-  public Map<String, String> aliasNamespaceMap = new HashMap<String, String>();
-  public Map<FullQualifiedName, EdmEntityContainer> edmContainersMap = 
+  private Map<String, String> aliasNamespaceMap = new HashMap<String, String>();
+  private Map<FullQualifiedName, EdmEntityContainer> edmContainersMap = 
       new HashMap<FullQualifiedName, EdmEntityContainer>();
-  public Map<FullQualifiedName, EdmEntityType> edmEntityTypesMap = 
+  private Map<FullQualifiedName, EdmEntityType> edmEntityTypesMap = 
       new HashMap<FullQualifiedName, EdmEntityType>();
-  public Map<FullQualifiedName, EdmComplexType> edmComplexTypesMap = 
+  private Map<FullQualifiedName, EdmComplexType> edmComplexTypesMap = 
       new HashMap<FullQualifiedName, EdmComplexType>();
-  public Map<FullQualifiedName, EdmAction> edmActionsMap = 
-      new HashMap<FullQualifiedName, EdmAction>();
-  public Map<FullQualifiedName, EdmFunction> edmFunctionsMap = 
+  private Map<FullQualifiedName, EdmFunction> edmFunctionsMap = 
       new HashMap<FullQualifiedName, EdmFunction>();
 
   /**
@@ -56,7 +53,6 @@ public class EdmTypeValidator {
    * @param edmContainersMap
    * @param edmEntityTypesMap
    * @param edmComplexTypesMap
-   * @param edmActionsMap
    * @param edmFunctionsMap
    * @param edmTermsMap
    */
@@ -64,13 +60,11 @@ public class EdmTypeValidator {
       Map<FullQualifiedName, EdmEntityContainer> edmContainersMap,
       Map<FullQualifiedName, EdmEntityType> edmEntityTypesMap,
       Map<FullQualifiedName, EdmComplexType> edmComplexTypesMap,
-      Map<FullQualifiedName, EdmAction> edmActionsMap,
       Map<FullQualifiedName, EdmFunction> edmFunctionsMap) {
     this.aliasNamespaceMap = aliasNamespaceMap;
     this.edmContainersMap = edmContainersMap;
     this.edmEntityTypesMap = edmEntityTypesMap;
     this.edmComplexTypesMap = edmComplexTypesMap;
-    this.edmActionsMap = edmActionsMap;
     this.edmFunctionsMap = edmFunctionsMap;
   }
   

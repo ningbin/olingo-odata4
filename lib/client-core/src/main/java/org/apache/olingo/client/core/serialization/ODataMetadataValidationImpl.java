@@ -47,7 +47,6 @@ public class ODataMetadataValidationImpl implements ODataMetadataValidation {
   public void validateMetadata(Edm edm) {
     Map<FullQualifiedName, EdmEntityType> edmEntityTypesMap = new HashMap<FullQualifiedName, EdmEntityType>();
     Map<FullQualifiedName, EdmComplexType> edmComplexTypesMap = new HashMap<FullQualifiedName, EdmComplexType>();
-    Map<FullQualifiedName, EdmAction> edmActionsMap = new HashMap<FullQualifiedName, EdmAction>();
     Map<FullQualifiedName, EdmFunction> edmFunctionsMap = new HashMap<FullQualifiedName, EdmFunction>();
     Map<FullQualifiedName, EdmEntityContainer> edmContainersMap = new HashMap<FullQualifiedName, EdmEntityContainer>();
     Map<String, String> aliasNamespaceMap = new HashMap<String, String>();
@@ -61,10 +60,6 @@ public class ODataMetadataValidationImpl implements ODataMetadataValidation {
       for (EdmComplexType edmComplexType : edmComplexTypes) {
         edmComplexTypesMap.put(edmComplexType.getFullQualifiedName(), edmComplexType);
       }
-      List<EdmAction> edmActions = edmSchema.getActions();
-      for (EdmAction edmAction : edmActions) {
-        edmActionsMap.put(edmAction.getFullQualifiedName(), edmAction);
-      }
       List<EdmFunction> edmFunctions = edmSchema.getFunctions();
       for (EdmFunction edmFunction : edmFunctions) {
         edmFunctionsMap.put(edmFunction.getFullQualifiedName(), edmFunction);
@@ -75,7 +70,7 @@ public class ODataMetadataValidationImpl implements ODataMetadataValidation {
       }
     }
     EdmTypeValidator edmTypeValidator = new EdmTypeValidator(aliasNamespaceMap, edmContainersMap, 
-        edmEntityTypesMap, edmComplexTypesMap, edmActionsMap, edmFunctionsMap);
+        edmEntityTypesMap, edmComplexTypesMap, edmFunctionsMap);
     edmTypeValidator.validateEdm();
   }
 
