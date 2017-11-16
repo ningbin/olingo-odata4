@@ -56,4 +56,9 @@ public class ODataNettyImplTest {
   public void deserializerFixedFormat() throws DeserializerException {
     assertNotNull(odata.createFixedFormatDeserializer());
   }
+  
+  @Test
+  public void testCreateETagHelper() {
+    assertNotNull(odata.createETagHelper());
+  }
 }
