@@ -38,6 +38,7 @@ import org.apache.olingo.server.api.ServiceMetadata;
 import org.apache.olingo.server.api.deserializer.DeserializerException;
 import org.apache.olingo.server.api.serializer.SerializerException;
 import org.apache.olingo.server.core.MetadataParser;
+import org.apache.olingo.server.core.SchemaBasedEdmProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -53,6 +54,7 @@ public class NettyServiceDispatcherTest {
   
   ServiceMetadata metadata = null;
   ODataNetty odata = ODataNetty.newInstance();
+  SchemaBasedEdmProvider provider = null;
   
   @Before
   public void beforeTest() throws Exception {
@@ -61,6 +63,7 @@ public class NettyServiceDispatcherTest {
     parser.useLocalCoreVocabularies(true);
     parser.implicitlyLoadCoreVocabularies(true);
     metadata = parser.buildServiceMetadata(new FileReader("src/test/resources/trippin.xml"));    
+    provider = parser.buildEdmProvider(new FileReader("src/test/resources/trippin.xml"));
   }
 
   @Test
@@ -265,5 +268,11 @@ public class NettyServiceDispatcherTest {
     assertNotNull(new String (nettyResponse.content().array()));
     assertEquals(200, nettyResponse.status().code());
     assertEquals("OK", nettyResponse.status().reasonPhrase());
+  }
+  
+  @Test
+  public void testCreateServiceMetadata() throws SerializerException {
+    assertNotNull(odata.createServiceMetadata(provider, metadata.getReferences(), 
+        metadata.getServiceMetadataETagSupport()));
   }
 }

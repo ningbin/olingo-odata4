@@ -61,4 +61,14 @@ public class ODataNettyImplTest {
   public void testCreateETagHelper() {
     assertNotNull(odata.createETagHelper());
   }
+  
+  @Test
+  public void testCreateUriHelper() {
+    assertNotNull(odata.createUriHelper());
+  }
+  
+  @Test
+  public void testCreateDebugResponseHelper() {
+    assertNotNull(odata.createDebugResponseHelper("json"));
+  }
 }
