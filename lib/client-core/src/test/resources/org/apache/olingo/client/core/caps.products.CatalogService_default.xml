@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+ <edmx:Reference Uri="../Org.OData.Core.V1/$metadata">
+	<edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="../Org.OData.Measures.V1/$metadata">
+    <edmx:Include Alias="Measures" Namespace="Org.OData.Measures.V1"/>
+  </edmx:Reference>
+   <edmx:Reference Uri="../Org.OData.Capabilities.V1/$metadata">
+    <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+  </edmx:Reference> 
+  <edmx:Reference Uri="../Org.OData.Aggregation.V1/$metadata">
+    <edmx:Include Alias="Aggregation" Namespace="Org.OData.Aggregation.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="../Common/$metadata">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+   <edmx:Reference Uri="../Communication/$metadata">
+    <edmx:Include Alias="Communication" Namespace="com.sap.vocabularies.Communication.v1"/>
+  </edmx:Reference>
+    <edmx:Reference Uri="../UI/$metadata">
+    <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="caps.products.CatalogService" Alias="caps.products.CatalogService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityContainer Name="EntityContainer">
+        <EntitySet Name="Products" EntityType="caps.products.CatalogService.Products">
+          <NavigationPropertyBinding Path="category" Target="Categories"/>
+          <NavigationPropertyBinding Path="priceRange" Target="PriceRanges"/>
+          <NavigationPropertyBinding Path="supplier" Target="Suppliers"/>
+          <NavigationPropertyBinding Path="stock" Target="Stocks"/>
+          <NavigationPropertyBinding Path="images" Target="ProductImages"/>
+          <NavigationPropertyBinding Path="allCategories" Target="ProductsToCategories"/>
+          <NavigationPropertyBinding Path="reviews" Target="Reviews"/>
+        </EntitySet>
+        <EntitySet Name="Categories" EntityType="caps.products.CatalogService.Categories">
+          <NavigationPropertyBinding Path="parent" Target="Categories"/>
+          <NavigationPropertyBinding Path="children" Target="Categories"/>
+        </EntitySet>
+        <EntitySet Name="Suppliers" EntityType="caps.products.CatalogService.Suppliers"/>
+        <EntitySet Name="Stocks" EntityType="caps.products.CatalogService.Stocks">
+          <NavigationPropertyBinding Path="availability" Target="StockAvailabilities"/>
+        </EntitySet>
+        <EntitySet Name="StockAvailabilities" EntityType="caps.products.CatalogService.StockAvailabilities"/>
+        <EntitySet Name="PriceRanges" EntityType="caps.products.CatalogService.PriceRanges"/>
+        <EntitySet Name="Currencies" EntityType="caps.products.CatalogService.Currencies"/>
+        <EntitySet Name="DimensionUnits" EntityType="caps.products.CatalogService.DimensionUnits"/>
+        <EntitySet Name="WeightUnits" EntityType="caps.products.CatalogService.WeightUnits"/>
+        <EntitySet Name="BaseUnits" EntityType="caps.products.CatalogService.BaseUnits"/>
+        <EntitySet Name="ProductImages" EntityType="caps.products.CatalogService.ProductImages">
+          <NavigationPropertyBinding Path="product" Target="Products"/>
+        </EntitySet>
+        <EntitySet Name="ProductsToCategories" EntityType="caps.products.CatalogService.ProductsToCategories">
+          <NavigationPropertyBinding Path="product" Target="Products"/>
+          <NavigationPropertyBinding Path="category" Target="Categories"/>
+        </EntitySet>
+        <EntitySet Name="Reviews" EntityType="caps.products.CatalogService.Reviews">
+          <NavigationPropertyBinding Path="product" Target="Products"/>
+          <NavigationPropertyBinding Path="author" Target="Users"/>
+        </EntitySet>
+        <EntitySet Name="Users" EntityType="caps.products.CatalogService.Users">
+          <NavigationPropertyBinding Path="cart" Target="Carts"/>
+        </EntitySet>
+        <EntitySet Name="Me" EntityType="caps.products.CatalogService.Me">
+          <NavigationPropertyBinding Path="cart" Target="Carts"/>
+        </EntitySet>
+        <EntitySet Name="Carts" EntityType="caps.products.CatalogService.Carts">
+          <NavigationPropertyBinding Path="items" Target="CartItems"/>
+          <NavigationPropertyBinding Path="owner" Target="Users"/>
+        </EntitySet>
+        <EntitySet Name="CartItems" EntityType="caps.products.CatalogService.CartItems">
+          <NavigationPropertyBinding Path="cart" Target="Carts"/>
+          <NavigationPropertyBinding Path="product" Target="Products"/>
+        </EntitySet>
+        <FunctionImport Name="nop" Function="caps.products.CatalogService.nop"/>
+      </EntityContainer>
+      <EntityType Name="Products" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="name" Type="Edm.String"/>
+        <Property Name="descr" Type="Edm.String"/>
+        <NavigationProperty Name="category" Type="caps.products.CatalogService.Categories">
+          <ReferentialConstraint Property="category_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <Property Name="image" Type="Edm.String" MaxLength="255"/>
+        <Property Name="price" Type="Edm.Decimal" Scale="3" Precision="10"/>
+        <Property Name="currency" Type="Edm.String" MaxLength="3"/>
+        <NavigationProperty Name="priceRange" Type="caps.products.CatalogService.PriceRanges">
+          <ReferentialConstraint Property="priceRange_code" ReferencedProperty="code"/>
+        </NavigationProperty>
+        <Property Name="height" Type="Edm.Decimal" Scale="3" Precision="10"/>
+        <Property Name="width" Type="Edm.Decimal" Scale="3" Precision="10"/>
+        <Property Name="depth" Type="Edm.Decimal" Scale="3" Precision="10"/>
+        <Property Name="weight" Type="Edm.Decimal" Scale="3" Precision="10"/>
+        <Property Name="dimensionUnit" Type="Edm.String" MaxLength="3"/>
+        <Property Name="weightUnit" Type="Edm.String" MaxLength="3"/>
+        <Property Name="baseUnit" Type="Edm.String" MaxLength="3"/>
+        <NavigationProperty Name="supplier" Type="caps.products.CatalogService.Suppliers">
+          <ReferentialConstraint Property="supplier_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <NavigationProperty Name="stock" Type="caps.products.CatalogService.Stocks">
+          <ReferentialConstraint Property="stock_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <Property Name="capacity" Type="Edm.String"/>
+        <Property Name="thumbnail" Type="Edm.String" MaxLength="255"/>
+        <NavigationProperty Name="images" Type="Collection(caps.products.CatalogService.ProductImages)">
+          <ReferentialConstraint Property="ID" ReferencedProperty="product_ID"/>
+        </NavigationProperty>
+        <NavigationProperty Name="allCategories" Type="Collection(caps.products.CatalogService.ProductsToCategories)">
+          <ReferentialConstraint Property="ID" ReferencedProperty="product_ID"/>
+        </NavigationProperty>
+        <NavigationProperty Name="reviews" Type="Collection(caps.products.CatalogService.Reviews)"/>
+        <Property Name="created_byUser" Type="Edm.String" MaxLength="111"/>
+        <Property Name="created_at" Type="Edm.DateTimeOffset"/>
+        <Property Name="modified_byUser" Type="Edm.String" MaxLength="111"/>
+        <Property Name="modified_at" Type="Edm.DateTimeOffset"/>
+        <Property Name="category_ID" Type="Edm.String"/>
+        <Property Name="priceRange_code" Type="Edm.Int32"/>
+        <Property Name="supplier_ID" Type="Edm.String" MaxLength="10"/>
+        <Property Name="stock_ID" Type="Edm.String" MaxLength="10"/>
+      </EntityType>
+      <EntityType Name="Categories" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="ID" Type="Edm.String" Nullable="false"/>
+        <Property Name="name" Type="Edm.String"/>
+        <Property Name="descr" Type="Edm.String"/>
+        <Property Name="thumbnail" Type="Edm.String" MaxLength="255"/>
+        <Property Name="image" Type="Edm.String" MaxLength="255"/>
+        <NavigationProperty Name="parent" Type="caps.products.CatalogService.Categories">
+          <ReferentialConstraint Property="parent_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <NavigationProperty Name="children" Type="Collection(caps.products.CatalogService.Categories)"/>
+        <Property Name="parent_ID" Type="Edm.String"/>
+      </EntityType>
+      <EntityType Name="Suppliers" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="name" Type="Edm.String"/>
+        <Property Name="emailAddress" Type="Edm.String" MaxLength="255"/>
+        <Property Name="faxNumber" Type="Edm.String" MaxLength="30"/>
+        <Property Name="phoneNumber" Type="Edm.String" MaxLength="30"/>
+        <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="url" Type="Edm.String" MaxLength="255"/>
+      </EntityType>
+      <EntityType Name="Stocks" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="quantity" Type="Edm.Decimal" Scale="3" Precision="13"/>
+        <Property Name="minimumQuantity" Type="Edm.Decimal" Scale="3" Precision="13"/>
+        <NavigationProperty Name="availability" Type="caps.products.CatalogService.StockAvailabilities">
+          <ReferentialConstraint Property="availability_code" ReferencedProperty="code"/>
+        </NavigationProperty>
+        <Property Name="deliveryTime" Type="Edm.Int32"/>
+        <Property Name="availability_code" Type="Edm.Int32"/>
+      </EntityType>
+      <EntityType Name="StockAvailabilities" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="name" Type="Edm.String"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="code" Type="Edm.Int32" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="PriceRanges" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="name" Type="Edm.String"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="code" Type="Edm.Int32" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="Currencies" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="name" Type="Edm.String"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="DimensionUnits" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="name" Type="Edm.String"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="WeightUnits" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="name" Type="Edm.String"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="BaseUnits" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="name" Type="Edm.String"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="ProductImages" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="image"/>
+          <PropertyRef Name="product_ID"/>
+        </Key>
+        <NavigationProperty Name="product" Type="caps.products.CatalogService.Products" Nullable="false">
+          <ReferentialConstraint Property="product_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <Property Name="image" Type="Edm.String" MaxLength="255" Nullable="false"/>
+        <Property Name="product_ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="ProductsToCategories" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="product_ID"/>
+          <PropertyRef Name="category_ID"/>
+        </Key>
+        <NavigationProperty Name="product" Type="caps.products.CatalogService.Products" Nullable="false">
+          <ReferentialConstraint Property="product_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <NavigationProperty Name="category" Type="caps.products.CatalogService.Categories" Nullable="false">
+          <ReferentialConstraint Property="category_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <Property Name="product_ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="category_ID" Type="Edm.String" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="Reviews" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="ID" Type="Edm.String" MaxLength="36" Nullable="false"/>
+        <NavigationProperty Name="product" Type="caps.products.CatalogService.Products">
+          <ReferentialConstraint Property="product_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <NavigationProperty Name="author" Type="caps.products.CatalogService.Users">
+          <ReferentialConstraint Property="author_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <Property Name="date" Type="Edm.DateTimeOffset"/>
+        <Property Name="title" Type="Edm.String" MaxLength="100"/>
+        <Property Name="text" Type="Edm.String"/>
+        <Property Name="rating" Type="Edm.Int32"/>
+        <Property Name="created_byUser" Type="Edm.String" MaxLength="111"/>
+        <Property Name="created_at" Type="Edm.DateTimeOffset"/>
+        <Property Name="modified_byUser" Type="Edm.String" MaxLength="111"/>
+        <Property Name="modified_at" Type="Edm.DateTimeOffset"/>
+        <Property Name="product_ID" Type="Edm.String" MaxLength="10"/>
+        <Property Name="author_ID" Type="Edm.String" MaxLength="111"/>
+      </EntityType>
+      <EntityType Name="Users" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="ID" Type="Edm.String" MaxLength="111" Nullable="false"/>
+        <Property Name="firstName" Type="Edm.String" MaxLength="200"/>
+        <Property Name="lastName" Type="Edm.String" MaxLength="200"/>
+        <NavigationProperty Name="cart" Type="caps.products.CatalogService.Carts"/>
+        <Property Name="created_byUser" Type="Edm.String" MaxLength="111"/>
+        <Property Name="created_at" Type="Edm.DateTimeOffset"/>
+        <Property Name="modified_byUser" Type="Edm.String" MaxLength="111"/>
+        <Property Name="modified_at" Type="Edm.DateTimeOffset"/>
+      </EntityType>
+      <EntityType Name="Me" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="ID" Type="Edm.String" MaxLength="111" Nullable="false"/>
+        <Property Name="firstName" Type="Edm.String" MaxLength="200"/>
+        <Property Name="lastName" Type="Edm.String" MaxLength="200"/>
+        <NavigationProperty Name="cart" Type="caps.products.CatalogService.Carts"/>
+      </EntityType>
+      <EntityType Name="Carts" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="ID" Type="Edm.String" MaxLength="36" Nullable="false"/>
+        <NavigationProperty Name="items" Type="Collection(caps.products.CatalogService.CartItems)">
+          <ReferentialConstraint Property="ID" ReferencedProperty="cart_ID"/>
+        </NavigationProperty>
+        <NavigationProperty Name="owner" Type="caps.products.CatalogService.Users">
+          <ReferentialConstraint Property="owner_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <Property Name="owner_ID" Type="Edm.String" MaxLength="111"/>
+      </EntityType>
+      <EntityType Name="CartItems" Abstract="false" OpenType="false" HasStream="false">
+        <Key>
+          <PropertyRef Name="cart_ID"/>
+          <PropertyRef Name="product_ID"/>
+        </Key>
+        <NavigationProperty Name="cart" Type="caps.products.CatalogService.Carts" Nullable="false">
+          <ReferentialConstraint Property="cart_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <NavigationProperty Name="product" Type="caps.products.CatalogService.Products" Nullable="false">
+          <ReferentialConstraint Property="product_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <Property Name="quantity" Type="Edm.Int32"/>
+        <Property Name="cart_ID" Type="Edm.String" MaxLength="36" Nullable="false"/>
+        <Property Name="product_ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+      </EntityType>
+      <Function Name="nop" IsBound="false" IsComposable="false">
+        <ReturnType Type="Edm.Int32"/>
+      </Function>
+      <Annotations Target="caps.products.CatalogService.Products">
+        <Annotation Term="Common.SemanticKey">
+          <Collection>
+            <PropertyPath>ID</PropertyPath>
+          </Collection>
+        </Annotation>
+		<Annotation Term="Common.Label" String="Product"/>
+		<Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="image"/>
+              <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" /> 
+            </Record>
+          </Collection>
+        </Annotation>
+	  </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

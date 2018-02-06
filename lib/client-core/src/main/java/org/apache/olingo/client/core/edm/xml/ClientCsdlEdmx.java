@@ -76,7 +76,8 @@ public class ClientCsdlEdmx extends CsdlAbstractEdmItem implements Serializable,
 
       final ClientCsdlEdmx edmx = new ClientCsdlEdmx();
 
-      for (; jp.getCurrentToken() != JsonToken.END_OBJECT; jp.nextToken()) {
+      for (; jp.getCurrentToken() != JsonToken.END_OBJECT && 
+          jp.hasCurrentToken(); jp.nextToken()) {
         final JsonToken token = jp.getCurrentToken();
         if (token == JsonToken.FIELD_NAME) {
           if ("Version".equals(jp.getCurrentName())) {
@@ -90,7 +91,6 @@ public class ClientCsdlEdmx extends CsdlAbstractEdmItem implements Serializable,
           }
         }
       }
-
       return edmx;
     }
   }
