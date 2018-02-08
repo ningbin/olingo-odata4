@@ -63,6 +63,7 @@ import org.apache.olingo.commons.api.edm.provider.CsdlTerm;
 import org.apache.olingo.commons.api.edm.provider.annotation.CsdlApply;
 import org.apache.olingo.commons.api.edm.provider.annotation.CsdlCollection;
 import org.apache.olingo.commons.api.edm.provider.annotation.CsdlConstantExpression;
+import org.apache.olingo.commons.api.edm.provider.annotation.CsdlExpression;
 //CHECKSTYLE:OFF
 import org.apache.olingo.commons.api.edm.provider.annotation.CsdlLogicalOrComparisonExpression.LogicalOrComparisonExpressionType;
 //CHECKSTYLE:ON
@@ -488,8 +489,11 @@ public class MetadataTest extends AbstractTest {
     XMLMetadata xmlMetadata  = client.getDeserializer(ContentType.APPLICATION_XML).
     toMetadata(getClass().getResourceAsStream("caps.products.CatalogService_default.xml"));
     assertNotNull(xmlMetadata);
-    CsdlRecord record = (CsdlRecord) xmlMetadata.getSchema(0).getAnnotationGroups().get(0).
-        getAnnotation("UI.LineItem").getExpression().asDynamic().asCollection().getItems().get(0);
+    assertEquals(94, xmlMetadata.getSchema(0).getAnnotationGroups().size());
+    List<CsdlExpression> expressions = xmlMetadata.getSchema(0).getAnnotationGroups().get(0).
+        getAnnotation("UI.LineItem").getExpression().asDynamic().asCollection().getItems();
+    assertEquals(6, expressions.size());
+    CsdlRecord record = (CsdlRecord) expressions.get(0);
     assertEquals("UI.DataField", record.getType());
     assertEquals(1, record.getAnnotations().size());
     assertEquals("Value", record.getPropertyValues().get(0).getProperty());
