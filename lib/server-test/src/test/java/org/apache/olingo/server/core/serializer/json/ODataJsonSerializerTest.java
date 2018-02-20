@@ -2605,10 +2605,10 @@ public class ODataJsonSerializerTest {
     elements.add(element);
     Mockito.when(resource.getUriResourceParts()).thenReturn(elements);
     
-    final List<SelectItem> selectItems = new ArrayList<SelectItem>();
-    final SelectItem item = new SelectItemImpl().setResourcePath(resource);
-    selectItems.add(item);
-    final SelectOption selectOption = new SelectOptionImpl().setSelectItems(selectItems);
+    final SelectItem selectItem = Mockito.mock(SelectItem.class);
+    Mockito.when(selectItem.getResourcePath()).thenReturn(resource);
+    final SelectOption selectOption = Mockito.mock(SelectOption.class);
+    Mockito.when(selectOption.getSelectItems()).thenReturn(Arrays.asList(selectItem));
     
     final String resultString = IOUtils.toString(serializer
         .complexCollection(metadata, (EdmComplexType) edmProperty.getType(), property,
@@ -2641,10 +2641,10 @@ public class ODataJsonSerializerTest {
     elements.add(element);
     Mockito.when(resource.getUriResourceParts()).thenReturn(elements);
     
-    final List<SelectItem> selectItems = new ArrayList<SelectItem>();
-    final SelectItem item = new SelectItemImpl().setResourcePath(resource);
-    selectItems.add(item);
-    final SelectOption selectOption = new SelectOptionImpl().setSelectItems(selectItems);
+    final SelectItem selectItem = Mockito.mock(SelectItem.class);
+    Mockito.when(selectItem.getResourcePath()).thenReturn(resource);
+    final SelectOption selectOption = Mockito.mock(SelectOption.class);
+    Mockito.when(selectOption.getSelectItems()).thenReturn(Arrays.asList(selectItem));
     
     final String resultString = IOUtils.toString(serializerNoMetadata
         .complexCollection(metadata, (EdmComplexType) edmProperty.getType(), property, ComplexSerializerOptions.with()
@@ -2672,10 +2672,10 @@ public class ODataJsonSerializerTest {
     elements.add(element);
     Mockito.when(resource.getUriResourceParts()).thenReturn(elements);
     
-    final List<SelectItem> selectItems = new ArrayList<SelectItem>();
-    final SelectItem item = new SelectItemImpl().setResourcePath(resource);
-    selectItems.add(item);
-    final SelectOption selectOption = new SelectOptionImpl().setSelectItems(selectItems);
+    final SelectItem selectItem = Mockito.mock(SelectItem.class);
+    Mockito.when(selectItem.getResourcePath()).thenReturn(resource);
+    final SelectOption selectOption = Mockito.mock(SelectOption.class);
+    Mockito.when(selectOption.getSelectItems()).thenReturn(Arrays.asList(selectItem));
     
     final Property property = data.readAll(edmEntitySet).getEntities().get(0).getProperty(edmProperty.getName());
     final String resultString = IOUtils.toString(serializerFullMetadata
