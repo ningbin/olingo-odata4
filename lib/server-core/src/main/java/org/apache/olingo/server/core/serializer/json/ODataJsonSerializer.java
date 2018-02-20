@@ -78,6 +78,7 @@ import org.apache.olingo.server.api.uri.queryoption.CountOption;
 import org.apache.olingo.server.api.uri.queryoption.ExpandItem;
 import org.apache.olingo.server.api.uri.queryoption.ExpandOption;
 import org.apache.olingo.server.api.uri.queryoption.LevelsExpandOption;
+import org.apache.olingo.server.api.uri.queryoption.SelectItem;
 import org.apache.olingo.server.api.uri.queryoption.SelectOption;
 import org.apache.olingo.server.core.ODataWritableContent;
 import org.apache.olingo.server.core.serializer.SerializerResultImpl;
@@ -1124,7 +1125,13 @@ public class ODataJsonSerializer implements ODataSerializer {
       }
       writeOperations(property.getOperations(), json);
       json.writeFieldName(Constants.VALUE);
-      writeComplexCollection(metadata, type, property, null, json);
+      Set<List<String>> selectedPaths = null;
+      if (null != options && null != options.getSelect()) {
+        final boolean all = ExpandSelectHelper.isAll(options.getSelect());
+        selectedPaths = all || property.isPrimitive() ? null : ExpandSelectHelper
+            .getSelectedPaths(options.getSelect().getSelectItems());
+      }
+      writeComplexCollection(metadata, type, property, selectedPaths, json);
       json.writeEndObject();
 
       json.close();

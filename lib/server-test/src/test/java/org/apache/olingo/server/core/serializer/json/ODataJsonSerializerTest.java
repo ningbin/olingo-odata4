@@ -19,6 +19,7 @@
 package org.apache.olingo.server.core.serializer.json;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -51,15 +53,15 @@ import org.apache.olingo.commons.api.edm.EdmPrimitiveType;
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
 import org.apache.olingo.commons.api.edm.EdmProperty;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
-import org.apache.olingo.commons.api.edm.geo.Point;
-import org.apache.olingo.commons.api.edm.geo.Polygon;
-import org.apache.olingo.commons.api.edm.geo.SRID;
 import org.apache.olingo.commons.api.edm.geo.Geospatial.Dimension;
 import org.apache.olingo.commons.api.edm.geo.GeospatialCollection;
 import org.apache.olingo.commons.api.edm.geo.LineString;
 import org.apache.olingo.commons.api.edm.geo.MultiLineString;
 import org.apache.olingo.commons.api.edm.geo.MultiPoint;
 import org.apache.olingo.commons.api.edm.geo.MultiPolygon;
+import org.apache.olingo.commons.api.edm.geo.Point;
+import org.apache.olingo.commons.api.edm.geo.Polygon;
+import org.apache.olingo.commons.api.edm.geo.SRID;
 import org.apache.olingo.commons.api.edmx.EdmxReference;
 import org.apache.olingo.commons.api.format.ContentType;
 import org.apache.olingo.server.api.OData;
@@ -77,6 +79,9 @@ import org.apache.olingo.server.api.serializer.ReferenceSerializerOptions;
 import org.apache.olingo.server.api.serializer.SerializerException;
 import org.apache.olingo.server.api.serializer.SerializerResult;
 import org.apache.olingo.server.api.uri.UriHelper;
+import org.apache.olingo.server.api.uri.UriInfoResource;
+import org.apache.olingo.server.api.uri.UriResource;
+import org.apache.olingo.server.api.uri.UriResourceProperty;
 import org.apache.olingo.server.api.uri.queryoption.CountOption;
 import org.apache.olingo.server.api.uri.queryoption.ExpandItem;
 import org.apache.olingo.server.api.uri.queryoption.ExpandOption;
@@ -84,6 +89,8 @@ import org.apache.olingo.server.api.uri.queryoption.LevelsExpandOption;
 import org.apache.olingo.server.api.uri.queryoption.SelectItem;
 import org.apache.olingo.server.api.uri.queryoption.SelectOption;
 import org.apache.olingo.server.core.serializer.ExpandSelectMock;
+import org.apache.olingo.server.core.uri.queryoption.SelectItemImpl;
+import org.apache.olingo.server.core.uri.queryoption.SelectOptionImpl;
 import org.apache.olingo.server.tecsvc.MetadataETagSupport;
 import org.apache.olingo.server.tecsvc.data.DataProvider;
 import org.apache.olingo.server.tecsvc.provider.EdmTechProvider;
@@ -2580,5 +2587,111 @@ public class ODataJsonSerializerTest {
         + "\"PropertySByte@odata.type\":\"#SByte\",\"PropertySByte\":0}]}";        
 
     Assert.assertEquals(expected, resultString);
+  }
+  
+  @Test
+  public void complexCollectionWithSelectProperty() throws Exception {
+    final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESKeyNav");
+    final EdmProperty edmProperty = (EdmProperty) edmEntitySet.getEntityType().getProperty("CollPropertyComp");
+    final Property property = data.readAll(edmEntitySet).getEntities().get(0).getProperty(edmProperty.getName());
+    final EdmComplexType complexType = metadata.getEdm().getComplexType(
+        new FullQualifiedName("olingo.odata.test1", "CTPrimComp"));
+    final EdmProperty propertyWithinCT = (EdmProperty) complexType.getProperty("PropertyInt16"); 
+    
+    final UriInfoResource resource = Mockito.mock(UriInfoResource.class);
+    final List<UriResource> elements = new ArrayList<UriResource>();
+    final UriResourceProperty element = Mockito.mock(UriResourceProperty.class);
+    Mockito.when(element.getProperty()).thenReturn(propertyWithinCT);
+    elements.add(element);
+    Mockito.when(resource.getUriResourceParts()).thenReturn(elements);
+    
+    final List<SelectItem> selectItems = new ArrayList<SelectItem>();
+    final SelectItem item = new SelectItemImpl().setResourcePath(resource);
+    selectItems.add(item);
+    final SelectOption selectOption = new SelectOptionImpl().setSelectItems(selectItems);
+    
+    final String resultString = IOUtils.toString(serializer
+        .complexCollection(metadata, (EdmComplexType) edmProperty.getType(), property,
+            ComplexSerializerOptions.with()
+                .contextURL(ContextURL.with()
+                    .entitySet(edmEntitySet).keyPath("1")
+                    .navOrPropertyPath("CollPropertyComp")
+                    .build()).select(selectOption)
+                .build()).getContent());
+    Assert.assertEquals("{\"@odata.context\":\"$metadata#ESKeyNav(1)/CollPropertyComp\","
+        + "\"@odata.metadataEtag\":\"W/\\\"metadataETag\\\"\","
+        + "\"value\":[{\"PropertyInt16\":1},{\"PropertyInt16\":2},{\"PropertyInt16\":3}]}",
+        resultString);
+  }
+
+  @Test
+  public void complexCollectionPropertyWithSelectNoMetadata() throws Exception {
+    final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESKeyNav");
+    final EdmProperty edmProperty = (EdmProperty) edmEntitySet.getEntityType().getProperty("CollPropertyComp");
+    final Property property = data.readAll(edmEntitySet).getEntities().get(0).getProperty(edmProperty.getName());
+    
+    final EdmComplexType complexType = metadata.getEdm().getComplexType(
+        new FullQualifiedName("olingo.odata.test1", "CTPrimComp"));
+    final EdmProperty propertyWithinCT = (EdmProperty) complexType.getProperty("PropertyInt16"); 
+    
+    final UriInfoResource resource = Mockito.mock(UriInfoResource.class);
+    final List<UriResource> elements = new ArrayList<UriResource>();
+    final UriResourceProperty element = Mockito.mock(UriResourceProperty.class);
+    Mockito.when(element.getProperty()).thenReturn(propertyWithinCT);
+    elements.add(element);
+    Mockito.when(resource.getUriResourceParts()).thenReturn(elements);
+    
+    final List<SelectItem> selectItems = new ArrayList<SelectItem>();
+    final SelectItem item = new SelectItemImpl().setResourcePath(resource);
+    selectItems.add(item);
+    final SelectOption selectOption = new SelectOptionImpl().setSelectItems(selectItems);
+    
+    final String resultString = IOUtils.toString(serializerNoMetadata
+        .complexCollection(metadata, (EdmComplexType) edmProperty.getType(), property, ComplexSerializerOptions.with()
+            .contextURL(ContextURL.with()
+                .entitySet(edmEntitySet).keyPath("1")
+                .navOrPropertyPath("CollPropertyComp")
+                .build()).select(selectOption).build()).getContent());
+    Assert.assertEquals("{\"value\":[{\"PropertyInt16\":1},{\"PropertyInt16\":2},{\"PropertyInt16\":3}]}",
+        resultString);
+  }
+
+  @Test
+  public void complexCollectionPropertyWithSelectWithMetadataFull() throws Exception {
+    final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESKeyNav");
+    final EdmProperty edmProperty = (EdmProperty) edmEntitySet.getEntityType().getProperty("CollPropertyComp");
+    
+    final EdmComplexType complexType = metadata.getEdm().getComplexType(
+        new FullQualifiedName("olingo.odata.test1", "CTPrimComp"));
+    final EdmProperty propertyWithinCT = (EdmProperty) complexType.getProperty("PropertyInt16"); 
+    
+    final UriInfoResource resource = Mockito.mock(UriInfoResource.class);
+    final List<UriResource> elements = new ArrayList<UriResource>();
+    final UriResourceProperty element = Mockito.mock(UriResourceProperty.class);
+    Mockito.when(element.getProperty()).thenReturn(propertyWithinCT);
+    elements.add(element);
+    Mockito.when(resource.getUriResourceParts()).thenReturn(elements);
+    
+    final List<SelectItem> selectItems = new ArrayList<SelectItem>();
+    final SelectItem item = new SelectItemImpl().setResourcePath(resource);
+    selectItems.add(item);
+    final SelectOption selectOption = new SelectOptionImpl().setSelectItems(selectItems);
+    
+    final Property property = data.readAll(edmEntitySet).getEntities().get(0).getProperty(edmProperty.getName());
+    final String resultString = IOUtils.toString(serializerFullMetadata
+            .complexCollection(metadata, (EdmComplexType) edmProperty.getType(),
+                property, ComplexSerializerOptions.with()
+                    .contextURL(ContextURL.with().entitySet(edmEntitySet)
+                        .keyPath("1")
+                        .navOrPropertyPath("CollPropertyComp").build())
+                    .select(selectOption)
+                    .build())
+            .getContent());
+    assertTrue(resultString.contains("\"value\":[{\"@odata.type\":\"#olingo.odata.test1.CTPrimComp\","
+        + "\"PropertyInt16@odata.type\":\"#Int16\",\"PropertyInt16\":1},"
+        + "{\"@odata.type\":\"#olingo.odata.test1.CTPrimComp\","
+        + "\"PropertyInt16@odata.type\":\"#Int16\",\"PropertyInt16\":2},"
+        + "{\"@odata.type\":\"#olingo.odata.test1.CTPrimComp\","
+        + "\"PropertyInt16@odata.type\":\"#Int16\",\"PropertyInt16\":3}]"));
   }
 }
