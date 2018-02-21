@@ -89,8 +89,6 @@ import org.apache.olingo.server.api.uri.queryoption.LevelsExpandOption;
 import org.apache.olingo.server.api.uri.queryoption.SelectItem;
 import org.apache.olingo.server.api.uri.queryoption.SelectOption;
 import org.apache.olingo.server.core.serializer.ExpandSelectMock;
-import org.apache.olingo.server.core.uri.queryoption.SelectItemImpl;
-import org.apache.olingo.server.core.uri.queryoption.SelectOptionImpl;
 import org.apache.olingo.server.tecsvc.MetadataETagSupport;
 import org.apache.olingo.server.tecsvc.data.DataProvider;
 import org.apache.olingo.server.tecsvc.provider.EdmTechProvider;
@@ -2598,17 +2596,9 @@ public class ODataJsonSerializerTest {
         new FullQualifiedName("olingo.odata.test1", "CTPrimComp"));
     final EdmProperty propertyWithinCT = (EdmProperty) complexType.getProperty("PropertyInt16"); 
     
-    final UriInfoResource resource = Mockito.mock(UriInfoResource.class);
-    final List<UriResource> elements = new ArrayList<UriResource>();
-    final UriResourceProperty element = Mockito.mock(UriResourceProperty.class);
-    Mockito.when(element.getProperty()).thenReturn(propertyWithinCT);
-    elements.add(element);
-    Mockito.when(resource.getUriResourceParts()).thenReturn(elements);
-    
-    final SelectItem selectItem = Mockito.mock(SelectItem.class);
-    Mockito.when(selectItem.getResourcePath()).thenReturn(resource);
-    final SelectOption selectOption = Mockito.mock(SelectOption.class);
-    Mockito.when(selectOption.getSelectItems()).thenReturn(Arrays.asList(selectItem));
+    final UriInfoResource resource = ExpandSelectMock.mockComplexTypeResource(propertyWithinCT);
+    final SelectItem selectItem = ExpandSelectMock.mockSelectItemForColComplexProperty(resource);
+    final SelectOption selectOption = ExpandSelectMock.mockSelectOption(Arrays.asList(selectItem));
     
     final String resultString = IOUtils.toString(serializer
         .complexCollection(metadata, (EdmComplexType) edmProperty.getType(), property,
@@ -2634,17 +2624,9 @@ public class ODataJsonSerializerTest {
         new FullQualifiedName("olingo.odata.test1", "CTPrimComp"));
     final EdmProperty propertyWithinCT = (EdmProperty) complexType.getProperty("PropertyInt16"); 
     
-    final UriInfoResource resource = Mockito.mock(UriInfoResource.class);
-    final List<UriResource> elements = new ArrayList<UriResource>();
-    final UriResourceProperty element = Mockito.mock(UriResourceProperty.class);
-    Mockito.when(element.getProperty()).thenReturn(propertyWithinCT);
-    elements.add(element);
-    Mockito.when(resource.getUriResourceParts()).thenReturn(elements);
-    
-    final SelectItem selectItem = Mockito.mock(SelectItem.class);
-    Mockito.when(selectItem.getResourcePath()).thenReturn(resource);
-    final SelectOption selectOption = Mockito.mock(SelectOption.class);
-    Mockito.when(selectOption.getSelectItems()).thenReturn(Arrays.asList(selectItem));
+    final UriInfoResource resource = ExpandSelectMock.mockComplexTypeResource(propertyWithinCT);
+    final SelectItem selectItem = ExpandSelectMock.mockSelectItemForColComplexProperty(resource);
+    final SelectOption selectOption = ExpandSelectMock.mockSelectOption(Arrays.asList(selectItem));
     
     final String resultString = IOUtils.toString(serializerNoMetadata
         .complexCollection(metadata, (EdmComplexType) edmProperty.getType(), property, ComplexSerializerOptions.with()
@@ -2665,17 +2647,9 @@ public class ODataJsonSerializerTest {
         new FullQualifiedName("olingo.odata.test1", "CTPrimComp"));
     final EdmProperty propertyWithinCT = (EdmProperty) complexType.getProperty("PropertyInt16"); 
     
-    final UriInfoResource resource = Mockito.mock(UriInfoResource.class);
-    final List<UriResource> elements = new ArrayList<UriResource>();
-    final UriResourceProperty element = Mockito.mock(UriResourceProperty.class);
-    Mockito.when(element.getProperty()).thenReturn(propertyWithinCT);
-    elements.add(element);
-    Mockito.when(resource.getUriResourceParts()).thenReturn(elements);
-    
-    final SelectItem selectItem = Mockito.mock(SelectItem.class);
-    Mockito.when(selectItem.getResourcePath()).thenReturn(resource);
-    final SelectOption selectOption = Mockito.mock(SelectOption.class);
-    Mockito.when(selectOption.getSelectItems()).thenReturn(Arrays.asList(selectItem));
+    final UriInfoResource resource = ExpandSelectMock.mockComplexTypeResource(propertyWithinCT);
+    final SelectItem selectItem = ExpandSelectMock.mockSelectItemForColComplexProperty(resource);
+    final SelectOption selectOption = ExpandSelectMock.mockSelectOption(Arrays.asList(selectItem));
     
     final Property property = data.readAll(edmEntitySet).getEntities().get(0).getProperty(edmProperty.getName());
     final String resultString = IOUtils.toString(serializerFullMetadata
