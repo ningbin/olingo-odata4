@@ -2668,9 +2668,10 @@ public class ODataJsonSerializerTest {
   
   @Test
   public void selectNavigationProperty() throws Exception {
-    final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESTwoPrim");
+    final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESTwoKeyNav");
     final Entity entity = data.readAll(edmEntitySet).getEntities().get(0);
-    final SelectItem selectItem = ExpandSelectMock.mockSelectItem(edmEntitySet, "NavPropertyETAllPrimMany");
+    final SelectItem selectItem = ExpandSelectMock.mockSelectItem(edmEntitySet, 
+        "CollPropertyCompNav", "NavPropertyETTwoKeyNavOne");
     final SelectOption select = ExpandSelectMock.mockSelectOption(Arrays.asList(selectItem));
     InputStream result = serializer.entity(metadata, edmEntitySet.getEntityType(), entity,
         EntitySerializerOptions.with()
@@ -2678,9 +2679,10 @@ public class ODataJsonSerializerTest {
             .select(select)
             .build()).getContent();
     final String resultString = IOUtils.toString(result);
-    final String expectedResult = "{\"@odata.context\":\"$metadata#ESTwoPrim/$entity\","
+    final String expectedResult = "{\"@odata.context\":\"$metadata#ESTwoKeyNav/$entity\","
         + "\"@odata.metadataEtag\":\"W/\\\"metadataETag\\\"\","
-        + "\"@odata.id\":\"ESTwoPrim(32766)\"}";
+        + "\"@odata.id\":\"ESTwoKeyNav(PropertyInt16=1,PropertyString='1')\","
+        + "\"CollPropertyCompNav\":[{}]}";
     Assert.assertEquals(expectedResult, resultString);
   }
 }
