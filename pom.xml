@@ -301,6 +301,48 @@
 
     <pluginManagement>
       <plugins>
+      <plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>findbugs-maven-plugin</artifactId>
+					<version>3.0.0</version>
+					<configuration>
+						<includeFilterFile>http://sonarci.wdf.sap.corp:8080/sonar/profiles/export?format=findbugs&amp;language=java</includeFilterFile>
+						<findbugsXmlOutput>true</findbugsXmlOutput>
+						<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+						<xmlOutput>true</xmlOutput>
+						<encoding>UTF-8</encoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-pmd-plugin</artifactId>
+					<version>3.9.0</version>
+					<configuration>
+						<rulesets>
+							<ruleset>							
+							<![CDATA[http://sonarci.wdf.sap.corp:8080/sonar/api/qualityprofiles/export?format=pmd&language=java]]>
+							</ruleset>
+						</rulesets>
+						<targetJdk>1.7</targetJdk>
+						<failurePriority>2</failurePriority>
+						<aggregate>true</aggregate>
+						<linkXRef>false</linkXRef>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>2.16</version>
+					<configuration>
+						<outputFileFormat>xml</outputFileFormat>
+						<consoleOutput>false</consoleOutput>
+						<enableRSS>false</enableRSS>
+						<linkXRef>false</linkXRef>
+						<configLocation>http://sonarci.wdf.sap.corp:8080/sonar/profiles/export?format=checkstyle&amp;language=java</configLocation>
+						<encoding>UTF-8</encoding>
+						<failOnViolation>true</failOnViolation>
+						<violationSeverity>error</violationSeverity>
+					</configuration>
+				</plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
@@ -638,48 +680,6 @@
               </execution>
             </executions>
           </plugin>
-          <plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>findbugs-maven-plugin</artifactId>
-					<version>3.0.0</version>
-					<configuration>
-						<includeFilterFile>http://sonarci.wdf.sap.corp:8080/sonar/profiles/export?format=findbugs&amp;language=java</includeFilterFile>
-						<findbugsXmlOutput>true</findbugsXmlOutput>
-						<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-						<xmlOutput>true</xmlOutput>
-						<encoding>UTF-8</encoding>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-pmd-plugin</artifactId>
-					<version>3.9.0</version>
-					<configuration>
-						<rulesets>
-							<ruleset>							
-							<![CDATA[http://sonarci.wdf.sap.corp:8080/sonar/api/qualityprofiles/export?format=pmd&language=java]]>
-							</ruleset>
-						</rulesets>
-						<targetJdk>1.7</targetJdk>
-						<failurePriority>2</failurePriority>
-						<aggregate>true</aggregate>
-						<linkXRef>false</linkXRef>
-					</configuration>
-				</plugin>
-				<plugin>
-					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>2.16</version>
-					<configuration>
-						<outputFileFormat>xml</outputFileFormat>
-						<consoleOutput>false</consoleOutput>
-						<enableRSS>false</enableRSS>
-						<linkXRef>false</linkXRef>
-						<configLocation>http://sonarci.wdf.sap.corp:8080/sonar/profiles/export?format=checkstyle&amp;language=java</configLocation>
-						<encoding>UTF-8</encoding>
-						<failOnViolation>true</failOnViolation>
-						<violationSeverity>error</violationSeverity>
-					</configuration>
-				</plugin>
         </plugins>
       </build>
     </profile>
