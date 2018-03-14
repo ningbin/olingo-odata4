@@ -303,8 +303,8 @@
       <plugins>
       <plugin>
 					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>findbugs-maven-plugin</artifactId>
-					<version>3.0.0</version>
+					<artifactId>findbugs-maven-plugin</artifactId> 
+					<version>3.0.5</version>
 					<configuration>
 						<includeFilterFile>http://sonarci.wdf.sap.corp:8080/sonar/profiles/export?format=findbugs&amp;language=java</includeFilterFile>
 						<findbugsXmlOutput>true</findbugsXmlOutput>
