@@ -39,6 +39,7 @@ public final class ContentNegotiator {
   private static final String ATOM = "atom";
   private static final String JSON = "json";
   private static final String XML = "xml";
+  private static final String COLON = ":";
 
   private static final List<ContentType> DEFAULT_SUPPORTED_CONTENT_TYPES =
       Collections.unmodifiableList(Arrays.asList(
@@ -90,16 +91,15 @@ public final class ContentNegotiator {
     List<AcceptCharset> charsets = null;
     if (acceptCharset != null) {
       try {
-        charsets = new ArrayList<AcceptCharset>();
         charsets = AcceptCharset.create(acceptCharset); 
       } catch (UnsupportedCharsetException e) {
         throw new AcceptHeaderContentNegotiatorException(e.getMessage(),
             AcceptHeaderContentNegotiatorException.MessageKeys.UNSUPPORTED_ACCEPT_CHARSET_HEADER_OPTIONS, 
-            e.getMessage().substring(e.getMessage().lastIndexOf(":") + 1));
+            e.getMessage().substring(e.getMessage().lastIndexOf(COLON) + 1));
       } catch (IllegalArgumentException e) {
         throw new ContentNegotiatorException(e.getMessage(),
             ContentNegotiatorException.MessageKeys.UNSUPPORTED_ACCEPT_CHARSET, 
-            e.getMessage().substring(e.getMessage().lastIndexOf(":") + 1));
+            e.getMessage().substring(e.getMessage().lastIndexOf(COLON) + 1));
       }
     }
       

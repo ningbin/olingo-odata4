@@ -27,7 +27,6 @@ import org.apache.olingo.server.api.serializer.SerializerException;
 import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceAction;
 import org.apache.olingo.server.api.uri.UriResourceComplexProperty;
-import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.apache.olingo.server.api.uri.UriResourceFunction;
 import org.apache.olingo.server.api.uri.UriResourceNavigation;
 import org.apache.olingo.server.api.uri.UriResourceProperty;
@@ -75,9 +74,9 @@ public abstract class ExpandSelectHelper {
   /**
    * This method creates selectedPath list checking if the resource has entity type filter,
    * complex type filter, or if resource is navigation property and if it has type filter
-   * @param selectItems
-   * @param propertyName
-   * @return
+   * @param selectItems items in the select clause
+   * @param propertyName propertyName 
+   * @return Set<List<String>> return a list of selected paths
    */
   public static Set<List<String>> getSelectedPathsWithTypeCasts(
       final List<SelectItem> selectItems, final String propertyName) {
@@ -94,10 +93,6 @@ public abstract class ExpandSelectHelper {
         if (resource instanceof UriResourceComplexProperty && 
             ((UriResourceComplexProperty) resource).getComplexTypeFilter() != null) {
           path.add(((UriResourceComplexProperty) resource).getComplexTypeFilter().
-              getFullQualifiedName().getFullQualifiedNameAsString());
-        } else if (resource instanceof UriResourceEntitySet && 
-            ((UriResourceEntitySet) resource).getTypeFilterOnCollection() != null) {
-          path.add(((UriResourceEntitySet) resource).getTypeFilterOnCollection().
               getFullQualifiedName().getFullQualifiedNameAsString());
         }
         extractPathsFromResourceParts(selectedPaths, parts, path);
@@ -174,7 +169,7 @@ public abstract class ExpandSelectHelper {
       final List<UriResource> parts = item.getResourcePath().getUriResourceParts();
       final UriResource resource = parts.get(0);
       if (resource instanceof UriResourceProperty) {
-        if (parts.size() > 0) {
+        if (!parts.isEmpty()) {
           List<String> path = new ArrayList<String>();
           for (final UriResource part : parts.subList(0, parts.size())) {
             if (part instanceof UriResourceProperty) {

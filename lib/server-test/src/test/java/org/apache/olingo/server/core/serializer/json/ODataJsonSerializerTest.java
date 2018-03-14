@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -80,8 +79,6 @@ import org.apache.olingo.server.api.serializer.SerializerException;
 import org.apache.olingo.server.api.serializer.SerializerResult;
 import org.apache.olingo.server.api.uri.UriHelper;
 import org.apache.olingo.server.api.uri.UriInfoResource;
-import org.apache.olingo.server.api.uri.UriResource;
-import org.apache.olingo.server.api.uri.UriResourceProperty;
 import org.apache.olingo.server.api.uri.queryoption.CountOption;
 import org.apache.olingo.server.api.uri.queryoption.ExpandItem;
 import org.apache.olingo.server.api.uri.queryoption.ExpandOption;
@@ -2667,5 +2664,23 @@ public class ODataJsonSerializerTest {
         + "\"PropertyInt16@odata.type\":\"#Int16\",\"PropertyInt16\":2},"
         + "{\"@odata.type\":\"#olingo.odata.test1.CTPrimComp\","
         + "\"PropertyInt16@odata.type\":\"#Int16\",\"PropertyInt16\":3}]"));
+  }
+  
+  @Test
+  public void selectNavigationProperty() throws Exception {
+    final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESTwoPrim");
+    final Entity entity = data.readAll(edmEntitySet).getEntities().get(0);
+    final SelectItem selectItem = ExpandSelectMock.mockSelectItem(edmEntitySet, "NavPropertyETAllPrimMany");
+    final SelectOption select = ExpandSelectMock.mockSelectOption(Arrays.asList(selectItem));
+    InputStream result = serializer.entity(metadata, edmEntitySet.getEntityType(), entity,
+        EntitySerializerOptions.with()
+            .contextURL(ContextURL.with().entitySet(edmEntitySet).suffix(Suffix.ENTITY).build())
+            .select(select)
+            .build()).getContent();
+    final String resultString = IOUtils.toString(result);
+    final String expectedResult = "{\"@odata.context\":\"$metadata#ESTwoPrim/$entity\","
+        + "\"@odata.metadataEtag\":\"W/\\\"metadataETag\\\"\","
+        + "\"@odata.id\":\"ESTwoPrim(32766)\"}";
+    Assert.assertEquals(expectedResult, resultString);
   }
 }
