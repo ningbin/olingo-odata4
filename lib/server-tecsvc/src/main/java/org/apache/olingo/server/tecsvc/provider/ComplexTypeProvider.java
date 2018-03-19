@@ -115,7 +115,13 @@ public class ComplexTypeProvider {
       return new CsdlComplexType()
           .setName("CTTwoPrim")
           .setProperties(Arrays.asList(PropertyProvider.propertyInt16_NotNullable,
-              PropertyProvider.propertyString_NotNullable));
+              PropertyProvider.propertyString_NotNullable))
+          .setNavigationProperties((Arrays.asList(
+              PropertyProvider.collectionNavPropertyETTwoKeyNavOne_ETTwoKeyNav,
+              new CsdlNavigationProperty()
+                  .setName("NavPropertyETMediaOne")
+                  .setType(EntityTypeProvider.nameETMedia)
+              )));
 
     } else if (complexTypeName.equals(nameCTCompNav)) {
       return new CsdlComplexType()

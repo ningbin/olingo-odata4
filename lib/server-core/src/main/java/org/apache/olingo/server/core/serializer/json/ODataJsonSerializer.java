@@ -730,6 +730,10 @@ public class ODataJsonSerializer implements ODataSerializer {
         }          
         writeComplexValue(metadata, resolvedType, property.asComplex().getValue(), selectedPaths,
              json);
+        if (!property.isNull() && property.isComplex()) {
+          writeNavigationProperties(metadata, type, property.asComplex(),
+              null, null, null, property.getName(), json);
+        }
         json.writeEndObject();
   }
 

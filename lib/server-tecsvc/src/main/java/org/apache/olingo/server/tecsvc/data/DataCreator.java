@@ -110,8 +110,23 @@ public class DataCreator {
     linkESPeople(data);
     linkESKeyNavCont(data);
     linkETBaseCont(data);
-    
+    linkPropCompInESCompMixPrimCollComp(data);
   }
+  
+  private void linkPropCompInESCompMixPrimCollComp(Map<String, EntityCollection> data) {
+    EntityCollection collection = data.get("ESCompMixPrimCollComp");
+    Entity entity = collection.getEntities().get(0);
+    ComplexValue complexValue = entity.getProperties().get(1).asComplex();
+    ComplexValue innerComplexValue = complexValue.getValue().get(2).asComplex();
+    final List<Entity> esTwoKeyNavTargets = data.get("ESTwoKeyNav").getEntities();
+    Link link = new Link();
+    link.setRel(Constants.NS_NAVIGATION_LINK_REL + "NavPropertyETTwoKeyNavOne");
+    link.setType(Constants.ENTITY_NAVIGATION_LINK_TYPE);
+    link.setTitle("NavPropertyETTwoKeyNavOne");
+    link.setHref(esTwoKeyNavTargets.get(1).getId().toASCIIString());
+    innerComplexValue.getNavigationLinks().add(link);
+    link.setInlineEntity(esTwoKeyNavTargets.get(1));
+   }
   
   private EntityCollection createESDelta(final Edm edm, final OData odata) {
     
