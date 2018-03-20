@@ -895,7 +895,7 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
       throws ODataLibraryException {
 
     ContextURL contextUrl = isODataMetadataNone(requestedFormat) ? null :
-        getContextUrl(request.getRawODataPath(), edmEntitySet, edmEntityType, true, expand, null, isContNav);
+        getContextUrl(request.getRawODataPath(), edmEntitySet, edmEntityType, true, expand, select, isContNav);
     return odata.createSerializer(requestedFormat).entity(
         serviceMetadata,
         edmEntityType,
