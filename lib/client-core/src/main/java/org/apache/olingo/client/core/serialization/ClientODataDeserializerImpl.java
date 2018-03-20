@@ -156,7 +156,7 @@ public class ClientODataDeserializerImpl implements ClientODataDeserializer {
 	                "http://xml.org/sax/features/namespaces", true);
 		dbFactory.setFeature(
 	                "http://apache.org/xml/features/validation/schema",
-	                true);
+	                false);
 		dbFactory.setFeature(
 	                "http://apache.org/xml/features/validation/schema-full-checking",
 	                true);
@@ -172,8 +172,7 @@ public class ClientODataDeserializerImpl implements ClientODataDeserializer {
 		dbFactory.setFeature(
 	                "http://javax.xml.XMLConstants/feature/secure-processing",
 	                true);
-		dbFactory.setValidating(true);
-
+		
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		Document doc = dBuilder.parse(inputStream);
 		doc.getDocumentElement().normalize();
