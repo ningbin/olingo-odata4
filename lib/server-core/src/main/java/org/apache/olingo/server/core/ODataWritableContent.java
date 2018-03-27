@@ -23,7 +23,7 @@ import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 
-import org.apache.olingo.commons.api.data.EntityIterator;
+import org.apache.olingo.commons.api.data.AbstractEntityCollection;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.ODataContent;
@@ -50,24 +50,25 @@ public class ODataWritableContent implements ODataContent {
   private StreamContent streamContent;
 
   private static abstract class StreamContent {
-    protected EntityIterator iterator;
+    protected AbstractEntityCollection entitySet;
     protected ServiceMetadata metadata;
     protected EdmEntityType entityType;
     protected EntityCollectionSerializerOptions options;
 
-    public StreamContent(EntityIterator iterator, EdmEntityType entityType, ServiceMetadata metadata,
+    public StreamContent(AbstractEntityCollection iterator, EdmEntityType entityType, ServiceMetadata metadata,
         EntityCollectionSerializerOptions options) {
-      this.iterator = iterator;
+      this.entitySet = iterator;
       this.entityType = entityType;
       this.metadata = metadata;
       this.options = options;
     }
 
-    protected abstract void writeEntity(EntityIterator entity, OutputStream outputStream) throws SerializerException;
+    protected abstract void writeEntity(AbstractEntityCollection entity, OutputStream outputStream) 
+        throws SerializerException;
 
     public void write(OutputStream out) {
       try {
-        writeEntity(iterator, out);
+        writeEntity(entitySet, out);
       } catch (SerializerException e) {
         final ODataContentWriteErrorCallback errorCallback = options.getODataContentWriteErrorCallback();
         if (errorCallback != null) {
@@ -81,7 +82,7 @@ public class ODataWritableContent implements ODataContent {
   private static class StreamContentForJson extends StreamContent {
     private ODataJsonSerializer jsonSerializer;
 
-    public StreamContentForJson(EntityIterator iterator, EdmEntityType entityType,
+    public StreamContentForJson(AbstractEntityCollection iterator, EdmEntityType entityType,
         ODataJsonSerializer jsonSerializer, ServiceMetadata metadata,
         EntityCollectionSerializerOptions options) {
       super(iterator, entityType, metadata, options);
@@ -89,7 +90,7 @@ public class ODataWritableContent implements ODataContent {
       this.jsonSerializer = jsonSerializer;
     }
 
-    protected void writeEntity(EntityIterator entity, OutputStream outputStream) throws SerializerException {
+    protected void writeEntity(AbstractEntityCollection entity, OutputStream outputStream) throws SerializerException {
       try {
         jsonSerializer.entityCollectionIntoStream(metadata, entityType, entity, options, outputStream);
         outputStream.flush();
@@ -113,10 +114,10 @@ public class ODataWritableContent implements ODataContent {
     this.streamContent = streamContent;
   }
 
-  public static ODataWritableContentBuilder with(EntityIterator iterator, EdmEntityType entityType,
+  public static ODataWritableContentBuilder with(AbstractEntityCollection entitySet, EdmEntityType entityType,
       ODataSerializer serializer, ServiceMetadata metadata,
       EntityCollectionSerializerOptions options) {
-    return new ODataWritableContentBuilder(iterator, entityType, serializer, metadata, options);
+    return new ODataWritableContentBuilder(entitySet, entityType, serializer, metadata, options);
   }
 
   public static class WriteErrorContext implements ODataContentWriteErrorContext {
@@ -139,12 +140,12 @@ public class ODataWritableContent implements ODataContent {
 
   public static class ODataWritableContentBuilder {
     private ODataSerializer serializer;
-    private EntityIterator entities;
+    private AbstractEntityCollection entities;
     private ServiceMetadata metadata;
     private EdmEntityType entityType;
     private EntityCollectionSerializerOptions options;
 
-    public ODataWritableContentBuilder(EntityIterator entities, EdmEntityType entityType,
+    public ODataWritableContentBuilder(AbstractEntityCollection entities, EdmEntityType entityType,
         ODataSerializer serializer,
         ServiceMetadata metadata, EntityCollectionSerializerOptions options) {
       this.entities = entities;

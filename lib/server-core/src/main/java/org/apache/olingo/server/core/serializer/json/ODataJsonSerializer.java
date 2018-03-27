@@ -33,7 +33,6 @@ import org.apache.olingo.commons.api.data.AbstractEntityCollection;
 import org.apache.olingo.commons.api.data.ComplexValue;
 import org.apache.olingo.commons.api.data.ContextURL;
 import org.apache.olingo.commons.api.data.Entity;
-import org.apache.olingo.commons.api.data.EntityIterator;
 import org.apache.olingo.commons.api.data.Link;
 import org.apache.olingo.commons.api.data.Linked;
 import org.apache.olingo.commons.api.data.Operation;
@@ -78,7 +77,6 @@ import org.apache.olingo.server.api.uri.queryoption.CountOption;
 import org.apache.olingo.server.api.uri.queryoption.ExpandItem;
 import org.apache.olingo.server.api.uri.queryoption.ExpandOption;
 import org.apache.olingo.server.api.uri.queryoption.LevelsExpandOption;
-import org.apache.olingo.server.api.uri.queryoption.SelectItem;
 import org.apache.olingo.server.api.uri.queryoption.SelectOption;
 import org.apache.olingo.server.core.ODataWritableContent;
 import org.apache.olingo.server.core.serializer.SerializerResultImpl;
@@ -219,13 +217,13 @@ public class ODataJsonSerializer implements ODataSerializer {
 
   @Override
   public SerializerStreamResult entityCollectionStreamed(ServiceMetadata metadata, EdmEntityType entityType,
-      EntityIterator entities, EntityCollectionSerializerOptions options) throws SerializerException {
+      AbstractEntityCollection entities, EntityCollectionSerializerOptions options) throws SerializerException {
 
     return ODataWritableContent.with(entities, entityType, this, metadata, options).build();
   }
 
   public void entityCollectionIntoStream(final ServiceMetadata metadata,
-      final EdmEntityType entityType, final EntityIterator entitySet,
+      final EdmEntityType entityType, final AbstractEntityCollection entitySet,
       final EntityCollectionSerializerOptions options, final OutputStream outputStream)
       throws SerializerException {
 
@@ -294,7 +292,7 @@ public class ODataJsonSerializer implements ODataSerializer {
     }
   }
 
-  ContextURL checkContextURL(final ContextURL contextURL) throws SerializerException {
+  protected ContextURL checkContextURL(final ContextURL contextURL) throws SerializerException {
     if (isODataMetadataNone) {
       return null;
     } else if (contextURL == null) {
@@ -329,7 +327,7 @@ public class ODataJsonSerializer implements ODataSerializer {
    * @param name 
    * @return ascii representation of the entity id
    */
-  private String getEntityId(Entity entity, EdmEntityType entityType, String name) throws SerializerException {
+  protected String getEntityId(Entity entity, EdmEntityType entityType, String name) throws SerializerException {
     if(entity != null && entity.getId() == null) {
       if(entityType == null || entityType.getKeyPredicateNames() == null 
           || name == null) {
@@ -1240,13 +1238,13 @@ public class ODataJsonSerializer implements ODataSerializer {
 
   }
 
-  void writeContextURL(final ContextURL contextURL, final JsonGenerator json) throws IOException {
+  protected void writeContextURL(final ContextURL contextURL, final JsonGenerator json) throws IOException {
     if (!isODataMetadataNone && contextURL != null) {
       json.writeStringField(Constants.JSON_CONTEXT, ContextURLBuilder.create(contextURL).toASCIIString());
     }
   }
 
-  void writeMetadataETag(final ServiceMetadata metadata, final JsonGenerator json) throws IOException {
+  protected void writeMetadataETag(final ServiceMetadata metadata, final JsonGenerator json) throws IOException {
     if (!isODataMetadataNone
         && metadata != null
         && metadata.getServiceMetadataETagSupport() != null
@@ -1256,7 +1254,7 @@ public class ODataJsonSerializer implements ODataSerializer {
     }
   }
 
-  void writeInlineCount(final String propertyName, final Integer count, final JsonGenerator json)
+  protected void writeInlineCount(final String propertyName, final Integer count, final JsonGenerator json)
       throws IOException {
     if (count != null) {
       if (isIEEE754Compatible) {
@@ -1267,7 +1265,7 @@ public class ODataJsonSerializer implements ODataSerializer {
     }
   }
 
-  void writeNextLink(final AbstractEntityCollection entitySet, final JsonGenerator json)
+  protected void writeNextLink(final AbstractEntityCollection entitySet, final JsonGenerator json)
       throws IOException {
     if (entitySet.getNext() != null) {
       json.writeStringField(Constants.JSON_NEXT_LINK, entitySet.getNext().toASCIIString());

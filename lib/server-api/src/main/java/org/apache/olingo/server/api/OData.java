@@ -194,4 +194,14 @@ public abstract class OData {
    */
   public abstract EdmDeltaSerializer createEdmDeltaSerializer(final ContentType contentType,
       final List<String> versions) throws SerializerException;
+
+  /**
+   * Creates a new serializer object for rendering content in the specified format.
+   * Serializer is dedicated for invoking observables for streaming
+   * Serializers are used in Processor implementations.
+   *
+   * @param contentType any format supported by Olingo (XML, JSON ...)
+   */
+  public abstract ODataSerializer createRxSerializer(ContentType contentType) throws SerializerException;
+
 }

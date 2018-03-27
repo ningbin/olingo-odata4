@@ -67,6 +67,11 @@
       <artifactId>xmlunit</artifactId>
       <scope>test</scope>
     </dependency>
+	<dependency>
+		<groupId>org.apache.olingo</groupId>
+		<artifactId>odata-server-rx</artifactId>
+		<version>${project.version}</version>
+	</dependency>
   </dependencies>
 
   <build>

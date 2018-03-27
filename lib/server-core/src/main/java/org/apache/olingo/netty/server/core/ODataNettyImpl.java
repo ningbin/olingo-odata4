@@ -155,4 +155,8 @@ public class ODataNettyImpl extends ODataNetty {
     return odata.createEdmDeltaSerializer(contentType, versions);
   }
   
+  @Override
+  public ODataSerializer createRxSerializer(ContentType contentType) throws SerializerException {
+    return odata.createRxSerializer(contentType);
+  }
 }

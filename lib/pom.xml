@@ -44,6 +44,7 @@
     <module>server-core-ext</module>
     <module>server-tecsvc</module>
     <module>server-test</module>
+    <module>server-rx</module>
   </modules>
 
   <properties>

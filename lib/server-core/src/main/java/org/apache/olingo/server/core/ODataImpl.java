@@ -18,6 +18,8 @@
  */
 package org.apache.olingo.server.core;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 
@@ -202,5 +204,34 @@ public class ODataImpl extends OData {
     // TODO: What should we do with invalid formats?
     // TODO: Support more debug formats
     return new DebugResponseHelperImpl(debugFormat);
+  }
+
+  @Override
+  public ODataSerializer createRxSerializer(ContentType contentType) throws SerializerException {
+    ODataSerializer serializer = null;
+    final String serJson = "org.apache.olingo.server.rx.serializer.json.ODataJsonRxSerializer";
+    Class<?> clazz;
+    try {
+      if (contentType.isCompatible(ContentType.APPLICATION_JSON)) {
+        final String metadata = contentType.getParameter(ContentType.PARAMETER_ODATA_METADATA);
+        if (metadata == null
+            || ContentType.VALUE_ODATA_METADATA_MINIMAL.equalsIgnoreCase(metadata)
+            || ContentType.VALUE_ODATA_METADATA_NONE.equalsIgnoreCase(metadata)
+            || ContentType.VALUE_ODATA_METADATA_FULL.equalsIgnoreCase(metadata)) {
+          clazz = Class.forName(serJson);
+          Constructor<?> cons = clazz.getConstructor(ContentType.class);
+          serializer = (ODataSerializer) cons.newInstance(contentType);
+        }
+      } 
+     }catch (final Exception e) {
+       throw new SerializerException(e.getMessage() + contentType.toContentTypeString(),
+           SerializerException.MessageKeys.UNSUPPORTED_FORMAT, contentType.toContentTypeString());
+     }
+    if (serializer == null) {
+      throw new SerializerException("Unsupported format: " + contentType.toContentTypeString(),
+          SerializerException.MessageKeys.UNSUPPORTED_FORMAT, contentType.toContentTypeString());
+    } else {
+      return serializer;
+    }
   }
 }
