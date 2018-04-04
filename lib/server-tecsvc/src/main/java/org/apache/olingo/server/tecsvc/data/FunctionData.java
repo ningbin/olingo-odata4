@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.olingo.commons.api.data.ComplexValue;
 import org.apache.olingo.commons.api.data.Entity;
@@ -155,6 +156,7 @@ public class FunctionData {
           complexValue.getValue().add(new Property(null, "PropertyInt16", ValueType.PRIMITIVE, counter++));
           complexValue.getValue().add(new Property(null, "PropertyString", ValueType.PRIMITIVE, 
               name + " string value: " + parameterString));
+		  complexValue.setId(URI.create(""));
           complexValues.add(complexValue);
         }
         return new Property(null, name, ValueType.COLLECTION_COMPLEX, complexValues);
