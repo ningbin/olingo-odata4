@@ -35,6 +35,7 @@ import org.apache.olingo.server.api.uri.UriResourceAction;
 import org.apache.olingo.server.api.uri.UriResourceCount;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.apache.olingo.server.api.uri.UriResourceFunction;
+import org.apache.olingo.server.api.uri.UriResourceNavigation;
 import org.apache.olingo.server.api.uri.UriResourcePartTyped;
 import org.apache.olingo.server.api.uri.UriResourceRef;
 import org.apache.olingo.server.api.uri.UriResourceValue;
@@ -82,13 +83,22 @@ public class Parser {
   private static final String NULL = "null";
   private static final String ENTITY = "$entity";
   private static final String HTTP = "http";
+  private static final String REST = "REST";
 
   private final Edm edm;
   private final OData odata;
+  private String protocolType;
 
   public Parser(final Edm edm, final OData odata) {
     this.edm = edm;
     this.odata = odata;
+    this.protocolType = null;
+  }
+  
+  public Parser(final Edm edm, final OData odata,final String protocolType) {
+	    this.edm = edm;
+	    this.odata = odata;
+	    this.protocolType = protocolType;
   }
 
   public UriInfo parseUri(final String path, final String query, final String fragment, String baseUri)
@@ -218,7 +228,12 @@ public class Parser {
 
     } else {
       contextUriInfo.setKind(UriInfoKind.resource);
-      final ResourcePathParser resourcePathParser = new ResourcePathParser(edm, contextUriInfo.getAliasMap());
+      final ResourcePathParser resourcePathParser;
+      if (this.protocolType != null && this.protocolType.equalsIgnoreCase(REST)) {
+    	  resourcePathParser = new ResourcePathParser(edm, contextUriInfo.getAliasMap(), this.protocolType);
+      } else {
+    	  resourcePathParser = new ResourcePathParser(edm, contextUriInfo.getAliasMap());
+      }
       int count = 0;
       UriResource lastSegment = null;
       for (final String pathSegment : pathSegmentsDecoded) {
@@ -253,7 +268,20 @@ public class Parser {
             } else {
               lastSegment = segment;
             }
-            contextUriInfo.addResourcePart(segment);
+            if (this.protocolType != null && this.protocolType.equalsIgnoreCase(REST)) {
+            	if (count == 1 && pathSegmentsDecoded.size()>1 && segment instanceof UriResourceEntitySet) {
+              	  continue;
+                } else if (pathSegmentsDecoded.size() > 1 && segment instanceof UriResourceNavigation && 
+                		((UriResourceNavigation)segment).getKeyPredicates().isEmpty() &&
+                		count != pathSegmentsDecoded.size()) {
+                	continue;
+                } else {
+                	contextUriInfo.addResourcePart(segment);	
+                } 
+            } else {
+            	contextUriInfo.addResourcePart(segment);
+            }
+            
           }
         }
       }

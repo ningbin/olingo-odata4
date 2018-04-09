@@ -61,6 +61,7 @@ import org.apache.olingo.server.core.uri.validator.UriValidationException;
 public class ParserHelper {
 
   private static final OData odata = new ODataImpl();
+  private static final String REST = "REST";
 
   protected static final Map<TokenKind, EdmPrimitiveTypeKind> tokenToPrimitiveType;
   static {
@@ -250,7 +251,7 @@ public class ParserHelper {
       if (kind == null
           || !((isCollection || kind == EdmTypeKind.COMPLEX || kind == EdmTypeKind.ENTITY ?
           aliasTokenizer.next(TokenKind.jsonArrayOrObject) :
-          nextPrimitiveTypeValue(aliasTokenizer, (EdmPrimitiveType) type, isNullable))
+          nextPrimitiveTypeValue(aliasTokenizer, (EdmPrimitiveType) type, isNullable, null))
           && aliasTokenizer.next(TokenKind.EOF))) {
         // The alias value is not an allowed literal value, so parse it again as expression.
         aliasTokenizer = new UriTokenizer(alias.getText());
@@ -274,17 +275,26 @@ public class ParserHelper {
 
   protected static List<UriParameter> parseNavigationKeyPredicate(UriTokenizer tokenizer,
       final EdmNavigationProperty navigationProperty,
-      final Edm edm, final EdmType referringType, final Map<String, AliasQueryOption> aliases)
+      final Edm edm, final EdmType referringType, final Map<String, AliasQueryOption> aliases, String protocolType)
       throws UriParserException, UriValidationException {
-    if (tokenizer.next(TokenKind.OPEN)) {
-      if (navigationProperty.isCollection()) {
-        return parseKeyPredicate(tokenizer, navigationProperty.getType(), navigationProperty.getPartner(),
-            edm, referringType, aliases);
-      } else {
-        throw new UriParserSemanticException("A key is not allowed on non-collection navigation properties.",
-            UriParserSemanticException.MessageKeys.KEY_NOT_ALLOWED);
-      }
-    }
+	  if (protocolType != null && protocolType.equalsIgnoreCase(REST)) {
+		  if (tokenizer.next(TokenKind.OPEN)) {
+			  throw new UriParserSyntaxException("Unexpected start of resource-path segment.",
+	    	          UriParserSyntaxException.MessageKeys.SYNTAX);
+		  }
+	  } else {
+		  if (tokenizer.next(TokenKind.OPEN)) {
+		      if (navigationProperty.isCollection()) {
+		        return parseKeyPredicate(tokenizer, navigationProperty.getType(), 
+		        		navigationProperty.getPartner(),edm, referringType, aliases);
+		      } else {
+		        throw new UriParserSemanticException("A key is not allowed on "
+		        		+ "non-collection navigation properties.",
+		            UriParserSemanticException.MessageKeys.KEY_NOT_ALLOWED);
+		      }
+		    }
+	  }
+    
     return null;
   }
 
@@ -325,7 +335,7 @@ public class ParserHelper {
     }
     if (keys.isEmpty()) {
       if (tokenizer.next(TokenKind.ODataIdentifier)) {
-        keys.addAll(compoundKey(tokenizer, edmEntityType, edm, referringType, aliases));
+        keys.addAll(compoundKey(tokenizer, edmEntityType, edm, referringType, aliases, null));
       } else {
         throw new UriParserSemanticException("The key value is not valid.",
             UriParserSemanticException.MessageKeys.INVALID_KEY_VALUE, "");
@@ -365,7 +375,7 @@ public class ParserHelper {
     final EdmProperty edmProperty = edmKeyPropertyRef == null ? null : edmKeyPropertyRef.getProperty();
     if (nextPrimitiveTypeValue(tokenizer,
         edmProperty == null ? null : (EdmPrimitiveType) edmProperty.getType(),
-        edmProperty == null ? false : edmProperty.isNullable())) {
+        edmProperty == null ? false : edmProperty.isNullable(), null)) {
       final String literalValue = tokenizer.getText();
       ParserHelper.requireNext(tokenizer, TokenKind.CLOSE);
       return createUriParameter(edmProperty, edmKeyPropertyRef.getName(), literalValue, edm, referringType, aliases);
@@ -374,8 +384,8 @@ public class ParserHelper {
     }
   }
 
-  private static List<UriParameter> compoundKey(UriTokenizer tokenizer, final EdmEntityType edmEntityType,
-      final Edm edm, final EdmType referringType, final Map<String, AliasQueryOption> aliases)
+  protected static List<UriParameter> compoundKey(UriTokenizer tokenizer, final EdmEntityType edmEntityType,
+      final Edm edm, final EdmType referringType, final Map<String, AliasQueryOption> aliases, String protocolType)
       throws UriParserException, UriValidationException {
 
     List<UriParameter> parameters = new ArrayList<UriParameter>();
@@ -401,21 +411,26 @@ public class ParserHelper {
         throw new UriValidationException("Unknown key property " + keyPredicateName,
             UriValidationException.MessageKeys.INVALID_KEY_PROPERTY, keyPredicateName);
       }
-      parameters.add(keyValuePair(tokenizer, keyPredicateName, edmEntityType, edm, referringType, aliases));
+      parameters.add(keyValuePair(tokenizer, keyPredicateName, edmEntityType, 
+    		  edm, referringType, aliases, protocolType));
       parameterNames.add(keyPredicateName);
       hasComma = tokenizer.next(TokenKind.COMMA);
       if (hasComma) {
         ParserHelper.requireNext(tokenizer, TokenKind.ODataIdentifier);
       }
     } while (hasComma);
+    if (protocolType != null && protocolType.equalsIgnoreCase(REST)) {
+    ParserHelper.requireNext(tokenizer, TokenKind.EOF);
+    } else {
     ParserHelper.requireNext(tokenizer, TokenKind.CLOSE);
+    }
 
     return parameters;
   }
 
   private static UriParameter keyValuePair(UriTokenizer tokenizer,
       final String keyPredicateName, final EdmEntityType edmEntityType,
-      final Edm edm, final EdmType referringType, final Map<String, AliasQueryOption> aliases)
+      final Edm edm, final EdmType referringType, final Map<String, AliasQueryOption> aliases, String protocolType)
       throws UriParserException, UriValidationException {
     final EdmKeyPropertyRef keyPropertyRef = edmEntityType.getKeyPropertyRef(keyPredicateName);
     final EdmProperty edmProperty = keyPropertyRef == null ? null : keyPropertyRef.getProperty();
@@ -427,15 +442,28 @@ public class ParserHelper {
     if (tokenizer.next(TokenKind.COMMA) || tokenizer.next(TokenKind.CLOSE) || tokenizer.next(TokenKind.EOF)) {
       throw new UriParserSyntaxException("Key value expected.", UriParserSyntaxException.MessageKeys.SYNTAX);
     }
-    if (nextPrimitiveTypeValue(tokenizer, (EdmPrimitiveType) edmProperty.getType(), edmProperty.isNullable())) {
-      return createUriParameter(edmProperty, keyPredicateName, tokenizer.getText(), edm, referringType, aliases);
+    if (nextPrimitiveTypeValue(tokenizer, (EdmPrimitiveType) edmProperty.getType(), 
+    		edmProperty.isNullable(), protocolType)) {
+    	if (protocolType != null && protocolType.equalsIgnoreCase(REST)) {
+    		if (odata.createPrimitiveTypeInstance(EdmPrimitiveTypeKind.String).
+    				equals((EdmPrimitiveType) edmProperty.getType())) {
+    			return createUriParameter(edmProperty, keyPredicateName, "'"+tokenizer.getText()+"'", edm, 
+    					referringType, aliases);
+    		} else {
+    			return createUriParameter(edmProperty, keyPredicateName, tokenizer.getText(), 
+    					edm, referringType, aliases);
+    		}
+    	} else {
+    		return createUriParameter(edmProperty, keyPredicateName, tokenizer.getText(), 
+    				edm, referringType, aliases);
+    	}
     } else {
       throw new UriParserSemanticException(keyPredicateName + " has not a valid  key value.",
           UriParserSemanticException.MessageKeys.INVALID_KEY_VALUE, keyPredicateName);
     }
   }
 
-  private static UriParameter createUriParameter(final EdmProperty edmProperty, final String parameterName,
+  protected static UriParameter createUriParameter(final EdmProperty edmProperty, final String parameterName,
       final String literalValue, final Edm edm, final EdmType referringType,
       final Map<String, AliasQueryOption> aliases) throws UriParserException, UriValidationException {
     final AliasQueryOption alias = literalValue.startsWith("@") ?
@@ -475,8 +503,8 @@ public class ParserHelper {
     }
   }
 
-  private static boolean nextPrimitiveTypeValue(UriTokenizer tokenizer,
-      final EdmPrimitiveType primitiveType, final boolean nullable) {
+  protected static boolean nextPrimitiveTypeValue(UriTokenizer tokenizer,
+      final EdmPrimitiveType primitiveType, final boolean nullable, String protocolType) {
     final EdmPrimitiveType type = primitiveType instanceof EdmTypeDefinition ?
         ((EdmTypeDefinition) primitiveType).getUnderlyingType() :
         primitiveType;
@@ -489,7 +517,12 @@ public class ParserHelper {
     } else if (odata.createPrimitiveTypeInstance(EdmPrimitiveTypeKind.Boolean).equals(type)) {
       return tokenizer.next(TokenKind.BooleanValue);
     } else if (odata.createPrimitiveTypeInstance(EdmPrimitiveTypeKind.String).equals(type)) {
-      return tokenizer.next(TokenKind.StringValue);
+    	if (protocolType != null && protocolType.equalsIgnoreCase(REST)) {
+    		return tokenizer.next(TokenKind.ODataIdentifier);	
+    	} else {
+    		return tokenizer.next(TokenKind.StringValue);
+    	}
+      
     } else if (odata.createPrimitiveTypeInstance(EdmPrimitiveTypeKind.SByte).equals(type)
         || odata.createPrimitiveTypeInstance(EdmPrimitiveTypeKind.Byte).equals(type)
         || odata.createPrimitiveTypeInstance(EdmPrimitiveTypeKind.Int16).equals(type)
