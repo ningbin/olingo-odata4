@@ -119,6 +119,48 @@ public class ODataJsonRxSerializerTest {
   }
   
   @Test
+  public void entityCollectionOnlyReference() throws Exception {
+    final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESAllPrim");
+    EntityObservable streamCollection = new EntityObservable(){
+      EntityCollection entityCollection = data.readAll(edmEntitySet);
+      Observable<Entity> observable = Observable.fromIterable(entityCollection);
+      @Override
+      public Observable<Entity> getObservable() {
+       return observable;
+      };
+      private URI next = entityCollection.getNext();
+      private Integer count = entityCollection.getCount();
+      @Override
+      public List<Operation> getOperations() {
+        return entityCollection.getOperations();
+      } 
+      
+      public URI getNext() {
+        return next;
+      }
+      
+      public Integer getCount() {
+        return count;
+      }
+    };
+    CountOption countOption = Mockito.mock(CountOption.class);
+    Mockito.when(countOption.getValue()).thenReturn(true);
+
+    ODataContent result = serializer.entityCollectionStreamed(
+        metadata, edmEntitySet.getEntityType(), streamCollection,
+        EntityCollectionSerializerOptions.with().writeOnlyReferences(true)
+            .contextURL(ContextURL.with().entitySet(edmEntitySet).build())
+            .build()).getODataContent();
+    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    result.write(bout);
+    final String resultString = new String(bout.toByteArray(), "UTF-8");
+
+    Assert.assertThat(resultString, CoreMatchers.startsWith("{\"@odata.context\":\"$metadata#ESAllPrim\","
+        + "\"@odata.metadataEtag\":\"W/\\\"metadataETag\\\"\",\"value\":[{\"@odata.id\":\"ESAllPrim(32767)\"},"
+        + "{\"@odata.id\":\"ESAllPrim(-32768)\"},{\"@odata.id\":\"ESAllPrim(0)\"}]}"));
+  }
+  
+  @Test
   public void entityCollectionStreamedNoMetadata() throws Exception {
     final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESAllPrim");
     EntityObservable streamCollection = new EntityObservable(){
