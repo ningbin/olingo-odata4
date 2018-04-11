@@ -29,7 +29,6 @@ import org.apache.olingo.commons.api.ex.ODataNotSupportedException;
 
 import io.reactivex.Observable;
 
-//import rx.Observable;
 
 /**
  * Data representation as an Observable for a collection of single entities.

@@ -47,6 +47,7 @@ public class ODataJsonRxSerializer extends ODataJsonSerializer {
   }
 
   @SuppressWarnings("unchecked")
+  @Override
   protected void writeEntitySet(final ServiceMetadata metadata, final EdmEntityType entityType,
       final AbstractEntityCollection entitySet, final ExpandOption expand, Integer toDepth, final SelectOption select,
       final boolean onlyReference, final Set<String> ancestors, String name, final JsonGenerator json)
@@ -82,14 +83,21 @@ public class ODataJsonRxSerializer extends ODataJsonSerializer {
       }
 
       @Override
-      public void onSubscribe(Disposable d) {}
+      public void onSubscribe(Disposable d) {
+        //Provides the Observer with the means of cancelling the connection with the Observable.
+        ex.add(new SerializerException("onSubscribe method is not implemented",
+            SerializerException.MessageKeys.NOT_IMPLEMENTED));
+      }
 
       @Override
-      public void onComplete() {}
+      public void onComplete() {
+        //Notifies the Observer that the Observable has finished sending push-based notifications
+        //No task to be performed on Complete
+      }
     });
 
     json.writeEndArray();
-    if (ex.size() > 0) {
+    if (!ex.isEmpty()) {
       throw ex.get(0);
     }
   }
