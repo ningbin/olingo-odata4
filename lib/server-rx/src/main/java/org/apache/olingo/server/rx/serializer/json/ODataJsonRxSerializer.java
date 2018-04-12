@@ -85,8 +85,7 @@ public class ODataJsonRxSerializer extends ODataJsonSerializer {
       @Override
       public void onSubscribe(Disposable d) {
         //Provides the Observer with the means of cancelling the connection with the Observable.
-        ex.add(new SerializerException("onSubscribe method is not implemented",
-            SerializerException.MessageKeys.NOT_IMPLEMENTED));
+       
       }
 
       @Override
