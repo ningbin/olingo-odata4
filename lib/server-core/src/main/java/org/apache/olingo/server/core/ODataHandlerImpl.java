@@ -62,6 +62,7 @@ public class ODataHandlerImpl implements ODataHandler {
   private final ServiceMetadata serviceMetadata;
   private final List<Processor> processors = new LinkedList<Processor>();
   private final ServerCoreDebugger debugger;
+  private static final String PROTOCOLTYPE = "protocolType";
 
   private CustomContentTypeSupport customContentTypeSupport;
   private CustomETagSupport customETagSupport;
@@ -139,8 +140,13 @@ public class ODataHandlerImpl implements ODataHandler {
 
     final int measurementUriParser = debugger.startRuntimeMeasurement("Parser", "parseUri");
     try {
+    if (request.getHeader(PROTOCOLTYPE) != null) {
+    	uriInfo = new Parser(serviceMetadata.getEdm(), odata,request.getHeader(PROTOCOLTYPE))
+    	  .parseUri(request.getRawODataPath(), request.getRawQueryPath(), null, request.getRawBaseUri());
+    } else {
       uriInfo = new Parser(serviceMetadata.getEdm(), odata)
           .parseUri(request.getRawODataPath(), request.getRawQueryPath(), null, request.getRawBaseUri());
+    }
     } catch (final ODataLibraryException e) {
       debugger.stopRuntimeMeasurement(measurementUriParser);
       debugger.stopRuntimeMeasurement(measurementHandle);

@@ -58,6 +58,7 @@ public class ODataHttpHandlerImpl implements ODataHttpHandler {
 
   public static final int COPY_BUFFER_SIZE = 8192;
   private static final String REQUESTMAPPING = "requestMapping";
+  private static final String PROTOCOLTYPE = "protocolType";
 
   private final ODataHandlerImpl handler;
   private final ServerCoreDebugger debugger;
@@ -284,6 +285,10 @@ public class ODataHttpHandlerImpl implements ODataHttpHandler {
       rawODataPath = rawRequestUri.substring(beginIndex);
     } else {
       rawODataPath = httpRequest.getRequestURI();
+    }
+    
+    if(httpRequest.getAttribute(PROTOCOLTYPE)!=null){
+    	odRequest.addHeader(PROTOCOLTYPE,httpRequest.getAttribute(PROTOCOLTYPE).toString());
     }
 
     String rawServiceResolutionUri = null;

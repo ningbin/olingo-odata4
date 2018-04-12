@@ -856,7 +856,7 @@ public class ExpressionParser {
           new UriResourceNavigationPropertyImpl((EdmNavigationProperty) property);
       navigationResource.setKeyPredicates(
           ParserHelper.parseNavigationKeyPredicate(tokenizer, (EdmNavigationProperty) property,
-              edm, referringType, aliases));
+              edm, referringType, aliases, null));
       uriInfo.addResourcePart(navigationResource);
 
       if (navigationResource.isCollection()) {
@@ -909,7 +909,7 @@ public class ExpressionParser {
       if (lastResource instanceof UriResourceNavigation) {
         ((UriResourceNavigationPropertyImpl) lastResource).setKeyPredicates(
               ParserHelper.parseNavigationKeyPredicate(tokenizer,
-                  ((UriResourceNavigationPropertyImpl) lastResource).getProperty(), edm, referringType, aliases));
+                  ((UriResourceNavigationPropertyImpl) lastResource).getProperty(), edm, referringType, aliases, null));
       } else if (lastResource instanceof UriResourceFunction
           && ((UriResourceFunction) lastResource).getType() instanceof EdmEntityType) {
         ((UriResourceFunctionImpl) lastResource).setKeyPredicates(

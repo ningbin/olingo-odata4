@@ -30,13 +30,17 @@ import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.edm.EdmFunction;
 import org.apache.olingo.commons.api.edm.EdmFunctionImport;
+import org.apache.olingo.commons.api.edm.EdmKeyPropertyRef;
 import org.apache.olingo.commons.api.edm.EdmNavigationProperty;
+import org.apache.olingo.commons.api.edm.EdmPrimitiveType;
+import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
 import org.apache.olingo.commons.api.edm.EdmProperty;
 import org.apache.olingo.commons.api.edm.EdmSingleton;
 import org.apache.olingo.commons.api.edm.EdmStructuredType;
 import org.apache.olingo.commons.api.edm.EdmType;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.constants.EdmTypeKind;
+import org.apache.olingo.commons.core.edm.primitivetype.EdmPrimitiveTypeFactory;
 import org.apache.olingo.server.api.uri.UriParameter;
 import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
@@ -65,11 +69,21 @@ public class ResourcePathParser {
   private final EdmEntityContainer edmEntityContainer;
   private final Map<String, AliasQueryOption> aliases;
   private UriTokenizer tokenizer;
+  private UriResource entitySetResource = null;
+  private String protocolType;
+  private static final String REST = "REST";
 
   public ResourcePathParser(final Edm edm, final Map<String, AliasQueryOption> aliases) {
     this.edm = edm;
     this.aliases = aliases;
     edmEntityContainer = edm.getEntityContainer();
+    this.protocolType = null;
+  }
+  public ResourcePathParser(final Edm edm, final Map<String, AliasQueryOption> aliases, final String protocolType) {
+	    this.edm = edm;
+	    this.aliases = aliases;
+	    edmEntityContainer = edm.getEntityContainer();
+	    this.protocolType = protocolType;
   }
 
   public UriResource parsePathSegment(final String pathSegment, UriResource previous)
@@ -89,21 +103,38 @@ public class ResourcePathParser {
       }
 
     } else {
-      if (tokenizer.next(TokenKind.REF)) {
-        return ref(previous);
-      } else if (tokenizer.next(TokenKind.VALUE)) {
-        return value(previous);
-      } else if (tokenizer.next(TokenKind.COUNT)) {
-        return count(previous);
-      } else if (tokenizer.next(TokenKind.QualifiedName)) {
-        return boundOperationOrTypeCast(previous);
+    if (this.protocolType != null && this.protocolType.equalsIgnoreCase(REST)) {
+      if (tokenizer.next(TokenKind.EOF)) {
+    	  throw new UriParserSyntaxException("Unexpected start of resource-path segment.",
+    	            UriParserSyntaxException.MessageKeys.SYNTAX);
       } else if (tokenizer.next(TokenKind.ODataIdentifier)) {
-        return navigationOrProperty(previous);
-      }
-    }
-
+          if (previous instanceof UriResourceEntitySet) {
+          	return entityOrpropertyOrProperties(previous);
+          } else if(previous instanceof UriResourceNavigation) {          		
+          	return navigationOrpropertyOrProperties(previous,pathSegment,false);
+          } else {
+          	throw new UriParserSemanticException("Unexpected start of resource-path segment.",
+            	      UriParserSemanticException.MessageKeys.RESOURCE_NOT_FOUND, tokenizer.getText());
+            }
+       } else { 
+         return primitiveProperty(tokenizer,previous,pathSegment);
+       }
+     } else {
+    	if (tokenizer.next(TokenKind.REF)) {
+            return ref(previous);
+          } else if (tokenizer.next(TokenKind.VALUE)) {
+            return value(previous);
+          } else if (tokenizer.next(TokenKind.COUNT)) {
+            return count(previous);
+          } else if (tokenizer.next(TokenKind.QualifiedName)) {
+            return boundOperationOrTypeCast(previous);
+          } else if (tokenizer.next(TokenKind.ODataIdentifier)) {
+        	  return navigationOrProperty(previous); 
+          }
+     }
+  }
     throw new UriParserSyntaxException("Unexpected start of resource-path segment.",
-        UriParserSyntaxException.MessageKeys.SYNTAX);
+            UriParserSyntaxException.MessageKeys.SYNTAX);
   }
 
   public EdmEntityType parseDollarEntityTypeCast(final String pathSegment) throws UriParserException {
@@ -202,13 +233,21 @@ public class ResourcePathParser {
     if (edmEntitySet != null) {
       final UriResourceEntitySetImpl entitySetResource = new UriResourceEntitySetImpl(edmEntitySet);
 
-      if (tokenizer.next(TokenKind.OPEN)) {
-        final List<UriParameter> keyPredicates =
-            ParserHelper.parseKeyPredicate(tokenizer, entitySetResource.getEntityType(), null, edm, null, aliases);
-        entitySetResource.setKeyPredicates(keyPredicates);
+      if (this.protocolType != null && this.protocolType.equalsIgnoreCase(REST)) {
+    	  if (tokenizer.next(TokenKind.OPEN)) {
+    		  throw new UriParserSyntaxException("Unexpected start of resource-path segment.",
+          	          UriParserSyntaxException.MessageKeys.SYNTAX);
+    	  }
+      } else {
+    	  if (tokenizer.next(TokenKind.OPEN)) {
+              final List<UriParameter> keyPredicates =
+                  ParserHelper.parseKeyPredicate(tokenizer, entitySetResource.getEntityType(), 
+                		  null, edm, null, aliases);
+              entitySetResource.setKeyPredicates(keyPredicates);
+            } 
       }
-
       ParserHelper.requireTokenEnd(tokenizer);
+      this.entitySetResource = entitySetResource;
       return entitySetResource;
     }
 
@@ -276,7 +315,7 @@ public class ResourcePathParser {
           structType.getFullQualifiedName().getFullQualifiedNameAsString(), name);
     }
     List<UriParameter> keyPredicate =
-        ParserHelper.parseNavigationKeyPredicate(tokenizer, navigationProperty, edm, null, aliases);
+        ParserHelper.parseNavigationKeyPredicate(tokenizer, navigationProperty, edm, null, aliases, this.protocolType);
     ParserHelper.requireTokenEnd(tokenizer);
     return new UriResourceNavigationPropertyImpl(navigationProperty)
         .setKeyPredicates(keyPredicate);
@@ -422,5 +461,157 @@ public class ResourcePathParser {
     }
     ParserHelper.requireTokenEnd(tokenizer);
     return resource;
+  }
+  /**
+   * This Method is called when a SimpleKeyProperty with propertyName and propertyValue as 
+   * key value pair/CompoundKeyProperty is followed after the entitySet
+   * If url is of the form 
+   * EntitySet/KeyPropertyName=KeyPropertyValue
+   * EntitySet/KeyPropertyName=KeyPropertyValue,KeyPropertyName1=KeyPropertyValue1
+   */
+  private UriResource entityOrpropertyOrProperties(final UriResource previous) 
+		  throws UriParserException, UriValidationException {
+	  boolean propertyAfterCollection = false;
+	  EdmEntityType edmEntityType = null;
+	  final UriResourceEntitySet entitySetResource = ((UriResourceEntitySet)previous);
+		edmEntityType = entitySetResource.getEntityType();
+		final List<EdmKeyPropertyRef> keyPropertyRefs = edmEntityType.getKeyPropertyRefs();
+		
+		for (EdmKeyPropertyRef keyPropertyRef: keyPropertyRefs) {
+			if(keyPropertyRef.getName().equals(tokenizer.getText())) {
+				propertyAfterCollection = true;
+			}
+		}
+		if (propertyAfterCollection) {
+			List<UriParameter> keys = new ArrayList<UriParameter>();
+			keys.addAll(ParserHelper.compoundKey(tokenizer, edmEntityType, edm, null, 
+					aliases,this.protocolType));
+			((UriResourceWithKeysImpl) entitySetResource).setKeyPredicates(keys);
+		} else {
+			return navigationOrProperty(previous);
+		}
+	return entitySetResource;
+  }
+  /**
+   * This Method is called when a SimpleKeyProperty with propertyName and propertyValue as 
+   * key value pair/CompoundKeyProperty is followed after the NavigationSet
+   * If url is of the form 
+   * EntitySet/KeyPropertyName=KeyPropertyValue/Navigation/NavigationKeyPropertyName=NavigationKeyPropertyValue
+   * EntitySet/KeyPropertyName1=KeyPropertyValue1,KeyPropertyName2=KeyPropertyValue2/Navigation/
+   * NavigationKeyPropertyName1=NavigationKeyPropertyValue1,NavigationKeyPropertyName2=NavigationKeyPropertyValue2
+   */
+  private UriResource navigationOrpropertyOrProperties(final UriResource previous, String pathSegment,
+		  boolean primitiveValueFlow) throws UriParserException, UriValidationException {	
+	  final String name = previous.getSegmentValue();
+  	  UriResourcePartTyped previousTyped = null;
+  	  EdmStructuredType structType = null;
+  	  if (((UriResourcePartTyped) this.entitySetResource).getType() instanceof EdmStructuredType) {
+  		 previousTyped = (UriResourcePartTyped) this.entitySetResource;
+  		 final EdmType previousTypeFilter = getPreviousTypeFilter(previousTyped);
+  		 structType = (EdmStructuredType) (previousTypeFilter == null ? 
+  		    		  previousTyped.getType() : previousTypeFilter);
+  	  } else {
+  		  throw new UriParserSemanticException(
+  		  "Cannot parse '" + name + "'; previous path segment is not a structural type.",
+  		  UriParserSemanticException.MessageKeys.RESOURCE_PART_MUST_BE_PRECEDED_BY_STRUCTURAL_TYPE, name);
+  	  }
+  	  final EdmProperty property = structType.getStructuralProperty(name);
+  	  if (property != null) {
+  		  return property.isPrimitive()
+  		  || property.getType().getKind() == EdmTypeKind.ENUM
+  		  || property.getType().getKind() == EdmTypeKind.DEFINITION ?
+  		  new UriResourcePrimitivePropertyImpl(property) :
+  		  new UriResourceComplexPropertyImpl(property);
+  	  }
+  	  final EdmNavigationProperty navigationProperty = structType.getNavigationProperty(name);
+  		if (navigationProperty == null) {
+  		   throw new UriParserSemanticException("Property '" + name + "' not found in type '"
+  		   + structType.getFullQualifiedName().getFullQualifiedNameAsString() + "'",
+  		   UriParserSemanticException.MessageKeys.PROPERTY_NOT_IN_TYPE,
+  		   structType.getFullQualifiedName().getFullQualifiedNameAsString(), name);
+  		}
+	    List<UriParameter> keyPredicates =  new ArrayList<UriParameter>();
+	    if (navigationProperty.isCollection()) {
+		   final List<EdmKeyPropertyRef> keyPropertyRefs = 
+  		    		navigationProperty.getType().getKeyPropertyRefs();
+			if (keyPropertyRefs.size()==1) {
+			  if (primitiveValueFlow){
+				final EdmProperty edmProperty = keyPropertyRefs.get(0) == null ? null : 
+    	  			  keyPropertyRefs.get(0).getProperty();  
+				keyPredicates = KeyPredicate(edmProperty, keyPropertyRefs, 
+    			    		   pathSegment, edm, null, aliases);
+			  } else {
+				  keyPredicates.addAll(ParserHelper.compoundKey(tokenizer, 
+		    	  navigationProperty.getType(), edm, null, aliases,this.protocolType));
+			  }
+    	  	} else {
+    	  		keyPredicates.addAll(ParserHelper.compoundKey(tokenizer, 
+	    	 navigationProperty.getType(), edm, null, aliases,this.protocolType));	
+			   if (keyPredicates.size() < keyPropertyRefs.size()) {
+				   throw new UriParserSemanticException(
+				   "Expected " + keyPropertyRefs.size() + " key predicates but found " 
+				   + keyPredicates.size() + ".",
+				   UriParserSemanticException.MessageKeys.WRONG_NUMBER_OF_KEY_PROPERTIES,
+				   Integer.toString(keyPropertyRefs.size()), Integer.toString(keyPredicates.size()));
+			   }
+			 }
+		  } else {
+  		     throw new UriParserSemanticException("A key is not allowed on non-collection "
+  		     + "navigation properties.",UriParserSemanticException.MessageKeys.KEY_NOT_ALLOWED);
+  		  }
+  		  return new UriResourceNavigationPropertyImpl(navigationProperty)
+	  		        .setKeyPredicates(keyPredicates);
+  }
+  /**
+   * This Method is called when a Primitive Property is followed after the entitySet
+   * If url is of the form 
+   * EntitySet/KeyPropertyValue 
+   */
+  private UriResource primitiveProperty(UriTokenizer tokenizer, UriResource previous, String pathSegment) 
+		  throws UriParserException, UriValidationException {
+  		if (previous instanceof UriResourceEntitySet) {
+  		final UriResourceEntitySetImpl entitySetResource = ((UriResourceEntitySetImpl)previous);
+  		EdmEntityType edmEntityType = entitySetResource.getEntityType();
+  		final List<EdmKeyPropertyRef> keyPropertyRefs = edmEntityType.getKeyPropertyRefs();
+  		if (keyPropertyRefs.size()==1) {
+  			final EdmProperty edmProperty = keyPropertyRefs.get(0) == null ? 
+  		    				null : keyPropertyRefs.get(0).getProperty();
+  			entitySetResource.setKeyPredicates(KeyPredicate(edmProperty, keyPropertyRefs, 
+  	  		    		pathSegment, edm, null, aliases));
+  			ParserHelper.requireTokenEnd(tokenizer); 
+  	  	}
+  		return entitySetResource;
+  		} else if (previous instanceof UriResourceNavigation) {
+  			return navigationOrpropertyOrProperties(previous,pathSegment,true);
+  		} else {
+  			throw new UriParserSemanticException("Unexpected start of resource-path segment.",
+        	          UriParserSemanticException.MessageKeys.RESOURCE_NOT_FOUND, tokenizer.getText());
+  		}
+  }
+  private List<UriParameter> KeyPredicate(EdmProperty edmProperty, List<EdmKeyPropertyRef> keyPropertyRefs,
+		  String pathSegment, Edm edm, final EdmType referringType,
+	      final Map<String, AliasQueryOption> aliases) throws UriParserException, UriValidationException
+  {
+	  List<UriParameter> keys = new ArrayList<UriParameter>();
+	  UriParameter simpleKey = null;
+	  if (ParserHelper.nextPrimitiveTypeValue(tokenizer, (EdmPrimitiveType) edmProperty.getType(), 
+			  edmProperty.isNullable(),null)) {
+		  
+		  if (EdmPrimitiveTypeFactory.getInstance(EdmPrimitiveTypeKind.String).
+  				equals((EdmPrimitiveType) edmProperty.getType())) {		  
+			  simpleKey = ParserHelper.createUriParameter(edmProperty, 
+			  keyPropertyRefs.get(0).getName(),"'"+pathSegment+"'", edm, null, aliases);
+		  } else {
+			  simpleKey = ParserHelper.createUriParameter(edmProperty, 
+					  keyPropertyRefs.get(0).getName(),pathSegment, edm, null, aliases);
+		  }
+	    if (simpleKey != null) {
+	        keys.add(simpleKey);
+	       }
+	  } else {
+		    throw new UriParserSemanticException("Wrong parameter value.",
+		    UriParserSemanticException.MessageKeys.INVALID_KEY_VALUE, "");
+		   }
+	return keys;
   }
 }

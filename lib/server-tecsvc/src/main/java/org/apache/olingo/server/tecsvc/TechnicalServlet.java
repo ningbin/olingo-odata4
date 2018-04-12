@@ -58,6 +58,7 @@ public class TechnicalServlet extends HttpServlet {
    * giving this field a new and hopefully unique value.</p>
    */
   private static final String metadataETag = "W/\"" + UUID.randomUUID() + "\"";
+  private static final String PROTOCOLTYPE = "protocolType";
 
   @Override
   protected void service(final HttpServletRequest request, HttpServletResponse response)
@@ -79,6 +80,9 @@ public class TechnicalServlet extends HttpServlet {
         LOG.info("Created new data provider.");
       }
 
+      if (request.getHeader(PROTOCOLTYPE) != null) {
+    	  request.setAttribute("protocolType", "REST");  
+      }
       ODataHttpHandler handler = odata.createHandler(serviceMetadata);
       // Register processors.
       handler.register(new TechnicalEntityProcessor(dataProvider, serviceMetadata));
