@@ -380,6 +380,55 @@ public class BasicHttpRestITCase extends AbstractBaseTestITCase {
 		
 	}
 	
+	@Test
+	public void testRestFlowEOFFollowedyEntitySet() throws Exception {
+		URL url = new URL(SERVICE_URI + "ESFourKeyAlias/");
+
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod(HttpMethod.GET.name());
+		connection.setRequestProperty(HttpHeader.ACCEPT, "application/json;odata.metadata=full");
+		connection.setRequestProperty("protocolType", "Rest");
+		connection.connect();
+
+		assertEquals(HttpStatusCode.BAD_REQUEST.getStatusCode(), connection.getResponseCode());
+		final String content = IOUtils.toString(connection.getErrorStream());
+		assertTrue(content.contains("\"message\":\"The URI is malformed.\""));
+		
+	}
+	
+	@Test
+	public void testRestFlowAndOdataFlowEntitySet() throws Exception {
+		URL url = new URL(SERVICE_URI + "ESTwoKeyNavCont(365)");
+
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod(HttpMethod.GET.name());
+		connection.setRequestProperty(HttpHeader.ACCEPT, "application/json;odata.metadata=full");
+		connection.setRequestProperty("protocolType", "Rest");
+		connection.connect();
+
+		assertEquals(HttpStatusCode.BAD_REQUEST.getStatusCode(), connection.getResponseCode());
+		final String content = IOUtils.toString(connection.getErrorStream());
+		assertTrue(content.contains("\"message\":\"The URI is malformed.\""));
+		
+	}
+	
+	@Test
+	public void testRestFlowAndOdataFlowNavigationSet() throws Exception {
+		URL url = new URL(SERVICE_URI + "ESAllPrim/PropertyInt16=32767/"
+				+ "NavPropertyETTwoPrimMany(PropertyInt16=-365)");
+
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod(HttpMethod.GET.name());
+		connection.setRequestProperty(HttpHeader.ACCEPT, "application/json;odata.metadata=full");
+		connection.setRequestProperty("protocolType", "Rest");
+		connection.connect();
+
+		assertEquals(HttpStatusCode.BAD_REQUEST.getStatusCode(), connection.getResponseCode());
+		final String content = IOUtils.toString(connection.getErrorStream());
+		assertTrue(content.contains("\"message\":\"The URI is malformed.\""));
+		
+	}
+	
 	
 
 	@Override

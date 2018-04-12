@@ -112,10 +112,7 @@ public class ResourcePathParser {
           	return entityOrpropertyOrProperties(previous);
           } else if(previous instanceof UriResourceNavigation) {          		
           	return navigationOrpropertyOrProperties(previous,pathSegment,false);
-          } else {
-          	throw new UriParserSemanticException("Unexpected start of resource-path segment.",
-            	      UriParserSemanticException.MessageKeys.RESOURCE_NOT_FOUND, tokenizer.getText());
-            }
+          } 
        } else { 
          return primitiveProperty(tokenizer,previous,pathSegment);
        }
@@ -515,14 +512,6 @@ public class ResourcePathParser {
   		  "Cannot parse '" + name + "'; previous path segment is not a structural type.",
   		  UriParserSemanticException.MessageKeys.RESOURCE_PART_MUST_BE_PRECEDED_BY_STRUCTURAL_TYPE, name);
   	  }
-  	  final EdmProperty property = structType.getStructuralProperty(name);
-  	  if (property != null) {
-  		  return property.isPrimitive()
-  		  || property.getType().getKind() == EdmTypeKind.ENUM
-  		  || property.getType().getKind() == EdmTypeKind.DEFINITION ?
-  		  new UriResourcePrimitivePropertyImpl(property) :
-  		  new UriResourceComplexPropertyImpl(property);
-  	  }
   	  final EdmNavigationProperty navigationProperty = structType.getNavigationProperty(name);
   		if (navigationProperty == null) {
   		   throw new UriParserSemanticException("Property '" + name + "' not found in type '"
@@ -537,9 +526,11 @@ public class ResourcePathParser {
 			if (keyPropertyRefs.size()==1) {
 			  if (primitiveValueFlow){
 				final EdmProperty edmProperty = keyPropertyRefs.get(0) == null ? null : 
-    	  			  keyPropertyRefs.get(0).getProperty();  
+    	  			  keyPropertyRefs.get(0).getProperty(); 
+				if (edmProperty != null) {
 				keyPredicates = KeyPredicate(edmProperty, keyPropertyRefs, 
     			    		   pathSegment, edm, null, aliases);
+				}
 			  } else {
 				  keyPredicates.addAll(ParserHelper.compoundKey(tokenizer, 
 		    	  navigationProperty.getType(), edm, null, aliases,this.protocolType));
@@ -576,17 +567,17 @@ public class ResourcePathParser {
   		if (keyPropertyRefs.size()==1) {
   			final EdmProperty edmProperty = keyPropertyRefs.get(0) == null ? 
   		    				null : keyPropertyRefs.get(0).getProperty();
+  			if (edmProperty != null) {
   			entitySetResource.setKeyPredicates(KeyPredicate(edmProperty, keyPropertyRefs, 
   	  		    		pathSegment, edm, null, aliases));
+  			}
   			ParserHelper.requireTokenEnd(tokenizer); 
   	  	}
   		return entitySetResource;
   		} else if (previous instanceof UriResourceNavigation) {
   			return navigationOrpropertyOrProperties(previous,pathSegment,true);
-  		} else {
-  			throw new UriParserSemanticException("Unexpected start of resource-path segment.",
-        	          UriParserSemanticException.MessageKeys.RESOURCE_NOT_FOUND, tokenizer.getText());
   		}
+		return previous;
   }
   private List<UriParameter> KeyPredicate(EdmProperty edmProperty, List<EdmKeyPropertyRef> keyPropertyRefs,
 		  String pathSegment, Edm edm, final EdmType referringType,
