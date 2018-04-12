@@ -252,12 +252,9 @@ public abstract class ExpandSelectHelper {
       if (item.isStar()) {
         continue;
       }
-	  final List<UriResource> resourceParts = item.getResourcePath().getUriResourceParts();
-      final UriResource resource = resourceParts.get(0);
-      if ((resource instanceof UriResourceNavigation
-          && propertyName.equals(((UriResourceNavigation) resource).getProperty().getName())) ||
-          resource instanceof UriResourceProperty
-          && propertyName.equals(((UriResourceProperty) resource).getProperty().getName())) {
+      final UriResource resource = item.getResourcePath().getUriResourceParts().get(0);
+      if (resource instanceof UriResourceNavigation
+          && propertyName.equals(((UriResourceNavigation) resource).getProperty().getName())) {
         return item;
       }
     }
@@ -359,10 +356,8 @@ public abstract class ExpandSelectHelper {
    */
   private static ExpandItem getMatchedExpandItem(final String propertyName, final ExpandItem item, boolean matched,
       UriResource resource) {
-    if (matched && ((resource instanceof UriResourceNavigation
-        && propertyName.equals(((UriResourceNavigation) resource).getProperty().getName())) ||
-        resource instanceof UriResourceProperty
-        && propertyName.equals(((UriResourceProperty) resource).getProperty().getName()))) {
+    if (matched && resource instanceof UriResourceNavigation
+        && propertyName.equals(((UriResourceNavigation) resource).getProperty().getName())) {
       return item;
     }
     return null;
