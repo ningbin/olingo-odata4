@@ -470,8 +470,8 @@ public class ResourcePathParser {
 		  throws UriParserException, UriValidationException {
 	  boolean propertyAfterCollection = false;
 	  EdmEntityType edmEntityType = null;
-	  final UriResourceEntitySet entitySetResource = ((UriResourceEntitySet)previous);
-		edmEntityType = entitySetResource.getEntityType();
+	  final UriResourceEntitySet entitySet = ((UriResourceEntitySet)previous);
+		edmEntityType = entitySet.getEntityType();
 		final List<EdmKeyPropertyRef> keyPropertyRefs = edmEntityType.getKeyPropertyRefs();
 		
 		for (EdmKeyPropertyRef keyPropertyRef: keyPropertyRefs) {
@@ -483,11 +483,11 @@ public class ResourcePathParser {
 			List<UriParameter> keys = new ArrayList<UriParameter>();
 			keys.addAll(ParserHelper.compoundKey(tokenizer, edmEntityType, edm, null, 
 					aliases,this.protocolType));
-			((UriResourceWithKeysImpl) entitySetResource).setKeyPredicates(keys);
+			((UriResourceWithKeysImpl) entitySet).setKeyPredicates(keys);
 		} else {
 			return navigationOrProperty(previous);
 		}
-	return entitySetResource;
+	return entitySet;
   }
   /**
    * This Method is called when a SimpleKeyProperty with propertyName and propertyValue as 
@@ -529,7 +529,7 @@ public class ResourcePathParser {
     	  			  keyPropertyRefs.get(0).getProperty(); 
 				if (edmProperty != null) {
 				keyPredicates = KeyPredicate(edmProperty, keyPropertyRefs, 
-    			    		   pathSegment, edm, null, aliases);
+    			    		   pathSegment, edm, aliases);
 				}
 			  } else {
 				  keyPredicates.addAll(ParserHelper.compoundKey(tokenizer, 
@@ -569,7 +569,7 @@ public class ResourcePathParser {
   		    				null : keyPropertyRefs.get(0).getProperty();
   			if (edmProperty != null) {
   			entitySetResource.setKeyPredicates(KeyPredicate(edmProperty, keyPropertyRefs, 
-  	  		    		pathSegment, edm, null, aliases));
+  	  		    		pathSegment, edm, aliases));
   			}
   			ParserHelper.requireTokenEnd(tokenizer); 
   	  	}
@@ -580,8 +580,8 @@ public class ResourcePathParser {
 		return previous;
   }
   private List<UriParameter> KeyPredicate(EdmProperty edmProperty, List<EdmKeyPropertyRef> keyPropertyRefs,
-		  String pathSegment, Edm edm, final EdmType referringType,
-	      final Map<String, AliasQueryOption> aliases) throws UriParserException, UriValidationException
+		  String pathSegment, Edm edm, final Map<String, AliasQueryOption> aliases) 
+		      throws UriParserException, UriValidationException
   {
 	  List<UriParameter> keys = new ArrayList<UriParameter>();
 	  UriParameter simpleKey = null;
