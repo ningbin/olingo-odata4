@@ -561,19 +561,19 @@ public class ResourcePathParser {
   private UriResource primitiveProperty(UriTokenizer tokenizer, UriResource previous, String pathSegment) 
 		  throws UriParserException, UriValidationException {
   		if (previous instanceof UriResourceEntitySet) {
-  		final UriResourceEntitySetImpl entitySetResource = ((UriResourceEntitySetImpl)previous);
-  		EdmEntityType edmEntityType = entitySetResource.getEntityType();
+  		final UriResourceEntitySetImpl entitySet = ((UriResourceEntitySetImpl)previous);
+  		EdmEntityType edmEntityType = entitySet.getEntityType();
   		final List<EdmKeyPropertyRef> keyPropertyRefs = edmEntityType.getKeyPropertyRefs();
   		if (keyPropertyRefs.size()==1) {
   			final EdmProperty edmProperty = keyPropertyRefs.get(0) == null ? 
   		    				null : keyPropertyRefs.get(0).getProperty();
   			if (edmProperty != null) {
-  			entitySetResource.setKeyPredicates(KeyPredicate(edmProperty, keyPropertyRefs, 
+  			entitySet.setKeyPredicates(KeyPredicate(edmProperty, keyPropertyRefs, 
   	  		    		pathSegment, edm, aliases));
   			}
   			ParserHelper.requireTokenEnd(tokenizer); 
   	  	}
-  		return entitySetResource;
+  		return entitySet;
   		} else if (previous instanceof UriResourceNavigation) {
   			return navigationOrpropertyOrProperties(previous,pathSegment,true);
   		}
