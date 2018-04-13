@@ -581,8 +581,7 @@ public class ResourcePathParser {
   }
   private List<UriParameter> KeyPredicate(EdmProperty edmProperty, List<EdmKeyPropertyRef> keyPropertyRefs,
 		  String pathSegment, Edm edm, final Map<String, AliasQueryOption> aliases) 
-		      throws UriParserException, UriValidationException
-  {
+		      throws UriParserException, UriValidationException{
 	  List<UriParameter> keys = new ArrayList<UriParameter>();
 	  UriParameter simpleKey = null;
 	  if (ParserHelper.nextPrimitiveTypeValue(tokenizer, (EdmPrimitiveType) edmProperty.getType(), 
