@@ -36,7 +36,6 @@ import io.reactivex.Observable;
 public abstract class EntityObservable extends AbstractEntityCollection {
   
   private URI next;
-  
   private Integer count;
     
   /**
@@ -72,6 +71,7 @@ public abstract class EntityObservable extends AbstractEntityCollection {
    * Gets observable
    * 
    */
+  @SuppressWarnings("rawtypes")
   public abstract Observable getObservable() ;
   
 
