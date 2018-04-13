@@ -118,7 +118,7 @@ public class ODataImpl extends OData {
   private float getMaxVersion(List<String> versions) {
     Float versionValue [] = new Float [versions.size()];
     int i=0;
-    Float max=new Float(0);
+    Float max=Float.valueOf(0);
     for(String version:versions){
      Float ver = Float.valueOf(version);
      versionValue[i++] = ver;
@@ -224,7 +224,7 @@ public class ODataImpl extends OData {
         }
       } 
      }catch (final Exception e) {
-       throw new SerializerException(e.getMessage() + contentType.toContentTypeString(),
+       throw new SerializerException(e.getMessage() + contentType.toContentTypeString(), e,
            SerializerException.MessageKeys.UNSUPPORTED_FORMAT, contentType.toContentTypeString());
      }
     if (serializer == null) {

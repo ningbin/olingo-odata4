@@ -707,7 +707,7 @@ public class ODataJsonSerializer implements ODataSerializer {
       } else if (property.isComplex()) {
         if (edmProperty.isCollection()) {
           writeComplexCollection(metadata, (EdmComplexType) type, property, selectedPaths, 
-		  json, expandedPaths, linked, expand);
+		  json, expandedPaths, expand);
         } else {
           writeComplex(metadata, (EdmComplexType) type, property, selectedPaths, 
 		  json, expandedPaths, linked, expand);
@@ -797,7 +797,7 @@ public class ODataJsonSerializer implements ODataSerializer {
   private void writeComplexCollection(final ServiceMetadata metadata, final EdmComplexType type,
       final Property property,
       final Set<List<String>> selectedPaths, final JsonGenerator json, 
-      Set<List<String>> expandedPaths, Linked linked, ExpandOption expand)
+      Set<List<String>> expandedPaths, ExpandOption expand)
       throws IOException, SerializerException {
     json.writeStartArray();
     EdmComplexType derivedType = type;
@@ -1187,7 +1187,7 @@ public class ODataJsonSerializer implements ODataSerializer {
       if (null != options && null != options.getExpand()) {
         expandPaths = ExpandSelectHelper.getExpandedItemsPath(options.getExpand());
       }
-      writeComplexCollection(metadata, type, property, selectedPaths, json, expandPaths, null, 
+      writeComplexCollection(metadata, type, property, selectedPaths, json, expandPaths, 
           options == null ? null : options.getExpand());
       json.writeEndObject();
 
