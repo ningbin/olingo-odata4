@@ -49,9 +49,9 @@ public class ODataJsonRxSerializer extends ODataJsonSerializer {
   @SuppressWarnings("unchecked")
   @Override
   protected void writeEntitySet(final ServiceMetadata metadata, final EdmEntityType entityType,
-      final AbstractEntityCollection entitySet, final ExpandOption expand, Integer toDepth, final SelectOption select,
-      final boolean onlyReference, final Set<String> ancestors, String name, final JsonGenerator json)
-      throws IOException, SerializerException {
+      final AbstractEntityCollection entitySet, final ExpandOption expand, final Integer toDepth, 
+      final SelectOption select, final boolean onlyReference, final Set<String> ancestors, 
+      final String name, final JsonGenerator json) throws IOException, SerializerException {
     final List<SerializerException> ex = new ArrayList<SerializerException>();
     json.writeStartArray();
     ((EntityObservable) entitySet).getObservable().subscribe(new Observer<Entity>() {
