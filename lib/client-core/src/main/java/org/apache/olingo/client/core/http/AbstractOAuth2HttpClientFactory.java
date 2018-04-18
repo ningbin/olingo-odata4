@@ -29,7 +29,7 @@ import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HttpContext;
 import org.apache.olingo.client.api.http.HttpClientFactory;
 import org.apache.olingo.client.api.http.WrappingHttpClientFactory;
@@ -68,9 +68,9 @@ public abstract class AbstractOAuth2HttpClientFactory
 
   protected abstract void init() throws OAuth2Exception;
 
-  protected abstract void accessToken(DefaultHttpClient client) throws OAuth2Exception;
+  protected abstract void accessToken(HttpClientBuilder client) throws OAuth2Exception;
 
-  protected abstract void refreshToken(DefaultHttpClient client) throws OAuth2Exception;
+  protected abstract void refreshToken(HttpClientBuilder client) throws OAuth2Exception;
 
   @Override
   public HttpClient create(final HttpMethod method, final URI uri) {
@@ -78,10 +78,11 @@ public abstract class AbstractOAuth2HttpClientFactory
       init();
     }
 
-    final DefaultHttpClient httpClient = wrapped.create(method, uri);
-    accessToken(httpClient);
+    final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+    clientBuilder.setUserAgent(USER_AGENT);
+    accessToken(clientBuilder);
 
-    httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
+    clientBuilder.addInterceptorFirst(new HttpRequestInterceptor() {
 
       @Override
       public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
@@ -92,21 +93,21 @@ public abstract class AbstractOAuth2HttpClientFactory
         }
       }
     });
-    httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
+    clientBuilder.addInterceptorFirst(new HttpResponseInterceptor() {
 
       @Override
       public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
-          refreshToken(httpClient);
+          refreshToken(clientBuilder);
 
           if (currentRequest != null) {
-            httpClient.execute(currentRequest);
+            clientBuilder.build().execute(currentRequest);
           }
         }
       }
     });
 
-    return httpClient;
+    return clientBuilder.build();
   }
 
   @Override

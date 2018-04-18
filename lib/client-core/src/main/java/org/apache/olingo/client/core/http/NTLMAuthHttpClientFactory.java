@@ -24,7 +24,8 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.NTCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.olingo.commons.api.http.HttpMethod;
 
 /**
@@ -56,15 +57,14 @@ public class NTLMAuthHttpClientFactory extends DefaultHttpClientFactory {
   }
 
   @Override
-  public DefaultHttpClient create(final HttpMethod method, final URI uri) {
-    final DefaultHttpClient httpclient = super.create(method, uri);
-
+  public CloseableHttpClient create(final HttpMethod method, final URI uri) {
+    final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+    clientBuilder.setUserAgent(USER_AGENT);
     final CredentialsProvider credsProvider = new BasicCredentialsProvider();
     credsProvider.setCredentials(AuthScope.ANY,
             new NTCredentials(username, password, workstation, domain));
 
-    httpclient.setCredentialsProvider(credsProvider);
-
-    return httpclient;
+    clientBuilder.setDefaultCredentialsProvider(credsProvider);
+    return clientBuilder.build();
   }
 }

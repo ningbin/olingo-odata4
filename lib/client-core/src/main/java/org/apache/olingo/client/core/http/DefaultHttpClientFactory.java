@@ -21,8 +21,8 @@ package org.apache.olingo.client.core.http;
 import java.net.URI;
 
 import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.olingo.commons.api.http.HttpMethod;
 
 /**
@@ -31,15 +31,15 @@ import org.apache.olingo.commons.api.http.HttpMethod;
 public class DefaultHttpClientFactory extends AbstractHttpClientFactory {
 
   @Override
-  public DefaultHttpClient create(final HttpMethod method, final URI uri) {
-    final DefaultHttpClient client = new DefaultHttpClient();
-    client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
-    return client;
+  public CloseableHttpClient create(final HttpMethod method, final URI uri) {
+    final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+    clientBuilder.setUserAgent(USER_AGENT);
+    return clientBuilder.build();
   }
 
   @Override
-  public void close(final HttpClient httpClient) {
-    httpClient.getConnectionManager().shutdown();
+  public void close(HttpClient httpClient) {
+    httpClient = null;
   }
 
 }

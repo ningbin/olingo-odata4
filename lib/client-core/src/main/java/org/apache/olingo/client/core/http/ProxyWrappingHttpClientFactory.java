@@ -23,9 +23,10 @@ import java.net.URI;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.olingo.client.api.http.WrappingHttpClientFactory;
 import org.apache.olingo.commons.api.http.HttpMethod;
 
@@ -71,22 +72,21 @@ public class ProxyWrappingHttpClientFactory implements WrappingHttpClientFactory
 
   @Override
   public HttpClient create(final HttpMethod method, final URI uri) {
-    // Use wrapped factory to obtain an httpclient instance for given method and uri
-    final DefaultHttpClient httpclient = wrapped.create(method, uri);
-
+    HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+    httpClientBuilder.setUserAgent(DefaultHttpClientFactory.USER_AGENT);
     final HttpHost proxyHost = new HttpHost(proxy.getHost(), proxy.getPort());
-
-    // Sets usage of HTTP proxy
-    httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyHost);
-
+    //  Sets usage of HTTP proxy
+    httpClientBuilder.setProxy(proxyHost);
+    
     // Sets proxy authentication, if credentials were provided
     if (proxyUsername != null && proxyPassword != null) {
-      httpclient.getCredentialsProvider().setCredentials(
-              new AuthScope(proxyHost),
-              new UsernamePasswordCredentials(proxyUsername, proxyPassword));
+      CredentialsProvider credsProvider = new BasicCredentialsProvider();
+      credsProvider.setCredentials(new AuthScope(proxyHost),
+          new UsernamePasswordCredentials(proxyUsername, proxyPassword));
+      httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
     }
-
-    return httpclient;
+    
+    return httpClientBuilder.build();
   }
 
   @Override

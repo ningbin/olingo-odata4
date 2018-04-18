@@ -42,6 +42,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
@@ -53,6 +54,7 @@ import org.apache.olingo.fit.rest.OAuth2Provider;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
+@SuppressWarnings("deprecation")
 public class CXFOAuth2HttpClientFactory extends AbstractOAuth2HttpClientFactory {
 
   private static final OAuthClientUtils.Consumer OAUTH2_CONSUMER =
@@ -78,6 +80,7 @@ public class CXFOAuth2HttpClientFactory extends AbstractOAuth2HttpClientFactory 
     return accessToken != null;
   }
 
+  @SuppressWarnings("resource")
   @Override
   protected void init() throws OAuth2Exception {
     final URI authURI = OAuthClientUtils.getAuthorizationURI(
@@ -154,8 +157,8 @@ public class CXFOAuth2HttpClientFactory extends AbstractOAuth2HttpClientFactory 
   }
 
   @Override
-  protected void accessToken(final DefaultHttpClient client) throws OAuth2Exception {
-    client.addRequestInterceptor(new HttpRequestInterceptor() {
+  protected void accessToken(final HttpClientBuilder clientBuilder) throws OAuth2Exception {
+    clientBuilder.addInterceptorFirst(new HttpRequestInterceptor() {
 
       @Override
       public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
@@ -166,7 +169,7 @@ public class CXFOAuth2HttpClientFactory extends AbstractOAuth2HttpClientFactory 
   }
 
   @Override
-  protected void refreshToken(final DefaultHttpClient client) throws OAuth2Exception {
+  protected void refreshToken(final HttpClientBuilder clientBuilder) throws OAuth2Exception {
     final String refreshToken = accessToken.getRefreshToken();
     if (refreshToken == null) {
       throw new OAuth2Exception("No OAuth2 refresh token");
