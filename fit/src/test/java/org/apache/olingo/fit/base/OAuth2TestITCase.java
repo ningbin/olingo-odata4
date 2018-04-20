@@ -34,6 +34,7 @@ import org.apache.olingo.client.api.uri.URIBuilder;
 import org.apache.olingo.client.core.ODataClientFactory;
 import org.apache.olingo.client.core.http.DefaultHttpClientFactory;
 import org.apache.olingo.commons.api.format.ContentType;
+import org.apache.olingo.fit.CXFOAuth2HttpClientBuilderFactory;
 import org.apache.olingo.fit.CXFOAuth2HttpClientFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -66,12 +67,29 @@ public class OAuth2TestITCase extends AbstractTestITCase {
         new CXFOAuth2HttpClientFactory(OAUTH2_GRANT_SERVICE_URI, OAUTH2_TOKEN_SERVICE_URI));
     return localClient;
   }
+  
+  protected ODataClient getLocalClientWithBuilder() {
+    ODataClient localClient = ODataClientFactory.getClient();
+    localClient.getConfiguration().setHttpClientFactory(
+        new CXFOAuth2HttpClientBuilderFactory(OAUTH2_GRANT_SERVICE_URI, OAUTH2_TOKEN_SERVICE_URI));
+    return localClient;
+  }
 
   protected EdmEnabledODataClient getEdmClient() {
     if (_edmClient == null) {
       _edmClient = ODataClientFactory.getEdmEnabledClient(testOAuth2ServiceRootURL, ContentType.JSON);
       _edmClient.getConfiguration().setHttpClientFactory(
           new CXFOAuth2HttpClientFactory(OAUTH2_GRANT_SERVICE_URI, OAUTH2_TOKEN_SERVICE_URI));
+    }
+
+    return _edmClient;
+  }
+  
+  protected EdmEnabledODataClient getEdmClientWithBuilder() {
+    if (_edmClient == null) {
+      _edmClient = ODataClientFactory.getEdmEnabledClient(testOAuth2ServiceRootURL, ContentType.JSON);
+      _edmClient.getConfiguration().setHttpClientFactory(
+          new CXFOAuth2HttpClientBuilderFactory(OAUTH2_GRANT_SERVICE_URI, OAUTH2_TOKEN_SERVICE_URI));
     }
 
     return _edmClient;
@@ -119,7 +137,7 @@ public class OAuth2TestITCase extends AbstractTestITCase {
     } catch (RuntimeException e) {
       fail("failed for readAsJSON");
     }
-
+    
     try {
       createAndDelete();
     } catch (RuntimeException e) {
@@ -127,6 +145,27 @@ public class OAuth2TestITCase extends AbstractTestITCase {
     }
   }
 
+  @Test
+  public void testOAuthWithBuilder() {
+    try {
+      readAsAtom1();
+    } catch (RuntimeException e) {
+      fail("failed for readAsAtom1");
+    }
+    
+    try {
+      readAsFullJSON1();
+    } catch (RuntimeException e) {
+      fail("failed for readAsFullJSON1");
+    }
+    
+    try {
+      readAsJSON1();
+    } catch (RuntimeException e) {
+      fail("failed for readAsJSON1");
+    }
+  }
+  
   public void readAsAtom() {
     read(getLocalClient(), ContentType.APPLICATION_ATOM_XML);
   }
@@ -134,9 +173,21 @@ public class OAuth2TestITCase extends AbstractTestITCase {
   public void readAsFullJSON() {
     read(getLocalClient(), ContentType.JSON_FULL_METADATA);
   }
+  
+  public void readAsAtom1() {
+    read(getLocalClientWithBuilder(), ContentType.APPLICATION_ATOM_XML);
+  }
+
+  public void readAsFullJSON1() {
+    read(getLocalClientWithBuilder(), ContentType.JSON_FULL_METADATA);
+  }
 
   public void readAsJSON() {
     read(getEdmClient(), ContentType.JSON);
+  }
+  
+  public void readAsJSON1() {
+    read(getEdmClientWithBuilder(), ContentType.JSON);
   }
 
   public void createAndDelete() {

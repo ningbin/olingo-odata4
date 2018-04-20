@@ -18,6 +18,7 @@
  */
 package org.apache.olingo.client.core.http;
 
+import java.io.IOException;
 import java.net.URI;
 
 import org.apache.http.client.HttpClient;
@@ -37,9 +38,17 @@ public class DefaultHttpClientFactory extends AbstractHttpClientFactory {
     return clientBuilder.build();
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public void close(HttpClient httpClient) {
-    httpClient = null;
+    if (httpClient instanceof CloseableHttpClient) {
+      try {
+        ((CloseableHttpClient) httpClient).close();
+      } catch (IOException e) {
+        httpClient = null;
+      }
+    } else {
+      httpClient.getConnectionManager().shutdown();
+    }
   }
-
 }

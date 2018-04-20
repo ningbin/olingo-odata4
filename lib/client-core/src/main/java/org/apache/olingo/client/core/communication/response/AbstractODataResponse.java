@@ -252,6 +252,7 @@ public abstract class AbstractODataResponse implements ODataResponse {
 
   @Override
   public InputStream getRawResponse() {
+    InputStream inputStream = null;
     if (HttpStatus.SC_NO_CONTENT == getStatusCode()) {
       throw new NoContentException();
     }
@@ -278,6 +279,18 @@ public abstract class AbstractODataResponse implements ODataResponse {
       } catch (IOException e) {
         LOG.error("Error streaming payload response", e);
         throw new IllegalStateException(e);
+      }
+    } else if (payload != null) {
+      ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+      try {
+        org.apache.commons.io.IOUtils.copy(payload, byteArrayOutputStream);
+        byte[] inputContent = byteArrayOutputStream.toByteArray();
+        inputStream = new ByteArrayInputStream(inputContent);
+        return inputStream;
+      } catch (IOException e) {
+        HttpClientUtils.closeQuietly(res);
+        LOG.error("Error retrieving payload", e);
+        throw new ODataRuntimeException(e);
       }
     }
 

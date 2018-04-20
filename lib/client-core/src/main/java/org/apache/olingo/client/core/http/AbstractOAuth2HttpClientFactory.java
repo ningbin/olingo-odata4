@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
+ * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
+ * regarding copyright ownership. The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * with the License. You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
+ * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
@@ -29,14 +29,18 @@ import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.HttpContext;
 import org.apache.olingo.client.api.http.HttpClientFactory;
 import org.apache.olingo.client.api.http.WrappingHttpClientFactory;
 import org.apache.olingo.commons.api.http.HttpMethod;
 
+@SuppressWarnings("deprecation")
 public abstract class AbstractOAuth2HttpClientFactory
-        extends AbstractHttpClientFactory implements WrappingHttpClientFactory {
+    extends AbstractHttpClientFactory implements WrappingHttpClientFactory {
 
   protected final DefaultHttpClientFactory wrapped;
 
@@ -45,13 +49,15 @@ public abstract class AbstractOAuth2HttpClientFactory
   protected final URI oauth2TokenServiceURI;
 
   protected HttpUriRequest currentRequest;
+  
+  private DefaultHttpClient httpClient; 
 
   public AbstractOAuth2HttpClientFactory(final URI oauth2GrantServiceURI, final URI oauth2TokenServiceURI) {
     this(new DefaultHttpClientFactory(), oauth2GrantServiceURI, oauth2TokenServiceURI);
   }
 
   public AbstractOAuth2HttpClientFactory(final DefaultHttpClientFactory wrapped,
-          final URI oauth2GrantServiceURI, final URI oauth2TokenServiceURI) {
+      final URI oauth2GrantServiceURI, final URI oauth2TokenServiceURI) {
 
     super();
     this.wrapped = wrapped;
@@ -68,21 +74,11 @@ public abstract class AbstractOAuth2HttpClientFactory
 
   protected abstract void init() throws OAuth2Exception;
 
-  protected abstract void accessToken(HttpClientBuilder client) throws OAuth2Exception;
-
-  protected abstract void refreshToken(HttpClientBuilder client) throws OAuth2Exception;
-
-  @Override
-  public HttpClient create(final HttpMethod method, final URI uri) {
-    if (!isInited()) {
-      init();
-    }
-
-    final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
-    clientBuilder.setUserAgent(USER_AGENT);
-    accessToken(clientBuilder);
-
-    clientBuilder.addInterceptorFirst(new HttpRequestInterceptor() {
+  protected void accessToken(HttpClientBuilder clientBuilder) throws OAuth2Exception {
+    final DefaultHttpClient httpClient = new DefaultHttpClient();
+    httpClient.getParams().setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
+    accessToken(httpClient);
+    httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
 
       @Override
       public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
@@ -93,20 +89,97 @@ public abstract class AbstractOAuth2HttpClientFactory
         }
       }
     });
-    clientBuilder.addInterceptorFirst(new HttpResponseInterceptor() {
+    setHttpClient(httpClient);
+  }
 
-      @Override
-      public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
-          refreshToken(clientBuilder);
+  private void setHttpClient(DefaultHttpClient httpClient) {
+    this.httpClient = httpClient;
+  }
+  
+  private DefaultHttpClient getHttpClient() {
+    return this.httpClient;
+  }
 
-          if (currentRequest != null) {
-            clientBuilder.build().execute(currentRequest);
+  protected void refreshToken(HttpClientBuilder client) throws OAuth2Exception {
+    final DefaultHttpClient httpClient = getHttpClient();
+    refreshToken(httpClient);
+    setHttpClient(httpClient);
+  }
+
+  /**
+   * deprecated
+   * Use the method accessToken(HttpClientBuilder client)
+   * @param client
+   * @throws OAuth2Exception
+   */
+  @Deprecated
+  protected abstract void accessToken(DefaultHttpClient client) throws OAuth2Exception;
+  
+  /**
+   * deprecated
+   * Use the method refreshToken(HttpClientBuilder client)
+   * @param client
+   * @throws OAuth2Exception
+   */
+  @Deprecated
+  protected abstract void refreshToken(DefaultHttpClient client) throws OAuth2Exception;
+
+  @Override
+  public HttpClient create(final HttpMethod method, final URI uri) {
+    if (!isInited()) {
+      init();
+    }
+
+    final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+    clientBuilder.setUserAgent(USER_AGENT);
+    accessToken(clientBuilder);
+    
+    if (null == this.httpClient) {
+      clientBuilder.addInterceptorFirst(new HttpRequestInterceptor() {
+
+        @Override
+        public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
+          if (request instanceof HttpUriRequest) {
+            currentRequest = (HttpUriRequest) request;
+          } else {
+            currentRequest = null;
           }
         }
-      }
-    });
+      });
+    } 
+    if (null != this.httpClient) {
+      this.httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
 
+        @Override
+        public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
+          if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
+            refreshToken(getHttpClient());
+
+            if (currentRequest != null) {
+              getHttpClient().execute(currentRequest);
+            }
+          }
+        }
+      });
+    } else {
+      clientBuilder.addInterceptorFirst(new HttpResponseInterceptor() {
+
+        @Override
+        public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
+          if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
+            refreshToken(clientBuilder);
+
+            if (currentRequest != null) {
+               clientBuilder.build().execute(currentRequest);
+            }
+          }
+        }
+      });
+    }
+    
+    if (null != this.httpClient) {
+      return this.httpClient;
+    }
     return clientBuilder.build();
   }
 
