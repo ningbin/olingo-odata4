@@ -105,7 +105,11 @@ public class ContentNegotiatorTest {
       { null,                   null,             null,                  "text/plain"     },
       { null,                   "xxx",            null,                  null             },
       { null,                   "atom",           null,                  null             },
-      { null,                   null,             ACCEPT_CASE_MIN_IEEE754_FAIL,null       }
+      { null,                   null,             ACCEPT_CASE_MIN_IEEE754_FAIL,null       },
+      { null,                   null,             "application/json;charset=utf<8",null   },
+      { null,                   null,             "application/json;charset=utf-8;q=<",null},
+      { null,                   null,             "application/json;charset=utf-8,application/json;q=1<",null},
+      { null,                   null,             "application/json;charset=utf-8,abc",null}
   };
   
   String[][] casesAcceptCharset = {
@@ -116,16 +120,32 @@ public class ContentNegotiatorTest {
       { ACCEPT_CASE_MIN_UTF81,   null,            ACCEPT_CASE_ISO_8859_1, null,                    "utf-8"    },
       { ACCEPT_CASE_MIN_UTF81,   null,           "application/json;charset=abc", null,             "utf-8"    },
       { ACCEPT_CASE_MIN_UTF8,   null,            "application/json;charset=utf-8", null,              null    },
-      { ACCEPT_CASE_MIN_UTF8,   null,            "application/json;charset=utf8", null,              null    }
+      { ACCEPT_CASE_MIN_UTF8,   null,            "application/json;charset=utf8", null,              null    },
+      { ACCEPT_CASE_MIN_UTF8,   null,            "application/json;charset=utf8;q=0.8", null,              null    },
   };
   
   String[][] casesAcceptCharsetFail = {
-      /* expected               $format           accept                 modified content types  acceptCharset*/
-      { null,                   null,             null,                   null,                    "ISO-8859-1"},
-      { null,                   "json",           ACCEPT_CASE_MIN_UTF8,   null,                    "abc"       },
-      { null,                   null,             ACCEPT_CASE_ISO_8859_1, null,                    "*"         },
-      { null,                   null,             ACCEPT_CASE_ISO_8859_1, null,                     null       },
-      { null,                   null,             "application/json;charset=abc", null,             null       }
+      /* expected               $format           accept                 modified content types   acceptCharset*/
+      { null,                   null,             null,                   null,                     "ISO-8859-1" },
+      { null,                   "json",           ACCEPT_CASE_MIN_UTF8,   null,                     "abc"        },
+      { null,                   null,             ACCEPT_CASE_ISO_8859_1, null,                     "utf<8"      },
+      { null,                   null,             ACCEPT_CASE_MIN_UTF8, null,                       "utf-8;abc=xyz"},
+      { null,                   null,             ACCEPT_CASE_MIN_UTF8, null,                       "utf-8;q=1<"  },
+      { null,                   null,             ACCEPT_CASE_MIN_UTF8, null,                        "utf-8;<"   },
+      { null,                   null,             ACCEPT_CASE_ISO_8859_1, null,                       null       },
+      { null,                   null,             "application/json;charset=abc", null,               null       },
+      { null,                   null,             "application/json;charset=utf-8;q", null,           null       },
+      { null,                   null,             "application/json;charset=utf-8;abc=xyz", null,     null       },
+      { null,                   null,             "application/json;charset=utf-8;q<", null,          null       },
+      { null,                   null,             "application/json;charset=utf<8", null,             null       },
+      { null,                  "json;charset=abc",ACCEPT_CASE_MIN_UTF8,             null,             null       },
+      { null,                  "json;charset=utf<8",ACCEPT_CASE_MIN_UTF8,           null,             null       },
+      { null,                  "json;charset=utf-8;abc=xyz",ACCEPT_CASE_MIN_UTF8,   null,             null       },
+      { null,                  "json;charset=utf-8;q=1<",ACCEPT_CASE_MIN_UTF8,      null,             null       },
+      { null,                  "json;charset=utf-8;q='",ACCEPT_CASE_MIN_UTF8,       null,             null       },
+      { null,                  "application/json;abc=xyz",ACCEPT_CASE_MIN_UTF8,       null,           null       },
+      { null,                  "application/json;charset=utf<8",ACCEPT_CASE_MIN_UTF8, null,           null       },
+      { null,                  "application/json;charset=abc",ACCEPT_CASE_MIN_UTF8,               null,           null       }
   };
   //CHECKSTYLE:ON
   //@formatter:on
@@ -170,6 +190,8 @@ public class ContentNegotiatorTest {
       } catch (final AcceptHeaderContentNegotiatorException e) {
         // Expected Exception
       } catch (final ContentNegotiatorException e) {
+        // Expected Exception
+      } catch (final IllegalArgumentException e) {
         // Expected Exception
       }
     }
@@ -262,6 +284,8 @@ public class ContentNegotiatorTest {
       } catch (final AcceptHeaderContentNegotiatorException e) {
         // Expected Exception
       } catch (final ContentNegotiatorException e) {
+        // Expected Exception
+      } catch (final IllegalArgumentException e) {
         // Expected Exception
       }
     }
