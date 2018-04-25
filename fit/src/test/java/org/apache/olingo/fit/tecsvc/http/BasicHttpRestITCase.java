@@ -429,8 +429,68 @@ public class BasicHttpRestITCase extends AbstractBaseTestITCase {
 		
 	}
 	
-	
+	@Test
+	public void testRestFlowEntitySetwithMoreProperties() throws Exception {
+		URL url = new URL(SERVICE_URI + "ESAllPrim/PropertyInt16=32767,PropertyString='abc'");
 
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod(HttpMethod.GET.name());
+		connection.setRequestProperty("protocolType", "Rest");
+		connection.connect();
+
+		assertEquals(HttpStatusCode.BAD_REQUEST.getStatusCode(), connection.getResponseCode());
+		final String content = IOUtils.toString(connection.getErrorStream());
+		assertTrue(content.contains("\"message\":\"There are 2 key properties instead of the expected 1.\""));
+		
+	}
+	
+	@Test
+	public void testRestFlowEntitySetwithLessProperties() throws Exception {
+		URL url = new URL(SERVICE_URI + "ESTwoKeyNavCont/PropertyInt16=365");
+
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod(HttpMethod.GET.name());
+		connection.setRequestProperty("protocolType", "Rest");
+		connection.connect();
+
+		assertEquals(HttpStatusCode.BAD_REQUEST.getStatusCode(), connection.getResponseCode());
+		final String content = IOUtils.toString(connection.getErrorStream());
+		assertTrue(content.contains("\"message\":\"There are 1 key properties instead of the expected 2.\""));
+		
+	}
+	
+	@Test
+	public void testRestFlowEntitySetWithNavWithMoreProperties() throws Exception {
+		URL url = new URL(SERVICE_URI + "ESAllPrim/PropertyInt16=32767/NavPropertyETTwoPrimMany"
+				+ "/PropertyInt16=-365,PropertyString='abc'");
+
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod(HttpMethod.GET.name());
+		connection.setRequestProperty("protocolType", "Rest");
+		connection.connect();
+
+		assertEquals(HttpStatusCode.BAD_REQUEST.getStatusCode(), connection.getResponseCode());
+		final String content = IOUtils.toString(connection.getErrorStream());
+		assertTrue(content.contains("\"message\":\"There are 2 key properties instead of the expected 1.\""));
+		
+	}
+	
+	@Test
+	public void testRestFlowEntitySetWithNavWithProperties() throws Exception {
+		URL url = new URL(SERVICE_URI + "ESTwoKeyNavCont/PropertyInt16=365,PropertyString=test"
+				+ "/NavPropertyETTwoKeyNavContMany/PropertyInt16=365");
+
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod(HttpMethod.GET.name());
+		connection.setRequestProperty("protocolType", "Rest");
+		connection.connect();
+
+		assertEquals(HttpStatusCode.BAD_REQUEST.getStatusCode(), connection.getResponseCode());
+		final String content = IOUtils.toString(connection.getErrorStream());
+		assertTrue(content.contains("\"message\":\"There are 1 key properties instead of the expected 2.\""));
+		
+	}
+	
 	@Override
 	protected ODataClient getClient() {
 		return null;

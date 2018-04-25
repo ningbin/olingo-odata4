@@ -109,12 +109,12 @@ public class ResourcePathParser {
     	            UriParserSyntaxException.MessageKeys.SYNTAX);
       } else if (tokenizer.next(TokenKind.ODataIdentifier)) {
           if (previous instanceof UriResourceEntitySet) {
-          	return entityOrpropertyOrProperties(previous);
+          	return entityOrpropertyOrProperties(previous, pathSegment);
           } else if(previous instanceof UriResourceNavigation) {          		
-          	return navigationOrpropertyOrProperties(previous,pathSegment,false);
+          	return navigationOrpropertyOrProperties(previous, pathSegment, false);
           } 
        } else { 
-         return primitiveProperty(tokenizer,previous,pathSegment);
+         return primitiveProperty(tokenizer,previous, pathSegment, false);
        }
      } else {
     	if (tokenizer.next(TokenKind.REF)) {
@@ -466,26 +466,56 @@ public class ResourcePathParser {
    * EntitySet/KeyPropertyName=KeyPropertyValue
    * EntitySet/KeyPropertyName=KeyPropertyValue,KeyPropertyName1=KeyPropertyValue1
    */
-  private UriResource entityOrpropertyOrProperties(final UriResource previous) 
+  private UriResource entityOrpropertyOrProperties(final UriResource previous, String pathSegment) 
 		  throws UriParserException, UriValidationException {
 	  boolean propertyAfterCollection = false;
 	  EdmEntityType edmEntityType = null;
 	  final UriResourceEntitySet entitySet = ((UriResourceEntitySet)previous);
 		edmEntityType = entitySet.getEntityType();
 		final List<EdmKeyPropertyRef> keyPropertyRefs = edmEntityType.getKeyPropertyRefs();
+				
+		String[] pathSegmentSplit = pathSegment.split(",");
 		
-		for (EdmKeyPropertyRef keyPropertyRef: keyPropertyRefs) {
-			if(keyPropertyRef.getName().equals(tokenizer.getText())) {
-				propertyAfterCollection = true;
+		if (pathSegmentSplit.length == 1) {
+			if (navigationCheck(previous)) {
+				return navigationOrProperty(previous);
+			} else if (pathSegmentSplit[0].contains("=")) {
+				if (pathSegmentSplit.length<keyPropertyRefs.size()) {
+			    	throw new UriParserSemanticException("Too many key properties.",
+			        UriParserSemanticException.MessageKeys.WRONG_NUMBER_OF_KEY_PROPERTIES,
+			        Integer.toString(keyPropertyRefs.size()), Integer.toString(pathSegmentSplit.length));
+			    }
+				return primitiveProperty(tokenizer, previous, pathSegment, true);
+			} else {
+				return primitiveProperty(tokenizer, previous, pathSegment, false);
 			}
-		}
-		if (propertyAfterCollection) {
-			List<UriParameter> keys = new ArrayList<UriParameter>();
-			keys.addAll(ParserHelper.compoundKey(tokenizer, edmEntityType, edm, null, 
-					aliases,this.protocolType));
-			((UriResourceWithKeysImpl) entitySet).setKeyPredicates(keys);
 		} else {
-			return navigationOrProperty(previous);
+			if (pathSegmentSplit.length>keyPropertyRefs.size()) {
+		    	throw new UriParserSemanticException("Too many key properties.",
+		                UriParserSemanticException.MessageKeys.WRONG_NUMBER_OF_KEY_PROPERTIES,
+		                Integer.toString(keyPropertyRefs.size()), Integer.toString(keyPropertyRefs.size() + 1));
+		    }
+			
+			List<Boolean> keysValidaterList = new ArrayList<Boolean>();
+			
+			for (String pathSegmentvalue : pathSegmentSplit) {
+				for (EdmKeyPropertyRef keyPropertyRef : keyPropertyRefs) {
+					if (keyPropertyRef.getName().equals(pathSegmentvalue.split("=")[0])) {
+						keysValidaterList.add(true);
+					}
+				}
+			}
+			
+		    if (keysValidaterList.size() == keyPropertyRefs.size() && !keysValidaterList.contains(false)) {
+		    	propertyAfterCollection = true;
+		    }
+		    
+		    if (propertyAfterCollection) {
+				List<UriParameter> keys = new ArrayList<UriParameter>();
+				keys.addAll(ParserHelper.compoundKey(tokenizer, edmEntityType, edm, null, 
+							aliases,this.protocolType));
+				((UriResourceWithKeysImpl) entitySet).setKeyPredicates(keys);
+			}
 		}
 	return entitySet;
   }
@@ -524,16 +554,41 @@ public class ResourcePathParser {
 		   final List<EdmKeyPropertyRef> keyPropertyRefs = 
   		    		navigationProperty.getType().getKeyPropertyRefs();
 			if (keyPropertyRefs.size()==1) {
-			  if (primitiveValueFlow){
 				final EdmProperty edmProperty = keyPropertyRefs.get(0) == null ? null : 
-    	  			  keyPropertyRefs.get(0).getProperty(); 
+  	  			  keyPropertyRefs.get(0).getProperty(); 
+			  if (primitiveValueFlow) {
 				if (edmProperty != null) {
 				keyPredicates = KeyPredicate(edmProperty, keyPropertyRefs, 
     			    		   pathSegment, edm, aliases);
 				}
 			  } else {
-				  keyPredicates.addAll(ParserHelper.compoundKey(tokenizer, 
-		    	  navigationProperty.getType(), edm, null, aliases,this.protocolType));
+				  	String[] pathSegmentSplit = pathSegment.split(",");
+				  	if (pathSegmentSplit[0].contains("=")) {
+					  	if (pathSegmentSplit.length<keyPropertyRefs.size()) {
+					    	throw new UriParserSemanticException("Too many key properties.",
+					        UriParserSemanticException.MessageKeys.WRONG_NUMBER_OF_KEY_PROPERTIES,
+					        Integer.toString(keyPropertyRefs.size()), 
+					        Integer.toString(pathSegmentSplit.length));
+					    }
+					  	if (pathSegmentSplit.length>keyPropertyRefs.size()) {
+					    	throw new UriParserSemanticException("Too many key properties.",
+					        UriParserSemanticException.MessageKeys.WRONG_NUMBER_OF_KEY_PROPERTIES,
+					        Integer.toString(keyPropertyRefs.size()), 
+					        Integer.toString(keyPropertyRefs.size() + 1));
+					    }
+					  	ParserHelper.requireNext(tokenizer, TokenKind.EQ);
+						String[]  pathSegmentWithPropertySplit = pathSegment.split("=");
+						if (edmProperty != null) {
+						keyPredicates.addAll(KeyPredicate(edmProperty, keyPropertyRefs, 
+						pathSegmentWithPropertySplit[pathSegmentWithPropertySplit.length-1], 
+						    edm, aliases));
+						}
+				  	} else {
+				  		if (edmProperty != null) {
+							keyPredicates = KeyPredicate(edmProperty, keyPropertyRefs, 
+			    			    		   pathSegment, edm, aliases);
+							}
+				  	}
 			  }
     	  	} else {
     	  		keyPredicates.addAll(ParserHelper.compoundKey(tokenizer, 
@@ -558,8 +613,8 @@ public class ResourcePathParser {
    * If url is of the form 
    * EntitySet/KeyPropertyValue 
    */
-  private UriResource primitiveProperty(UriTokenizer tokenizer, UriResource previous, String pathSegment) 
-		  throws UriParserException, UriValidationException {
+  private UriResource primitiveProperty(UriTokenizer tokenizer, UriResource previous, String pathSegment, 
+		  boolean primitiveWithPropertykey) throws UriParserException, UriValidationException {
   		if (previous instanceof UriResourceEntitySet) {
   		final UriResourceEntitySetImpl entitySet = ((UriResourceEntitySetImpl)previous);
   		EdmEntityType edmEntityType = entitySet.getEntityType();
@@ -568,10 +623,20 @@ public class ResourcePathParser {
   			final EdmProperty edmProperty = keyPropertyRefs.get(0) == null ? 
   		    				null : keyPropertyRefs.get(0).getProperty();
   			if (edmProperty != null) {
-  			entitySet.setKeyPredicates(KeyPredicate(edmProperty, keyPropertyRefs, 
+  				if (primitiveWithPropertykey) {
+  					ParserHelper.requireNext(tokenizer, TokenKind.EQ);
+  					String[]  pathSegmentSplit = pathSegment.split("=");
+  					entitySet.setKeyPredicates(KeyPredicate(edmProperty, keyPropertyRefs, 
+  					pathSegmentSplit[pathSegmentSplit.length-1], edm, aliases));
+  			  } else {
+  				entitySet.setKeyPredicates(KeyPredicate(edmProperty, keyPropertyRefs, 
   	  		    		pathSegment, edm, aliases));
+  			  }
   			}
-  			ParserHelper.requireTokenEnd(tokenizer); 
+  			if (!(EdmPrimitiveTypeFactory.getInstance(EdmPrimitiveTypeKind.String).
+  					equals((EdmPrimitiveType) edmProperty.getType()))) {
+  				ParserHelper.requireTokenEnd(tokenizer);
+  			}
   	  	}
   		return entitySet;
   		} else if (previous instanceof UriResourceNavigation) {
@@ -584,24 +649,49 @@ public class ResourcePathParser {
 		      throws UriParserException, UriValidationException{
 	  List<UriParameter> keys = new ArrayList<UriParameter>();
 	  UriParameter simpleKey = null;
-	  if (ParserHelper.nextPrimitiveTypeValue(tokenizer, (EdmPrimitiveType) edmProperty.getType(), 
+	  if(ParserHelper.nextPrimitiveTypeValue(tokenizer, (EdmPrimitiveType) edmProperty.getType(), 
 			  edmProperty.isNullable(),null)) {
-		  
-		  if (EdmPrimitiveTypeFactory.getInstance(EdmPrimitiveTypeKind.String).
-  				equals((EdmPrimitiveType) edmProperty.getType())) {		  
-			  simpleKey = ParserHelper.createUriParameter(edmProperty, 
-			  keyPropertyRefs.get(0).getName(),"'"+pathSegment+"'", edm, null, aliases);
-		  } else {
-			  simpleKey = ParserHelper.createUriParameter(edmProperty, 
-					  keyPropertyRefs.get(0).getName(),pathSegment, edm, null, aliases);
+		  simpleKey = ParserHelper.createUriParameter(edmProperty, 
+				  keyPropertyRefs.get(0).getName(),pathSegment, edm, null, aliases);
+		  if (simpleKey != null) {
+		        keys.add(simpleKey);
 		  }
-	    if (simpleKey != null) {
-	        keys.add(simpleKey);
-	       }
-	  } else {
+	  } else if (EdmPrimitiveTypeFactory.getInstance(EdmPrimitiveTypeKind.String).
+				equals((EdmPrimitiveType) edmProperty.getType())) {		  
+		  simpleKey = ParserHelper.createUriParameter(edmProperty, 
+		  keyPropertyRefs.get(0).getName(),"'"+pathSegment+"'", edm, null, aliases);
+		  if (simpleKey != null) {
+		        keys.add(simpleKey);
+		  }
+      } else {
 		    throw new UriParserSemanticException("Wrong parameter value.",
 		    UriParserSemanticException.MessageKeys.INVALID_KEY_VALUE, "");
 		   }
 	return keys;
+  }
+  
+  private boolean navigationCheck(final UriResource previous) throws UriParserException, UriValidationException
+  {
+	  final String name = tokenizer.getText();
+
+	    UriResourcePartTyped previousTyped = null;
+	    EdmStructuredType structType = null;
+	    requireTyped(previous, name);
+	    if (((UriResourcePartTyped) previous).getType() instanceof EdmStructuredType) {
+	      previousTyped = (UriResourcePartTyped) previous;
+	      final EdmType previousTypeFilter = getPreviousTypeFilter(previousTyped);
+	      structType = (EdmStructuredType) (previousTypeFilter == null ? 
+	    		  previousTyped.getType() : previousTypeFilter);
+	    } else {
+	      throw new UriParserSemanticException(
+	          "Cannot parse '" + name + "'; previous path segment is not a structural type.",
+	          UriParserSemanticException.MessageKeys.RESOURCE_PART_MUST_BE_PRECEDED_BY_STRUCTURAL_TYPE, name);
+	    }
+	    final EdmNavigationProperty navigationProperty = structType.getNavigationProperty(name);
+	    if (navigationProperty!=null) {
+	    	return true;
+	    } else {
+	    	return false;
+	    }
   }
 }
