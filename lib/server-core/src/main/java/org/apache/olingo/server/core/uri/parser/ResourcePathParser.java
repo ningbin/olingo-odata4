@@ -632,10 +632,10 @@ public class ResourcePathParser {
   				entitySet.setKeyPredicates(KeyPredicate(edmProperty, keyPropertyRefs, 
   	  		    		pathSegment, edm, aliases));
   			  }
-  			}
   			if (!(EdmPrimitiveTypeFactory.getInstance(EdmPrimitiveTypeKind.String).
   					equals((EdmPrimitiveType) edmProperty.getType()))) {
   				ParserHelper.requireTokenEnd(tokenizer);
+  				}
   			}
   	  	}
   		return entitySet;
