@@ -492,7 +492,7 @@ public class AcceptHeaderAcceptCharsetHeaderITCase extends AbstractBaseTestITCas
   
   @Test
   public void validFormatWithIncorrectCharset() throws Exception {
-    URL url = new URL(SERVICE_URI + "ESAllPrim?$format=application/json;charset=utf<8");
+    URL url = new URL(SERVICE_URI + "ESAllPrim?$format=application/json;charset=utf%3C8");
 
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setRequestMethod(HttpMethod.GET.name());
