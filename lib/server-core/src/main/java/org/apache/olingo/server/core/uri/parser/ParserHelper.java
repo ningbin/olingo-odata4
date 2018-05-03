@@ -458,6 +458,13 @@ public class ParserHelper {
     				edm, referringType, aliases);
     	}
     } else {
+    	if((protocolType != null && protocolType.equalsIgnoreCase(REST)) && 
+    		(odata.createPrimitiveTypeInstance(EdmPrimitiveTypeKind.String).
+				equals((EdmPrimitiveType) edmProperty.getType()))) {
+    		ParserHelper.nextPrimitiveValue(tokenizer);
+    		return createUriParameter(edmProperty, keyPredicateName, "'"+tokenizer.getText()+"'", edm, 
+					referringType, aliases);
+    	}
       throw new UriParserSemanticException(keyPredicateName + " has not a valid  key value.",
           UriParserSemanticException.MessageKeys.INVALID_KEY_VALUE, keyPredicateName);
     }

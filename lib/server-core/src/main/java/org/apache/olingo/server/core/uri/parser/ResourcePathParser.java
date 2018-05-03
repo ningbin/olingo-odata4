@@ -637,7 +637,12 @@ public class ResourcePathParser {
   				ParserHelper.requireTokenEnd(tokenizer);
   				}
   			}
-  	  	}
+  	  	} else {
+  			throw new UriParserSemanticException("Too many key properties.",
+			        UriParserSemanticException.MessageKeys.WRONG_NUMBER_OF_KEY_PROPERTIES,
+			        Integer.toString(keyPropertyRefs.size()), 
+			        Integer.toString(keyPropertyRefs.size()-1));
+  		}
   		return entitySet;
   		} else if (previous instanceof UriResourceNavigation) {
   			return navigationOrpropertyOrProperties(previous,pathSegment,true);

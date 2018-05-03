@@ -491,6 +491,40 @@ public class BasicHttpRestITCase extends AbstractBaseTestITCase {
 		
 	}
 	
+	@Test
+	public void testRestFlowEntitySetWithOneKeyInsteadOfTwo() throws Exception {
+		URL url = new URL(SERVICE_URI + "ESTwoKeyNavCont/365");
+
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod(HttpMethod.GET.name());
+		connection.setRequestProperty("protocolType", "Rest");
+		connection.connect();
+
+		assertEquals(HttpStatusCode.BAD_REQUEST.getStatusCode(), connection.getResponseCode());
+		final String content = IOUtils.toString(connection.getErrorStream());
+		assertTrue(content.contains("\"message\":\"There are 1 key properties instead of the expected 2.\""));
+		
+	}
+	
+	@Test
+	public void testRestFlowWithInegerValueinStringType() throws Exception {
+		URL url = new URL(SERVICE_URI + "ESAllKey/PropertyString=1,PropertyBoolean=true,"
+				+ "PropertySByte=127,PropertyByte=255,PropertyInt16=32767,PropertyInt32=2147483647,"
+				+ "PropertyInt64=9223372036854775807,PropertyDecimal=34,PropertyDate=2012-12-03,"
+				+ "PropertyDateTimeOffset=2012-12-03T07:16:23Z,PropertyDuration=duration'PT6S',"
+				+ "PropertyTimeOfDay=02:48:21,PropertyGuid=01234567-89ab-cdef-0123-456789abcdef");
+
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod(HttpMethod.GET.name());
+		connection.setRequestProperty(HttpHeader.ACCEPT, "application/json;odata.metadata=full");
+		connection.setRequestProperty("protocolType", "Rest");
+		connection.connect();
+
+		assertEquals(HttpStatusCode.NOT_FOUND.getStatusCode(), connection.getResponseCode());
+		final String content = IOUtils.toString(connection.getErrorStream());
+		assertTrue(content.contains("\"message\":\"Nothing found.\""));
+	}
+	
 	@Override
 	protected ODataClient getClient() {
 		return null;
