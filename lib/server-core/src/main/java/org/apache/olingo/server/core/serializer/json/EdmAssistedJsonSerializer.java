@@ -140,8 +140,11 @@ public class EdmAssistedJsonSerializer implements EdmAssistedSerializer {
     }
 
     json.writeArrayFieldStart(Constants.VALUE);
-    for (final Entity entity : entityCollection) {
-      doSerialize(entityType, entity, null, null, json);
+    if(entityCollection instanceof AbstractEntityCollection){
+      AbstractEntityCollection entities = (AbstractEntityCollection)entityCollection;
+      for (final Entity entity : entities) {
+        doSerialize(entityType, entity, null, null, json);
+      }
     }
     json.writeEndArray();
 

@@ -34,17 +34,6 @@ import io.reactivex.Observer;
 public class EntityObservableTest {
   
   @Test(expected = ODataNotSupportedException.class)
-  public void getIteratorTest(){
-    EntityObservable observable = new EntityObservable() {
-      @Override
-      public Observable<Entity>  getObservable() {
-        return null;
-      }
-    };
-    observable.iterator();
-  }
-  
-  @Test(expected = ODataNotSupportedException.class)
   public void getOperationsTest(){
     EntityObservable observable = new EntityObservable() {
       @Override
@@ -100,8 +89,6 @@ public class EntityObservableTest {
 
           @Override
           protected void subscribeActual(Observer<? super Entity> observer) {
-            // TODO Auto-generated method stub
-            
           }};
       }
     };

@@ -19,11 +19,9 @@
 package org.apache.olingo.server.rx.api;
 
 import java.net.URI;
-import java.util.Iterator;
 import java.util.List;
 
-import org.apache.olingo.commons.api.data.AbstractEntityCollection;
-import org.apache.olingo.commons.api.data.Entity;
+import org.apache.olingo.commons.api.data.AbstractEntityCollectionObject;
 import org.apache.olingo.commons.api.data.Operation;
 import org.apache.olingo.commons.api.ex.ODataNotSupportedException;
 
@@ -33,7 +31,7 @@ import io.reactivex.Observable;
 /**
  * Data representation as an Observable for a collection of single entities.
  */
-public abstract class EntityObservable extends AbstractEntityCollection {
+public abstract class EntityObservable extends AbstractEntityCollectionObject{
   
   private URI next;
   private Integer count;
@@ -43,11 +41,11 @@ public abstract class EntityObservable extends AbstractEntityCollection {
    * <p/>
    * <b>ATTENTION:</b> <code>iterator</code> is not supported.
    */
-  @Override
+/*  @Override
   public final Iterator<Entity> iterator() {
     //"iterator is not supported for iteration over Entities."
     throw new ODataNotSupportedException("Entity Observable does not support iterator()");
-  }
+  }*/
   
   /**
    * {@inheritDoc}

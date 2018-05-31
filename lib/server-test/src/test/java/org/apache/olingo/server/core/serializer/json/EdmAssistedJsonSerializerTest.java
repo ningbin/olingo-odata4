@@ -355,10 +355,11 @@ public class EdmAssistedJsonSerializerTest {
     contextURLBuilder = edmEntitySet == null ?
         contextURLBuilder.entitySetOrSingletonOrType("EntitySet") :
         contextURLBuilder.entitySet(edmEntitySet);
-    if (selectList == null) {
+    if (selectList == null && entityCollection instanceof AbstractEntityCollection) {
       if (edmEntitySet == null) {
         StringBuilder names = new StringBuilder();
-        for (final Property property : entityCollection.iterator().next().getProperties()) {
+        for (final Property property : 
+          ((AbstractEntityCollection)entityCollection).iterator().next().getProperties()) {
           names.append(names.length() > 0 ? ',' : "").append(property.getName());
         }
         contextURLBuilder = contextURLBuilder.selectList(names.toString());

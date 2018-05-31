@@ -25,6 +25,8 @@ import java.util.Set;
 
 import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.data.AbstractEntityCollection;
+import org.apache.olingo.commons.api.data.AbstractEntityCollectionObject;
+import org.apache.olingo.commons.api.data.AbstractODataObject;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.format.ContentType;
@@ -49,7 +51,7 @@ public class ODataJsonRxSerializer extends ODataJsonSerializer {
   @SuppressWarnings("unchecked")
   @Override
   protected void writeEntitySet(final ServiceMetadata metadata, final EdmEntityType entityType,
-      final AbstractEntityCollection entitySet, final ExpandOption expand, final Integer toDepth, 
+      final AbstractEntityCollectionObject entitySet, final ExpandOption expand, final Integer toDepth, 
       final SelectOption select, final boolean onlyReference, final Set<String> ancestors, 
       final String name, final JsonGenerator json) throws IOException, SerializerException {
     final List<SerializerException> ex = new ArrayList<SerializerException>();

@@ -18,6 +18,15 @@
  */
 package org.apache.olingo.commons.api.data;
 
-public abstract class AbstractEntityCollection extends AbstractEntityCollectionObject implements Iterable<Entity> {
+import java.net.URI;
+import java.util.List;
 
+public abstract class AbstractEntityCollectionObject extends AbstractODataObject {
+  public abstract Integer getCount();
+
+  public abstract URI getNext();
+
+  public abstract URI getDeltaLink();
+  
+  public abstract List<Operation> getOperations();
 }

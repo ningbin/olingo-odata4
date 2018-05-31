@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.data.AbstractEntityCollection;
+import org.apache.olingo.commons.api.data.AbstractEntityCollectionObject;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.edm.EdmComplexType;
@@ -109,7 +110,7 @@ public class ODataXmlSerializer implements ODataSerializer {
 
   @Override
   public SerializerStreamResult entityCollectionStreamed(ServiceMetadata metadata, EdmEntityType entityType,
-      AbstractEntityCollection entities, EntityCollectionSerializerOptions options) throws SerializerException {
+      AbstractEntityCollectionObject entities, EntityCollectionSerializerOptions options) throws SerializerException {
     throw new SerializerException("Entity Collection serialization not implemented for XML format",
         SerializerException.MessageKeys.NOT_IMPLEMENTED);
   }

@@ -521,22 +521,25 @@ public class JsonDeltaSerializerWithNavigations implements EdmDeltaSerializer {
       final AbstractEntityCollection entitySet, final ExpandOption expand, final SelectOption select,
       final boolean onlyReference, String name, final JsonGenerator json) throws IOException,
       SerializerException {
-    json.writeStartArray();
-    for (final Entity entity : entitySet) {
-      if (onlyReference) {
-        json.writeStartObject();
-        json.writeStringField(Constants.JSON_ID, getEntityId(entity, entityType, null));
-        json.writeEndObject();
-      } else {
-        if (entity instanceof DeletedEntity) {
-          writeDeletedEntity(entity, json);
+    if (entitySet instanceof AbstractEntityCollection) {
+      AbstractEntityCollection entities = (AbstractEntityCollection)entitySet;
+      json.writeStartArray();
+      for (final Entity entity : entities) {
+        if (onlyReference) {
+          json.writeStartObject();
+          json.writeStringField(Constants.JSON_ID, getEntityId(entity, entityType, null));
+          json.writeEndObject();
         } else {
-          writeAddedUpdatedEntity(metadata, entityType, entity, expand, select, null, false, name, json);
-        }
+          if (entity instanceof DeletedEntity) {
+            writeDeletedEntity(entity, json);
+          } else {
+            writeAddedUpdatedEntity(metadata, entityType, entity, expand, select, null, false, name, json);
+          }
 
+        }
       }
+      json.writeEndArray();
     }
-    json.writeEndArray();
   }
 
   protected void writeExpandedNavigationProperty(

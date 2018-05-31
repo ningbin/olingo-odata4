@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.data.AbstractEntityCollection;
+import org.apache.olingo.commons.api.data.AbstractEntityCollectionObject;
 import org.apache.olingo.commons.api.data.ComplexValue;
 import org.apache.olingo.commons.api.data.ContextURL;
 import org.apache.olingo.commons.api.data.Entity;
@@ -217,13 +218,13 @@ public class ODataJsonSerializer implements ODataSerializer {
 
   @Override
   public SerializerStreamResult entityCollectionStreamed(ServiceMetadata metadata, EdmEntityType entityType,
-      AbstractEntityCollection entities, EntityCollectionSerializerOptions options) throws SerializerException {
+      AbstractEntityCollectionObject entities, EntityCollectionSerializerOptions options) throws SerializerException {
 
     return ODataWritableContent.with(entities, entityType, this, metadata, options).build();
   }
 
   public void entityCollectionIntoStream(final ServiceMetadata metadata,
-      final EdmEntityType entityType, final AbstractEntityCollection entitySet,
+      final EdmEntityType entityType, final AbstractEntityCollectionObject entitySet,
       final EntityCollectionSerializerOptions options, final OutputStream outputStream)
       throws SerializerException {
 
@@ -302,20 +303,24 @@ public class ODataJsonSerializer implements ODataSerializer {
   }
 
   protected void writeEntitySet(final ServiceMetadata metadata, final EdmEntityType entityType,
-      final AbstractEntityCollection entitySet, final ExpandOption expand, Integer toDepth, final SelectOption select,
+      final AbstractEntityCollectionObject entitySet, final ExpandOption expand, 
+      Integer toDepth, final SelectOption select,
       final boolean onlyReference, final Set<String> ancestors, String name, final JsonGenerator json)
           throws IOException, SerializerException {
-    json.writeStartArray();
-    for (final Entity entity : entitySet) {
-      if (onlyReference) {
-        json.writeStartObject();
-        json.writeStringField(Constants.JSON_ID, getEntityId(entity, entityType, name));
-        json.writeEndObject();
-      } else {
-        writeEntity(metadata, entityType, entity, null, expand, toDepth, select, false, ancestors, name, json);
+    if(entitySet instanceof AbstractEntityCollection){
+      AbstractEntityCollection entities = (AbstractEntityCollection)entitySet;
+      json.writeStartArray();
+      for (final Entity entity : entities) {
+        if (onlyReference) {
+          json.writeStartObject();
+          json.writeStringField(Constants.JSON_ID, getEntityId(entity, entityType, name));
+          json.writeEndObject();
+        } else {
+          writeEntity(metadata, entityType, entity, null, expand, toDepth, select, false, ancestors, name, json);
+        }
       }
+      json.writeEndArray();
     }
-    json.writeEndArray();
   }
 
   /**
@@ -1255,10 +1260,14 @@ public class ODataJsonSerializer implements ODataSerializer {
       }
 
       json.writeArrayFieldStart(Constants.VALUE);
-      for (final Entity entity : entityCollection) {
-        json.writeStartObject();
-        json.writeStringField(Constants.JSON_ID, uriHelper.buildCanonicalURL(edmEntitySet, entity));
-        json.writeEndObject();
+      if (entityCollection instanceof AbstractEntityCollection) {
+        AbstractEntityCollection entities = (AbstractEntityCollection) entityCollection;
+
+        for (final Entity entity : entities) {
+          json.writeStartObject();
+          json.writeStringField(Constants.JSON_ID, uriHelper.buildCanonicalURL(edmEntitySet, entity));
+          json.writeEndObject();
+        }
       }
       json.writeEndArray();
 
@@ -1307,7 +1316,7 @@ public class ODataJsonSerializer implements ODataSerializer {
     }
   }
 
-  protected void writeNextLink(final AbstractEntityCollection entitySet, final JsonGenerator json)
+  protected void writeNextLink(final AbstractEntityCollectionObject entitySet, final JsonGenerator json)
       throws IOException {
     if (entitySet.getNext() != null) {
       json.writeStringField(Constants.JSON_NEXT_LINK, entitySet.getNext().toASCIIString());
