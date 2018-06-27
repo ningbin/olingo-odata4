@@ -35,7 +35,7 @@ public abstract class EntityObservable extends AbstractEntityCollectionObject{
   
   private URI next;
   private Integer count;
-    
+
   /**
    * {@inheritDoc}
    * <p/>

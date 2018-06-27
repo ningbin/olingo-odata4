@@ -31,6 +31,7 @@ import org.apache.olingo.client.api.serialization.ODataBinder;
 import org.apache.olingo.client.api.serialization.ODataMetadataValidation;
 import org.apache.olingo.client.api.serialization.ODataReader;
 import org.apache.olingo.client.api.serialization.ODataSerializer;
+import org.apache.olingo.client.api.serialization.ODataSerializerException;
 import org.apache.olingo.client.api.serialization.ODataWriter;
 import org.apache.olingo.client.api.uri.FilterFactory;
 import org.apache.olingo.client.api.uri.SearchFactory;
@@ -78,4 +79,6 @@ public interface ODataClient {
   BatchRequestFactory getBatchRequestFactory();
   
   ODataMetadataValidation metadataValidation();
+  
+  ODataSerializer getRxSerializer(ContentType contentType) throws ODataSerializerException;
 }

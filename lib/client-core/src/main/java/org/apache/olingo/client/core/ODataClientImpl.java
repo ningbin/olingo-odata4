@@ -18,6 +18,8 @@
  */
 package org.apache.olingo.client.core;
 
+import java.lang.reflect.Constructor;
+
 import org.apache.olingo.client.api.Configuration;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.header.ODataHeaders;
@@ -33,6 +35,7 @@ import org.apache.olingo.client.api.serialization.ODataBinder;
 import org.apache.olingo.client.api.serialization.ODataMetadataValidation;
 import org.apache.olingo.client.api.serialization.ODataReader;
 import org.apache.olingo.client.api.serialization.ODataSerializer;
+import org.apache.olingo.client.api.serialization.ODataSerializerException;
 import org.apache.olingo.client.api.serialization.ODataWriter;
 import org.apache.olingo.client.api.uri.FilterFactory;
 import org.apache.olingo.client.api.uri.SearchFactory;
@@ -54,8 +57,8 @@ import org.apache.olingo.client.core.serialization.ODataWriterImpl;
 import org.apache.olingo.client.core.uri.FilterFactoryImpl;
 import org.apache.olingo.client.core.uri.URIBuilderImpl;
 import org.apache.olingo.commons.api.edm.constants.ODataServiceVersion;
-import org.apache.olingo.commons.api.http.HttpHeader;
 import org.apache.olingo.commons.api.format.ContentType;
+import org.apache.olingo.commons.api.http.HttpHeader;
 
 public class ODataClientImpl implements ODataClient {
 
@@ -184,5 +187,23 @@ public class ODataClientImpl implements ODataClient {
   @Override
   public ODataMetadataValidation metadataValidation() {
     return metadataValidation;
+  }
+  
+  @Override
+  public ODataSerializer getRxSerializer(final ContentType contentType) throws ODataSerializerException {
+    ODataSerializer serializer = null;
+    final String serJson = "org.apache.olingo.client.rx.serializer.json.JsonRxSerializer";
+    Class<?> clazz;
+    try {
+      clazz = Class.forName(serJson);
+      Constructor<?> cons = clazz.getConstructor(boolean.class, ContentType.class);
+      serializer = contentType.isCompatible(ContentType.APPLICATION_ATOM_SVC)
+          || contentType.isCompatible(ContentType.APPLICATION_ATOM_XML)
+          || contentType.isCompatible(ContentType.APPLICATION_XML) ?
+          new AtomSerializer() : (JsonSerializer) cons.newInstance(false, contentType);
+    } catch (Exception e) {
+      throw new ODataSerializerException(e);
+    }
+    return serializer;
   }
 }
