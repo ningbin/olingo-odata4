@@ -410,7 +410,8 @@ public class ODataJsonRxSerializerTest {
         "\"PropertyInt64\":9223372036854775807,\"PropertySingle\":1.79E20,\"PropertyDouble\":-1.79E19,"+
         "\"PropertyDecimal\":34,\"PropertyBinary\":\"ASNFZ4mrze8=\",\"PropertyDate\":\"2012-12-03\","+
         "\"PropertyDateTimeOffset\":\"2012-12-03T07:16:23Z\",\"PropertyDuration\":\"PT6S\","+
-        "\"PropertyGuid\":\"01234567-89ab-cdef-0123-456789abcdef\",\"PropertyTimeOfDay\":\"03:26:05\"}}]}",resultString);
+        "\"PropertyGuid\":\"01234567-89ab-cdef-0123-456789abcdef\",\"PropertyTimeOfDay\":\"03:26:05\"}}]}"
+        ,resultString);
   }
 
   @Test
@@ -457,7 +458,8 @@ public class ODataJsonRxSerializerTest {
         "\"PropertyDuration\":\"PT0S\",\"PropertyGuid\":\"76543201-23ab-cdef-0123-456789cccddd\","+
         "\"PropertyTimeOfDay\":\"00:01:01\",\"NavPropertyETTwoPrimMany\":"+
         "[{\"PropertyInt16\":32766,\"PropertyString\":\"Test String1\"},"+
-        "{\"PropertyInt16\":-32766,\"PropertyString\":null},{\"PropertyInt16\":32767,\"PropertyString\":\"Test String4\"}]}]}"
+        "{\"PropertyInt16\":-32766,\"PropertyString\":null},"+
+        "{\"PropertyInt16\":32767,\"PropertyString\":\"Test String4\"}]}]}"
         ,resultString);
   }
   @Test
