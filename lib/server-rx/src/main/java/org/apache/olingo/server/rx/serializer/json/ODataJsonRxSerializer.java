@@ -24,9 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.olingo.commons.api.Constants;
-import org.apache.olingo.commons.api.data.AbstractEntityCollection;
 import org.apache.olingo.commons.api.data.AbstractEntityCollectionObject;
-import org.apache.olingo.commons.api.data.AbstractODataObject;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.format.ContentType;
@@ -54,52 +52,58 @@ public class ODataJsonRxSerializer extends ODataJsonSerializer {
       final AbstractEntityCollectionObject entitySet, final ExpandOption expand, final Integer toDepth, 
       final SelectOption select, final boolean onlyReference, final Set<String> ancestors, 
       final String name, final JsonGenerator json) throws IOException, SerializerException {
-    final List<SerializerException> ex = new ArrayList<SerializerException>();
-    json.writeStartArray();
-    ((EntityObservable) entitySet).getObservable().subscribe(new Observer<Entity>() {
+    if (entitySet instanceof EntityObservable) {
+      final List<SerializerException> ex = new ArrayList<SerializerException>();
+      json.writeStartArray();
+      ((EntityObservable) entitySet).getObservable().subscribe(new Observer<Entity>() {
 
-      @Override
-      public void onError(Throwable e) {
-        ex.add(new SerializerException(e.getMessage(), e,
-            SerializerException.MessageKeys.IO_EXCEPTION));
-      }
-
-      @Override
-      public void onNext(Entity entity) {
-        try {
-          if (onlyReference) {
-            json.writeStartObject();
-            json.writeStringField(Constants.JSON_ID, getEntityId((Entity) entity,
-                entityType, name));
-            json.writeEndObject();
-          } else {
-            writeEntity(metadata, entityType, (Entity) entity, null, expand, toDepth,
-                select, false, ancestors, name, json);
-          }
-        } catch (SerializerException e) {
-          ex.add(e);
-        } catch (IOException e) {
+        @Override
+        public void onError(Throwable e) {
           ex.add(new SerializerException(e.getMessage(), e,
               SerializerException.MessageKeys.IO_EXCEPTION));
         }
-      }
 
-      @Override
-      public void onSubscribe(Disposable d) {
-        //Provides the Observer with the means of cancelling the connection with the Observable.
-       
-      }
+        @Override
+        public void onNext(Entity entity) {
+          try {
+            if (onlyReference) {
+              json.writeStartObject();
+              json.writeStringField(Constants.JSON_ID, getEntityId((Entity) entity,
+                  entityType, name));
+              json.writeEndObject();
+            } else {
+              writeEntity(metadata, entityType, (Entity) entity, null, expand, toDepth,
+                  select, false, ancestors, name, json);
+            }
+          } catch (SerializerException e) {
+            ex.add(e);
+          } catch (IOException e) {
+            ex.add(new SerializerException(e.getMessage(), e,
+                SerializerException.MessageKeys.IO_EXCEPTION));
+          }
+        }
 
-      @Override
-      public void onComplete() {
-        //Notifies the Observer that the Observable has finished sending push-based notifications
-        //No task to be performed on Complete
-      }
-    });
+        @Override
+        public void onSubscribe(Disposable d) {
+          // Provides the Observer with the means of cancelling the connection with the Observable.
 
-    json.writeEndArray();
-    if (!ex.isEmpty()) {
-      throw ex.get(0);
+        }
+
+        @Override
+        public void onComplete() {
+          // Notifies the Observer that the Observable has finished sending push-based notifications
+          // No task to be performed on Complete
+        }
+      });
+
+      json.writeEndArray();
+      if (!ex.isEmpty()) {
+        throw ex.get(0);
+      }
+    } else {
+      super.writeEntitySet(metadata, entityType, entitySet, expand, toDepth,
+          select, onlyReference, ancestors,
+          name, json);
     }
   }
 }
