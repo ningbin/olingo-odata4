@@ -43,8 +43,8 @@
     <module>server-core</module>
     <module>server-core-ext</module>
     <module>server-rx</module>
-    <module>server-test</module>
     <module>server-tecsvc</module>
+    <module>server-test</module>
   </modules>
 
   <properties>
