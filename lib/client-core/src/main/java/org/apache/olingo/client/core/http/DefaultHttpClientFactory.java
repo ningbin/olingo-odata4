@@ -23,7 +23,9 @@ import java.net.URI;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.params.CoreProtocolPNames;
 import org.apache.olingo.commons.api.http.HttpMethod;
 
 /**
@@ -31,11 +33,19 @@ import org.apache.olingo.commons.api.http.HttpMethod;
  */
 public class DefaultHttpClientFactory extends AbstractHttpClientFactory {
 
+  @SuppressWarnings("deprecation")
   @Override
   public CloseableHttpClient create(final HttpMethod method, final URI uri) {
-    final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
-    clientBuilder.setUserAgent(USER_AGENT);
-    return clientBuilder.build();
+    try {
+      Class.forName("org.apache.http.impl.client.HttpClientBuilder");
+      final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+      clientBuilder.setUserAgent(USER_AGENT);
+      return clientBuilder.build();
+    } catch(ClassNotFoundException e) {
+      final DefaultHttpClient client = new DefaultHttpClient();
+      client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
+      return client;
+    }
   }
 
   @SuppressWarnings("deprecation")

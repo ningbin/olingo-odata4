@@ -25,6 +25,7 @@ import org.apache.http.auth.NTCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.olingo.commons.api.http.HttpMethod;
 
@@ -56,15 +57,29 @@ public class NTLMAuthHttpClientFactory extends DefaultHttpClientFactory {
     this.domain = domain;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public CloseableHttpClient create(final HttpMethod method, final URI uri) {
-    final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
-    clientBuilder.setUserAgent(USER_AGENT);
-    final CredentialsProvider credsProvider = new BasicCredentialsProvider();
-    credsProvider.setCredentials(AuthScope.ANY,
-            new NTCredentials(username, password, workstation, domain));
+    try {
+      Class.forName("org.apache.http.impl.client.HttpClientBuilder");
+      final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+      clientBuilder.setUserAgent(USER_AGENT);
+      final CredentialsProvider credsProvider = new BasicCredentialsProvider();
+      credsProvider.setCredentials(AuthScope.ANY,
+              new NTCredentials(username, password, workstation, domain));
+  
+      clientBuilder.setDefaultCredentialsProvider(credsProvider);
+      return clientBuilder.build();
+    } catch(ClassNotFoundException e) {
+      final DefaultHttpClient httpclient = (DefaultHttpClient) super.create(method, uri);
 
-    clientBuilder.setDefaultCredentialsProvider(credsProvider);
-    return clientBuilder.build();
+      final CredentialsProvider credsProvider = new BasicCredentialsProvider();
+      credsProvider.setCredentials(AuthScope.ANY,
+              new NTCredentials(username, password, workstation, domain));
+
+      httpclient.setCredentialsProvider(credsProvider);
+
+      return httpclient;
+    }
   }
 }

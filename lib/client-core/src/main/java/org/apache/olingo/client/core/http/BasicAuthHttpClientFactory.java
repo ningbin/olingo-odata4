@@ -25,6 +25,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.olingo.commons.api.http.HttpMethod;
 
@@ -42,16 +43,28 @@ public class BasicAuthHttpClientFactory extends DefaultHttpClientFactory {
     this.password = password;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public CloseableHttpClient create(final HttpMethod method, final URI uri) {
-    final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
-    clientBuilder.setUserAgent(USER_AGENT);
+    try {  
+      Class.forName("org.apache.http.impl.client.HttpClientBuilder");
+      final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+      clientBuilder.setUserAgent(USER_AGENT);
 
-    CredentialsProvider credsProvider = new BasicCredentialsProvider();
-    credsProvider.setCredentials(new AuthScope(uri.getHost(), uri.getPort()),
-        new UsernamePasswordCredentials(username, password));
-    clientBuilder.setDefaultCredentialsProvider(credsProvider);
-    
-    return clientBuilder.build();
+      CredentialsProvider credsProvider = new BasicCredentialsProvider();
+      credsProvider.setCredentials(new AuthScope(uri.getHost(), uri.getPort()),
+          new UsernamePasswordCredentials(username, password));
+      clientBuilder.setDefaultCredentialsProvider(credsProvider);
+      
+      return clientBuilder.build();
+    } catch (ClassNotFoundException e) {
+      final DefaultHttpClient httpclient = (DefaultHttpClient) super.create(method, uri);
+      
+      httpclient.getCredentialsProvider().setCredentials(
+              new AuthScope(uri.getHost(), uri.getPort()),
+              new UsernamePasswordCredentials(username, password));
+
+      return httpclient;
+    }
   }
 }
