@@ -35,7 +35,7 @@ public class DefaultHttpClientFactory extends AbstractHttpClientFactory {
 
   @SuppressWarnings("deprecation")
   @Override
-  public CloseableHttpClient create(final HttpMethod method, final URI uri) {
+  public HttpClient create(final HttpMethod method, final URI uri) {
     try {
       Class.forName("org.apache.http.impl.client.HttpClientBuilder");
       final HttpClientBuilder clientBuilder = HttpClientBuilder.create();

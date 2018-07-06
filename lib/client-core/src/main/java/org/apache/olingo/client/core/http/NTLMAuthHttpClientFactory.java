@@ -23,6 +23,7 @@ import java.net.URI;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.NTCredentials;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -59,7 +60,7 @@ public class NTLMAuthHttpClientFactory extends DefaultHttpClientFactory {
 
   @SuppressWarnings("deprecation")
   @Override
-  public CloseableHttpClient create(final HttpMethod method, final URI uri) {
+  public HttpClient create(final HttpMethod method, final URI uri) {
     try {
       Class.forName("org.apache.http.impl.client.HttpClientBuilder");
       final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
