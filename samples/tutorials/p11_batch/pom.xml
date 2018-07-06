@@ -25,7 +25,7 @@
 	<groupId>my.group.id</groupId>
 	<artifactId>DemoService-Batch</artifactId>
 	<packaging>war</packaging>
-	<version>4.4.0-sap-04-SNAPSHOT</version>
+	<version>4.4.0-sap-04</version>
 
 	<name>${project.artifactId}-Webapp</name>
 
