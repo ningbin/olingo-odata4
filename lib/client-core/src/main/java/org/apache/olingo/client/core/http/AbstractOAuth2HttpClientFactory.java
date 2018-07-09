@@ -29,7 +29,6 @@ import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.params.CoreProtocolPNames;
@@ -129,58 +128,87 @@ public abstract class AbstractOAuth2HttpClientFactory
     if (!isInited()) {
       init();
     }
-
-    final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
-    clientBuilder.setUserAgent(USER_AGENT);
-    accessToken(clientBuilder);
     
-    if (null == this.httpClient) {
-      clientBuilder.addInterceptorFirst(new HttpRequestInterceptor() {
-
-        @Override
-        public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
-          if (request instanceof HttpUriRequest) {
-            currentRequest = (HttpUriRequest) request;
-          } else {
-            currentRequest = null;
-          }
-        }
-      });
-    } 
-    if (null != this.httpClient) {
-      this.httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
-
-        @Override
-        public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
-          if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
-            refreshToken(getHttpClient());
-
-            if (currentRequest != null) {
-              getHttpClient().execute(currentRequest);
+    try {
+      Class.forName("org.apache.http.impl.client.HttpClientBuilder");
+      final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+      clientBuilder.setUserAgent(USER_AGENT);
+      accessToken(clientBuilder);
+      
+      if (null == this.httpClient) {
+        clientBuilder.addInterceptorFirst(new HttpRequestInterceptor() {
+  
+          @Override
+          public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
+            if (request instanceof HttpUriRequest) {
+              currentRequest = (HttpUriRequest) request;
+            } else {
+              currentRequest = null;
             }
           }
-        }
-      });
-    } else {
-      clientBuilder.addInterceptorFirst(new HttpResponseInterceptor() {
-
-        @Override
-        public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
-          if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
-            refreshToken(clientBuilder);
-
-            if (currentRequest != null) {
-               clientBuilder.build().execute(currentRequest);
+        });
+        clientBuilder.addInterceptorFirst(new HttpResponseInterceptor() {
+  
+          @Override
+          public void process(final HttpResponse response, final HttpContext context) 
+              throws HttpException, IOException {
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
+              refreshToken(clientBuilder);
+  
+              if (currentRequest != null) {
+                 clientBuilder.build().execute(currentRequest);
+              }
             }
           }
+        });
+        return clientBuilder.build();
+        } else {
+          this.httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
+
+            @Override
+            public void process(final HttpResponse response, final HttpContext context) 
+                throws HttpException, IOException {
+              if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
+                refreshToken(httpClient);
+
+                if (currentRequest != null) {
+                  httpClient.execute(currentRequest);
+                }
+              }
+            }
+          });
+          return this.httpClient;
         }
-      });
+  } catch(ClassNotFoundException e) {
+    final DefaultHttpClient httpClient = new DefaultHttpClient();
+    httpClient.getParams().setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
+    accessToken(httpClient);
+    httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
+
+      @Override
+      public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
+        if (request instanceof HttpUriRequest) {
+          currentRequest = (HttpUriRequest) request;
+        } else {
+          currentRequest = null;
+        }
+      }
+    });
+    httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
+
+      @Override
+      public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
+          refreshToken(httpClient);
+
+          if (currentRequest != null) {
+            httpClient.execute(currentRequest);
+          }
+        }
+      }
+    });
+    return httpClient;
     }
-    
-    if (null != this.httpClient) {
-      return this.httpClient;
-    }
-    return clientBuilder.build();
   }
 
   @Override

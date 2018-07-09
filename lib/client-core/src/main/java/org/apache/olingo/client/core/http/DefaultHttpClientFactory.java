@@ -51,14 +51,13 @@ public class DefaultHttpClientFactory extends AbstractHttpClientFactory {
   @SuppressWarnings("deprecation")
   @Override
   public void close(HttpClient httpClient) {
-    if (httpClient instanceof CloseableHttpClient) {
-      try {
-        ((CloseableHttpClient) httpClient).close();
-      } catch (IOException e) {
-        httpClient = null;
-      }
-    } else {
+    try {
+      Class.forName("org.apache.http.impl.client.CloseableHttpClient");
+      ((CloseableHttpClient) httpClient).close();
+    } catch(ClassNotFoundException e) {
       httpClient.getConnectionManager().shutdown();
+    } catch (IOException e) {
+      httpClient = null;
     }
   }
 }
