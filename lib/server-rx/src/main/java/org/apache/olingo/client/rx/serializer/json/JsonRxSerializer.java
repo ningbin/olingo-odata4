@@ -73,7 +73,7 @@ public class JsonRxSerializer extends JsonEntitySerializer {
 
         @Override
         public void onSubscribe(Disposable d) {
-          System.out.println();
+          
         }
 
         @Override
