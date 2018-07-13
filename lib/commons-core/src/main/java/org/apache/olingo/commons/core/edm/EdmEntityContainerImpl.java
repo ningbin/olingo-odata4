@@ -29,16 +29,22 @@ import org.apache.olingo.commons.api.edm.Edm;
 import org.apache.olingo.commons.api.edm.EdmActionImport;
 import org.apache.olingo.commons.api.edm.EdmEntityContainer;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
+import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.edm.EdmException;
 import org.apache.olingo.commons.api.edm.EdmFunctionImport;
+import org.apache.olingo.commons.api.edm.EdmProperty;
 import org.apache.olingo.commons.api.edm.EdmSingleton;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlActionImport;
+import org.apache.olingo.commons.api.edm.provider.CsdlAnnotation;
+import org.apache.olingo.commons.api.edm.provider.CsdlAnnotations;
 import org.apache.olingo.commons.api.edm.provider.CsdlEdmProvider;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainer;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainerInfo;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
+import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 import org.apache.olingo.commons.api.edm.provider.CsdlFunctionImport;
+import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
 import org.apache.olingo.commons.api.edm.provider.CsdlSingleton;
 
 public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntityContainer {
@@ -76,7 +82,8 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
     this.provider = provider;
     container = entityContainer;
     entityContainerName = containerFQN;
-    parentContainerName = entityContainer.getExtendsContainerFQN();
+    parentContainerName = entityContainer == null ? null : 
+      entityContainer.getExtendsContainerFQN();
   }
 
   @Override
@@ -180,6 +187,7 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
     try {
       final CsdlSingleton providerSingleton = provider.getSingleton(entityContainerName, singletonName);
       if (providerSingleton != null) {
+        addAnnotations(providerSingleton, entityContainerName);
         singleton = new EdmSingletonImpl(edm, this, providerSingleton);
       }
     } catch (ODataException e) {
@@ -189,12 +197,31 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
     return singleton;
   }
 
+  private void addAnnotations(CsdlSingleton singleton, FullQualifiedName entityContainerName) {
+    List<CsdlSchema> termSchemaDefinition = ((EdmProviderImpl)edm).getTermSchemaDefinitions();
+    for (CsdlSchema schema : termSchemaDefinition) {
+      List<CsdlAnnotations> annotationGrps = schema.getAnnotationGroups();
+      for (CsdlAnnotations annotationGrp : annotationGrps) {
+        if (annotationGrp.getTarget().
+            equalsIgnoreCase(entityContainerName + "/" + singleton.getName())) {
+          for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+            if (!singleton.getAnnotations().contains(annotation)) {
+              singleton.getAnnotations().addAll(annotationGrp.getAnnotations());
+            }
+          }
+          break;
+        }
+      }
+    }
+   }
+  
   protected EdmEntitySet createEntitySet(final String entitySetName) {
     EdmEntitySet entitySet = null;
 
     try {
       final CsdlEntitySet providerEntitySet = provider.getEntitySet(entityContainerName, entitySetName);
       if (providerEntitySet != null) {
+        addAnnotations(providerEntitySet, entityContainerName);
         entitySet = new EdmEntitySetImpl(edm, this, providerEntitySet);
       }
     } catch (ODataException e) {
@@ -204,12 +231,31 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
     return entitySet;
   }
 
+  private void addAnnotations(CsdlEntitySet entitySet, FullQualifiedName entityContainerName) {
+   List<CsdlSchema> termSchemaDefinition = ((EdmProviderImpl)edm).getTermSchemaDefinitions();
+   for (CsdlSchema schema : termSchemaDefinition) {
+     List<CsdlAnnotations> annotationGrps = schema.getAnnotationGroups();
+     for (CsdlAnnotations annotationGrp : annotationGrps) {
+       if (annotationGrp.getTarget().
+           equalsIgnoreCase(entityContainerName + "/" + entitySet.getName())) {
+         for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+           if (!entitySet.getAnnotations().contains(annotation)) {
+             entitySet.getAnnotations().addAll(annotationGrp.getAnnotations());
+           }
+         }
+         break;
+       }
+     }
+   }
+  }
+
   protected EdmActionImport createActionImport(final String actionImportName) {
     EdmActionImport actionImport = null;
 
     try {
       final CsdlActionImport providerImport = provider.getActionImport(entityContainerName, actionImportName);
       if (providerImport != null) {
+        addAnnotations(providerImport, entityContainerName);
         actionImport = new EdmActionImportImpl(edm, this, providerImport);
       }
     } catch (ODataException e) {
@@ -219,12 +265,31 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
     return actionImport;
   }
 
+  private void addAnnotations(CsdlActionImport actionImport, FullQualifiedName entityContainerName) {
+    List<CsdlSchema> termSchemaDefinition = ((EdmProviderImpl)edm).getTermSchemaDefinitions();
+    for (CsdlSchema schema : termSchemaDefinition) {
+      List<CsdlAnnotations> annotationGrps = schema.getAnnotationGroups();
+      for (CsdlAnnotations annotationGrp : annotationGrps) {
+        if (annotationGrp.getTarget().
+            equalsIgnoreCase(entityContainerName + "/" + actionImport.getName())) {
+          for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+            if (!actionImport.getAnnotations().contains(annotation)) {
+              actionImport.getAnnotations().addAll(annotationGrp.getAnnotations());
+            }
+          }
+          break;
+        }
+      }
+    }
+   }
+  
   protected EdmFunctionImport createFunctionImport(final String functionImportName) {
     EdmFunctionImport functionImport = null;
 
     try {
       final CsdlFunctionImport providerImport = provider.getFunctionImport(entityContainerName, functionImportName);
       if (providerImport != null) {
+        addAnnotations(providerImport, entityContainerName);
         functionImport = new EdmFunctionImportImpl(edm, this, providerImport);
       }
     } catch (ODataException e) {
@@ -233,6 +298,24 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
 
     return functionImport;
   }
+  
+  private void addAnnotations(CsdlFunctionImport functionImport, FullQualifiedName entityContainerName) {
+    List<CsdlSchema> termSchemaDefinition = ((EdmProviderImpl)edm).getTermSchemaDefinitions();
+    for (CsdlSchema schema : termSchemaDefinition) {
+      List<CsdlAnnotations> annotationGrps = schema.getAnnotationGroups();
+      for (CsdlAnnotations annotationGrp : annotationGrps) {
+        if (annotationGrp.getTarget().
+            equalsIgnoreCase(entityContainerName + "/" + functionImport.getName())) {
+          for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+            if (!functionImport.getAnnotations().contains(annotation)) {
+              functionImport.getAnnotations().addAll(annotationGrp.getAnnotations());
+            }
+          }
+          break;
+        }
+      }
+    }
+   }
 
   protected void loadAllEntitySets() {
     loadContainer();
@@ -241,6 +324,7 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
 
     if (providerEntitySets != null) {
       for (CsdlEntitySet entitySet : providerEntitySets) {
+        addAnnotations(entitySet, entityContainerName);
         final EdmEntitySetImpl impl = new EdmEntitySetImpl(edm, this, entitySet);
         entitySetCache.put(impl.getName(), impl);
         entitySetsLocal.add(impl);
@@ -256,6 +340,7 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
 
     if (providerFunctionImports != null) {
       for (CsdlFunctionImport functionImport : providerFunctionImports) {
+        addAnnotations(functionImport, entityContainerName);
         EdmFunctionImportImpl impl = new EdmFunctionImportImpl(edm, this, functionImport);
         functionImportCache.put(impl.getName(), impl);
         functionImportsLocal.add(impl);
@@ -271,6 +356,7 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
 
     if (providerSingletons != null) {
       for (CsdlSingleton singleton : providerSingletons) {
+        addAnnotations(singleton, entityContainerName);
         final EdmSingletonImpl impl = new EdmSingletonImpl(edm, this, singleton);
         singletonCache.put(singleton.getName(), impl);
         singletonsLocal.add(impl);
@@ -286,6 +372,7 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
 
     if (providerActionImports != null) {
       for (CsdlActionImport actionImport : providerActionImports) {
+        addAnnotations(actionImport, entityContainerName);
         final EdmActionImportImpl impl = new EdmActionImportImpl(edm, this, actionImport);
         actionImportCache.put(actionImport.getName(), impl);
         actionImportsLocal.add(impl);
@@ -302,7 +389,7 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
         if (containerLocal == null) {
           containerLocal = new CsdlEntityContainer().setName(getName());
         }
-
+        ((EdmProviderImpl)edm).addAnnotations(containerLocal, entityContainerName);
         container = containerLocal;
       } catch (ODataException e) {
         throw new EdmException(e);

@@ -39,16 +39,20 @@ import org.apache.olingo.commons.api.edm.EdmTypeDefinition;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlAction;
 import org.apache.olingo.commons.api.edm.provider.CsdlAliasInfo;
+import org.apache.olingo.commons.api.edm.provider.CsdlAnnotation;
 import org.apache.olingo.commons.api.edm.provider.CsdlAnnotations;
 import org.apache.olingo.commons.api.edm.provider.CsdlComplexType;
 import org.apache.olingo.commons.api.edm.provider.CsdlEdmProvider;
+import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainer;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainerInfo;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 import org.apache.olingo.commons.api.edm.provider.CsdlEnumType;
 import org.apache.olingo.commons.api.edm.provider.CsdlFunction;
+import org.apache.olingo.commons.api.edm.provider.CsdlNavigationProperty;
 import org.apache.olingo.commons.api.edm.provider.CsdlParameter;
 import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
 import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
+import org.apache.olingo.commons.api.edm.provider.CsdlStructuralType;
 import org.apache.olingo.commons.api.edm.provider.CsdlTerm;
 import org.apache.olingo.commons.api.edm.provider.CsdlTypeDefinition;
 import org.apache.olingo.commons.api.ex.ODataException;
@@ -60,7 +64,7 @@ public class EdmProviderImpl extends AbstractEdm {
       Collections.synchronizedMap(new HashMap<FullQualifiedName, List<CsdlAction>>());
   private final Map<FullQualifiedName, List<CsdlFunction>> functionsMap =
       Collections.synchronizedMap(new HashMap<FullQualifiedName, List<CsdlFunction>>());
-  private List<CsdlSchema> termSchemaDefinition = null;
+  private List<CsdlSchema> termSchemaDefinition = new ArrayList<CsdlSchema>();
 
   public EdmProviderImpl(final CsdlEdmProvider provider) {
     this.provider = provider;
@@ -76,11 +80,29 @@ public class EdmProviderImpl extends AbstractEdm {
     try {
       CsdlEntityContainerInfo entityContainerInfo = provider.getEntityContainerInfo(containerName);
       if (entityContainerInfo != null) {
-        return new EdmEntityContainerImpl(this, provider, entityContainerInfo);
+        addAnnotations(provider.getEntityContainer(), entityContainerInfo.getContainerName());
+        return new EdmEntityContainerImpl(this, provider, entityContainerInfo.getContainerName(), 
+            provider.getEntityContainer());
       }
       return null;
     } catch (ODataException e) {
       throw new EdmException(e);
+    }
+  }
+
+  public void addAnnotations(CsdlEntityContainer csdlEntityContainer, FullQualifiedName containerName) {
+    for (CsdlSchema schema : termSchemaDefinition) {
+      List<CsdlAnnotations> annotationGrps = schema.getAnnotationGroups();
+      for (CsdlAnnotations annotationGrp : annotationGrps) {
+        if (annotationGrp.getTarget().equalsIgnoreCase(containerName.getFullQualifiedNameAsString())) {
+          for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+            if (!csdlEntityContainer.getAnnotations().contains(annotation)) {
+              csdlEntityContainer.getAnnotations().addAll(annotationGrp.getAnnotations());
+            }
+          }
+          break;
+        }
+      }
     }
   }
 
@@ -89,6 +111,7 @@ public class EdmProviderImpl extends AbstractEdm {
     try {
       CsdlEnumType enumType = provider.getEnumType(enumName);
       if (enumType != null) {
+        addAnnotations(enumType, enumName);
         return new EdmEnumTypeImpl(this, enumName, enumType);
       }
       return null;
@@ -97,11 +120,28 @@ public class EdmProviderImpl extends AbstractEdm {
     }
   }
 
+  public void addAnnotations(CsdlEnumType enumType, FullQualifiedName enumName) {
+    for (CsdlSchema schema : termSchemaDefinition) {
+      List<CsdlAnnotations> annotationGrps = schema.getAnnotationGroups();
+      for (CsdlAnnotations annotationGrp : annotationGrps) {
+        if (annotationGrp.getTarget().equalsIgnoreCase(enumName.getFullQualifiedNameAsString())) {
+          for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+            if (!enumType.getAnnotations().contains(annotation)) {
+              enumType.getAnnotations().addAll(annotationGrp.getAnnotations());
+            }
+          }
+          break;
+        }
+      }
+    }
+  }
+
   @Override
   public EdmTypeDefinition createTypeDefinition(final FullQualifiedName typeDefinitionName) {
     try {
       CsdlTypeDefinition typeDefinition = provider.getTypeDefinition(typeDefinitionName);
       if (typeDefinition != null) {
+        addAnnotations(typeDefinition, typeDefinitionName);
         return new EdmTypeDefinitionImpl(this, typeDefinitionName, typeDefinition);
       }
       return null;
@@ -110,11 +150,28 @@ public class EdmProviderImpl extends AbstractEdm {
     }
   }
 
+  public void addAnnotations(CsdlTypeDefinition typeDefinition, FullQualifiedName typeDefinitionName) {
+    for (CsdlSchema schema : termSchemaDefinition) {
+      List<CsdlAnnotations> annotationGrps = schema.getAnnotationGroups();
+      for (CsdlAnnotations annotationGrp : annotationGrps) {
+        if (annotationGrp.getTarget().equalsIgnoreCase(typeDefinitionName.getFullQualifiedNameAsString())) {
+          for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+            if (!typeDefinition.getAnnotations().contains(annotation)) {
+              typeDefinition.getAnnotations().addAll(annotationGrp.getAnnotations());
+            }
+          }
+          break;
+        }
+      }
+    }
+  }
+
   @Override
   public EdmEntityType createEntityType(final FullQualifiedName entityTypeName) {
     try {
       CsdlEntityType entityType = provider.getEntityType(entityTypeName);
       if (entityType != null) {
+        addAnnotations(entityType, entityTypeName);
         return new EdmEntityTypeImpl(this, entityTypeName, entityType);
       }
       return null;
@@ -123,11 +180,58 @@ public class EdmProviderImpl extends AbstractEdm {
     }
   }
 
+  /**
+   * Add the annotations defined in an external file to the property/
+   * navigation property and the entity
+   * @param structuralType
+   * @param typeName
+   */
+  public void addAnnotations(CsdlStructuralType structuralType, FullQualifiedName typeName) {
+    for (CsdlSchema schema : termSchemaDefinition) {
+      List<CsdlAnnotations> annotationGrps = schema.getAnnotationGroups();
+      for (CsdlAnnotations annotationGrp : annotationGrps) {
+        if (annotationGrp.getTarget().equalsIgnoreCase(typeName.getFullQualifiedNameAsString())) {
+          for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+            if (!structuralType.getAnnotations().contains(annotation)) {
+              structuralType.getAnnotations().addAll(annotationGrp.getAnnotations());
+            }
+          }
+        } else {
+          List<CsdlProperty> properties = structuralType.getProperties();
+          for (CsdlProperty property : properties) {
+            if (annotationGrp.getTarget().equalsIgnoreCase(
+                typeName.getFullQualifiedNameAsString() + "/" + property.getName())) {
+              for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+                if (!structuralType.getProperty(property.getName()).getAnnotations().contains(annotation)) {
+                  structuralType.getProperty(property.getName()).getAnnotations().
+                  addAll(annotationGrp.getAnnotations());
+                }
+              }
+            }
+          }
+          List<CsdlNavigationProperty> navProperties = structuralType.getNavigationProperties();
+          for (CsdlNavigationProperty navProperty : navProperties) {
+            if (annotationGrp.getTarget().equalsIgnoreCase(typeName + "/" + navProperty.getName())) {
+              for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+                if (!structuralType.getNavigationProperty(navProperty.getName()).
+                    getAnnotations().contains(annotation)) {
+                  structuralType.getNavigationProperty(navProperty.getName()).getAnnotations().
+                  addAll(annotationGrp.getAnnotations());
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   @Override
   public EdmComplexType createComplexType(final FullQualifiedName complexTypeName) {
     try {
       final CsdlComplexType complexType = provider.getComplexType(complexTypeName);
       if (complexType != null) {
+        addAnnotations(complexType, complexTypeName);
         return new EdmComplexTypeImpl(this, complexTypeName, complexType);
       }
       return null;
@@ -160,7 +264,7 @@ public class EdmProviderImpl extends AbstractEdm {
               isComplexPreviousTypeCompatibleToBindingParam(bindingParameterTypeName, parameter, 
                   isBindingParameterCollection))
               && isBindingParameterCollection.booleanValue() == parameter.isCollection()) {
-
+            addAnnotations(action, actionName);
             return new EdmActionImpl(this, actionName, action);
           }
 
@@ -169,6 +273,34 @@ public class EdmProviderImpl extends AbstractEdm {
       return null;
     } catch (ODataException e) {
       throw new EdmException(e);
+    }
+  }
+
+  public void addAnnotations(CsdlAction action, FullQualifiedName actionName) {
+    for (CsdlSchema schema : termSchemaDefinition) {
+      List<CsdlAnnotations> annotationGrps = schema.getAnnotationGroups();
+      for (CsdlAnnotations annotationGrp : annotationGrps) {
+        if (annotationGrp.getTarget().equalsIgnoreCase(
+            actionName.getFullQualifiedNameAsString())) {
+          for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+            if (!action.getAnnotations().contains(annotation)) {
+              action.getAnnotations().add(annotation);
+            }
+          }
+        } else {
+          final List<CsdlParameter> parameters = action.getParameters();
+          for (CsdlParameter parameter : parameters) {
+            if (annotationGrp.getTarget().equalsIgnoreCase(
+                actionName.getFullQualifiedNameAsString() + "/" + parameter.getName())) {
+              for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+                if (!action.getParameter(parameter.getName()).getAnnotations().contains(annotation)) {
+                  action.getParameter(parameter.getName()).getAnnotations().add(annotation);
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -243,6 +375,7 @@ public class EdmProviderImpl extends AbstractEdm {
               providerParameterNames.add(providerParameters.get(i).getName());
             }
             if (parameterNamesCopy.containsAll(providerParameterNames)) {
+              addAnnotations(function, functionName);
               return new EdmFunctionImpl(this, functionName, function);
             }
           }
@@ -251,6 +384,34 @@ public class EdmProviderImpl extends AbstractEdm {
       return null;
     } catch (ODataException e) {
       throw new EdmException(e);
+    }
+  }
+
+  public void addAnnotations(CsdlFunction function, FullQualifiedName functionName) {
+    for (CsdlSchema schema : termSchemaDefinition) {
+      List<CsdlAnnotations> annotationGrps = schema.getAnnotationGroups();
+      for (CsdlAnnotations annotationGrp : annotationGrps) {
+        if (annotationGrp.getTarget().equalsIgnoreCase(
+            functionName.getFullQualifiedNameAsString())) {
+          for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+            if (!function.getAnnotations().contains(annotation)) {
+              function.getAnnotations().add(annotation);
+            }
+          }
+        } else {
+          final List<CsdlParameter> parameters = function.getParameters();
+          for (CsdlParameter parameter : parameters) {
+            if (annotationGrp.getTarget().equalsIgnoreCase(
+                functionName.getFullQualifiedNameAsString() + "/" + parameter.getName())) {
+              for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+                if (!function.getParameter(parameter.getName()).getAnnotations().contains(annotation)) {
+                  function.getParameter(parameter.getName()).getAnnotations().add(annotation);
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -369,6 +530,10 @@ public class EdmProviderImpl extends AbstractEdm {
           providerSchemas.put(schema.getNamespace(), new EdmSchemaImpl(this, provider, schema));
         }
       }
+      for (CsdlSchema termSchemaDefn : termSchemaDefinition) {
+        providerSchemas.put(termSchemaDefn.getNamespace(), 
+            new EdmSchemaImpl(this, provider, termSchemaDefn));
+      }
       return providerSchemas;
     } catch (ODataException e) {
       throw new EdmException(e);
@@ -381,9 +546,11 @@ public class EdmProviderImpl extends AbstractEdm {
       CsdlTerm providerTerm = provider.getTerm(termName);
       if (providerTerm != null) {
         return new EdmTermImpl(this, termName.getNamespace(), providerTerm);
-      } else if (termSchemaDefinition != null && !termSchemaDefinition.isEmpty()) {
+      } else {
           for (CsdlSchema schema : termSchemaDefinition) {
-              if (schema.getNamespace().equalsIgnoreCase(termName.getNamespace())) {
+              if (schema.getNamespace().equalsIgnoreCase(termName.getNamespace()) ||
+                  (null != schema.getAlias() && 
+                  schema.getAlias().equalsIgnoreCase(termName.getNamespace()))) {
                 List<CsdlTerm> terms = schema.getTerms();
                 for (CsdlTerm term : terms) {
                   if (term.getName().equals(termName.getName())) {
@@ -410,5 +577,9 @@ public class EdmProviderImpl extends AbstractEdm {
     } catch (ODataException e) {
       throw new EdmException(e);
     }
+  }
+  
+  public List<CsdlSchema> getTermSchemaDefinitions() {
+    return termSchemaDefinition;
   }
 }

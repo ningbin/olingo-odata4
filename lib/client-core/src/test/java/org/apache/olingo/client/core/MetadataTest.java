@@ -32,6 +32,7 @@ import org.apache.olingo.client.api.edm.xml.XMLMetadata;
 import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.edm.Edm;
 import org.apache.olingo.commons.api.edm.EdmAction;
+import org.apache.olingo.commons.api.edm.EdmActionImport;
 import org.apache.olingo.commons.api.edm.EdmAnnotation;
 import org.apache.olingo.commons.api.edm.EdmAnnotations;
 import org.apache.olingo.commons.api.edm.EdmComplexType;
@@ -41,13 +42,17 @@ import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.edm.EdmEnumType;
 import org.apache.olingo.commons.api.edm.EdmFunction;
 import org.apache.olingo.commons.api.edm.EdmFunctionImport;
+import org.apache.olingo.commons.api.edm.EdmNavigationProperty;
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
 import org.apache.olingo.commons.api.edm.EdmProperty;
 import org.apache.olingo.commons.api.edm.EdmSchema;
+import org.apache.olingo.commons.api.edm.EdmSingleton;
 import org.apache.olingo.commons.api.edm.EdmTerm;
 import org.apache.olingo.commons.api.edm.EdmTypeDefinition;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.annotation.EdmExpression;
+import org.apache.olingo.commons.api.edm.annotation.EdmPropertyValue;
+import org.apache.olingo.commons.api.edm.annotation.EdmRecord;
 import org.apache.olingo.commons.api.edm.annotation.EdmUrlRef;
 import org.apache.olingo.commons.api.edm.constants.EdmTypeKind;
 import org.apache.olingo.commons.api.edm.provider.CsdlAnnotation;
@@ -499,4 +504,118 @@ public class MetadataTest extends AbstractTest {
     assertEquals("Value", record.getPropertyValues().get(0).getProperty());
     assertEquals("image", record.getPropertyValues().get(0).getValue().asDynamic().asPath().getValue());
   }
+ 
+ @Test
+ public void readAnnotation() {
+   List<InputStream> streams = new ArrayList<InputStream>();
+   streams.add(getClass().getResourceAsStream("annotations.xml"));
+   streams.add(getClass().getResourceAsStream("VOC_Core.xml"));
+   streams.add(getClass().getResourceAsStream("UI.xml"));
+   final Edm edm = client.getReader().readMetadata(getClass().getResourceAsStream("$metadata.xml"),
+       streams);
+   assertNotNull(edm);
+   
+   // Check annotation on an entity
+   EdmEntityType entity = edm.getEntityType(new FullQualifiedName("SEPMRA_SO_MAN2", "SEPMRA_C_CountryVHType"));
+   assertEquals(1, entity.getAnnotations().size());
+   assertNotNull(entity.getAnnotations().get(0).getTerm());
+   assertEquals("HeaderInfo", entity.getAnnotations().get(0).getTerm().getName());
+   assertNotNull(entity.getAnnotations().get(0).getExpression());
+   
+   // Check annotation on an entity with properties
+   EdmEntityType entity1 = edm.getEntityType(
+       new FullQualifiedName("SEPMRA_SO_MAN2", "SEPMRA_C_SalesOrderCustCntctVHType"));
+   EdmAnnotation annotation = entity1.getAnnotations().get(0);
+   assertNotNull(annotation);
+   assertEquals(5, entity1.getAnnotations().size());
+   assertEquals("FieldGroup", annotation.getTerm().getName());
+   assertEquals("ContactPerson", annotation.getQualifier());
+   EdmExpression expression = annotation.getExpression();
+   assertNotNull(expression);
+   assertTrue(expression.isDynamic());
+   EdmRecord record = expression.asDynamic().asRecord();
+   assertNotNull(record);
+   assertEquals(2, record.asRecord().getPropertyValues().size());
+   List<EdmPropertyValue> propertyValues = record.asRecord().getPropertyValues();
+   assertEquals("Data", propertyValues.get(0).getProperty());
+   assertTrue(propertyValues.get(0).getValue().isDynamic());
+   List<EdmExpression> items = propertyValues.get(0).getValue().asDynamic().asCollection().getItems();
+   assertEquals(4, items.size());
+   assertEquals("Label", propertyValues.get(1).getProperty());
+   assertEquals("Contact Person", propertyValues.get(1).getValue().asConstant().asPrimitive());
+   
+   // Check annotation on a property
+   EdmEntityType entity2 = edm.getEntityType(
+       new FullQualifiedName("SEPMRA_SO_MAN2", "I_DraftAdministrativeDataType"));
+   EdmProperty property = (EdmProperty) entity2.getProperty("DraftUUID");
+   assertNotNull(property.getAnnotations());
+   assertEquals(1, property.getAnnotations().size());
+   assertEquals("UI.HeaderInfo", property.getAnnotations().get(0).getTerm().
+       getFullQualifiedName().getFullQualifiedNameAsString());
+   
+   EdmEntityContainer container = edm.getEntityContainer();
+   EdmActionImport actionImport = container.getActionImport("AIRTString");
+   assertEquals(3, actionImport.getAnnotations().size());
+   assertEquals("Description", actionImport.getAnnotations().get(0).getTerm().getName());
+   assertEquals("HeaderInfo", actionImport.getAnnotations().get(2).getTerm().getName());
+   
+   EdmSingleton singleton = container.getSingleton("SINav");
+   assertEquals(1, singleton.getAnnotations().size());
+   assertEquals("HeaderInfo", singleton.getAnnotations().get(0).getTerm().getName());
+   
+ //Annotations on Bound Function
+   List<String> parameterNames = new ArrayList<String>();
+   //parameterNames.add("ParameterTimeOfDay");
+   EdmFunction function = edm.getBoundFunction(new FullQualifiedName("SEPMRA_SO_MAN2", "_FC_RTTimeOfDay_"), 
+       new FullQualifiedName("Edm","TimeOfDay"), false, parameterNames);
+   assertEquals(1, function.getAnnotations().size());
+   assertEquals("HeaderInfo", function.getAnnotations().get(0).getTerm().getName());
+   
+ //Annotations on Bound Function parameter
+   assertEquals(1, function.getParameter("ParameterTimeOfDay").getAnnotations().size());
+   assertEquals("HeaderInfo", function.getParameter("ParameterTimeOfDay")
+       .getAnnotations().get(0).getTerm().getName());
+   
+   // Check annotation groups on schema
+   EdmSchema schema = edm.getSchema("sepmra_so_man2_anno_mdl.v1");
+   assertNotNull(schema);
+   assertEquals(105, schema.getAnnotationGroups().size());
+   
+   assertEquals(1, container.getAnnotations().size());
+   assertEquals("HeaderInfo", container.getAnnotations().get(0).getTerm().getName());
+   
+   EdmEntitySet entitySet = container.getEntitySet("I_DraftAdministrativeData");
+   assertEquals(1, entitySet.getAnnotations().size());
+   assertEquals("HeaderInfo", entitySet.getAnnotations().get(0).getTerm().getName());
+   
+   // Annotations on complex type
+   EdmComplexType complexType = edm.getComplexType(new FullQualifiedName("SEPMRA_SO_MAN2", "CTPrim"));
+   assertEquals(1, complexType.getAnnotations().size());
+   assertEquals("HeaderInfo", complexType.getAnnotations().get(0).getTerm().getName());
+   // Annotations on complex type property
+   EdmProperty complexTypeProp = (EdmProperty) complexType.getProperty("PropertyInt16");
+   assertEquals(1, complexTypeProp.getAnnotations().size());
+   assertEquals("HeaderInfo", complexTypeProp.getAnnotations().get(0).getTerm().getName());
+   // Annotations on complex type navigation property
+   EdmNavigationProperty complexTypeNavProp = complexType.
+       getNavigationProperty("NavPropertyDraftAdministrativeDataType");
+   assertEquals(1, complexTypeNavProp.getAnnotations().size());
+   assertEquals("HeaderInfo", complexTypeNavProp.getAnnotations().get(0).getTerm().getName());
+   
+   // Annotations on type definitions
+   EdmTypeDefinition typeDefn = edm.getTypeDefinition(new FullQualifiedName("SEPMRA_SO_MAN2", "TDString"));
+   assertEquals(1, typeDefn.getAnnotations().size());
+   assertEquals("HeaderInfo", typeDefn.getAnnotations().get(0).getTerm().getName());
+   
+   //Annotations on Bound Action
+   EdmAction action = edm.getBoundAction(new FullQualifiedName("SEPMRA_SO_MAN2", "BA_RTCountryVHType"), 
+       new FullQualifiedName("SEPMRA_SO_MAN2","I_DraftAdministrativeDataType"), false);
+   assertEquals(1, action.getAnnotations().size());
+   assertEquals("HeaderInfo", action.getAnnotations().get(0).getTerm().getName());
+   
+ //Annotations on Bound Action parameter
+   assertEquals(1, action.getParameter("ParameterCTPrim").getAnnotations().size());
+   assertEquals("HeaderInfo", action.getParameter("ParameterCTPrim")
+       .getAnnotations().get(0).getTerm().getName());
+ }
 }
