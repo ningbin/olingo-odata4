@@ -54,11 +54,35 @@ public class EdmPropertyImpl extends AbstractEdmNamed implements EdmProperty {
     return propertyType;
   }
 
+  @Override
+  public EdmType getTypeWithAnnotations() {
+    if (propertyType == null) {
+      if (typeInfo == null) {
+        buildTypeInfoWithAnnotations();
+      }
+      propertyType = typeInfo.getType();
+      if (propertyType == null) {
+        throw new EdmException("Cannot find type with name: " + typeInfo.getFullQualifiedName());
+      }
+    }
+
+    return propertyType;
+  }
+  
   private void buildTypeInfo() {
     if (property.getType() == null) {
       throw new EdmException("Property " + property.getName() + " must hava a full qualified type.");
     }
-    typeInfo = new EdmTypeInfo.Builder().setEdm(edm).setTypeExpression(property.getType()).build();
+    typeInfo = new EdmTypeInfo.Builder().setEdm(edm)
+        .setTypeExpression(property.getType()).build();
+  }
+  
+  private void buildTypeInfoWithAnnotations() {
+    if (property.getType() == null) {
+      throw new EdmException("Property " + property.getName() + " must hava a full qualified type.");
+    }
+    typeInfo = new EdmTypeInfo.Builder().setEdm(edm).setIncludeAnnotations(true)
+        .setTypeExpression(property.getType()).build();
   }
 
   @Override

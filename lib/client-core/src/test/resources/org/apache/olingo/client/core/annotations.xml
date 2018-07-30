@@ -31,6 +31,30 @@
   </edmx:Reference>
   <edmx:DataServices>
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="sepmra_so_man2_anno_mdl.v1">
+    <Annotations Target="SEPMRA_SO_MAN2.SEPMRA_SO_MAN2_Entities/I_DraftAdministrativeData/ComplexProperty/PropertyInt16">
+        <Annotation Term="UI.AdditionalInfo"/>
+    </Annotations>
+    <Annotations Target="SEPMRA_SO_MAN2.SEPMRA_SO_MAN2_Entities/I_DraftAdministrativeData/ComplexProperty/NavPropertyDraftAdministrativeDataType">
+        <Annotation Term="UI.AdditionalInfo"/>
+    </Annotations>
+    <Annotations Target="SEPMRA_SO_MAN2.SEPMRA_SO_MAN2_Entities/SINav/ComplexProperty/NavPropertyDraftAdministrativeDataType">
+        <Annotation Term="UI.AdditionalInfo"/>
+    </Annotations>
+    <Annotations Target="SEPMRA_SO_MAN2.SEPMRA_SO_MAN2_Entities/SEPMRA_C_SalesOrderCustCntctVH/to_Customer">
+        <Annotation Term="UI.AdditionalInfo"/>
+    </Annotations>
+    <Annotations Target="SEPMRA_SO_MAN2.SEPMRA_SO_MAN2_Entities/SEPMRA_C_SalesOrderCustCntctVH/to_Customer">
+        <Annotation Term="UI.HeaderInfo"/>
+    </Annotations>
+    <Annotations Target="SEPMRA_SO_MAN2.SEPMRA_SO_MAN2_Entities/I_DraftAdministrativeData/DraftUUID">
+        <Annotation Term="UI.AdditionalInfo"/>
+    </Annotations>
+    <Annotations Target="SEPMRA_SO_MAN2.SEPMRA_SO_MAN2_Entities/I_DraftAdministrativeData/DraftUUID">
+        <Annotation Term="UI.HeaderInfo"/>
+    </Annotations>
+    <Annotations Target="SEPMRA_SO_MAN2.I_DraftAdministrativeDataType/DraftUUID">
+        <Annotation Term="UI.HeaderInfo"/>
+      </Annotations>
     <Annotations Target="SEPMRA_SO_MAN2.BA_RTCountryVHType">
         <Annotation Term="UI.HeaderInfo"/>
     </Annotations>
@@ -65,9 +89,6 @@
         <Annotation Term="UI.HeaderInfo"/>
       </Annotations>
       <Annotations Target="SEPMRA_SO_MAN2.SEPMRA_SO_MAN2_Entities">
-        <Annotation Term="UI.HeaderInfo"/>
-      </Annotations>
-      <Annotations Target="SEPMRA_SO_MAN2.I_DraftAdministrativeDataType/DraftUUID">
         <Annotation Term="UI.HeaderInfo"/>
       </Annotations>
       <Annotations Target="SEPMRA_SO_MAN2.I_DraftAdministrativeDataType/DraftEntityType">
@@ -124,7 +145,7 @@
         <Annotation Term="UI.HiddenFilter"/>
       </Annotations>
       <Annotations Target="SEPMRA_SO_MAN2.SEPMRA_C_SalesOrderCustCntctVHType/to_Customer">
-        <Annotation Term="UI.HiddenFilter"/>
+        <Annotation Term="UI.ThingPerspective"/>
       </Annotations>
       <Annotations Target="SEPMRA_SO_MAN2.SEPMRA_C_SalesOrderCustCntctVHType">
         <Annotation Term="UI.FieldGroup" Qualifier="ContactPerson">

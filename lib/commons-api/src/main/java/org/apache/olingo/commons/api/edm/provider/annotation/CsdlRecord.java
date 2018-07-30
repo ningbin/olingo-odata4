@@ -69,4 +69,38 @@ public class CsdlRecord extends CsdlDynamicExpression implements CsdlAnnotatable
     this.propertyValues = propertyValues;
     return this;
   }
+  
+  @Override
+  public boolean equals (Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof CsdlRecord)) {
+      return false;
+    }
+    CsdlRecord csdlRecord = (CsdlRecord) obj;
+    if (this.getType() != null && 
+        !this.getType().equalsIgnoreCase(csdlRecord.getType())) {
+      return false;
+    }
+    if (this.getAnnotations().size() == csdlRecord.getAnnotations().size()) {
+      for (int i = 0; i < this.getAnnotations().size() ; i++) {
+        if (!this.getAnnotations().get(i).equals(csdlRecord.getAnnotations().get(i))) {
+          return false;
+        }
+      }
+    } else {
+      return false;
+    }
+    if (this.getPropertyValues().size() == csdlRecord.getPropertyValues().size()) {
+      for (int i = 0; i < this.getPropertyValues().size(); i++) {
+        if (!this.getPropertyValues().get(i).equals(csdlRecord.getPropertyValues().get(i))) {
+          return false;
+        }
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
 }

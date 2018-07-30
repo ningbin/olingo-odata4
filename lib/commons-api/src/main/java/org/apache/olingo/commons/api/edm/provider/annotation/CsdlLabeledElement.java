@@ -69,4 +69,33 @@ public class CsdlLabeledElement extends CsdlDynamicExpression implements CsdlAnn
     this.value = value;
     return this;
   }
+  
+  @Override
+  public boolean equals (Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof CsdlLabeledElement)) {
+      return false;
+    }
+    CsdlLabeledElement csdlLabelledEle = (CsdlLabeledElement) obj;
+    if (this.getName() != null && 
+        !this.getName().equalsIgnoreCase(csdlLabelledEle.getName())) {
+      return false;
+    }
+    if (this.getValue() != null && 
+        !this.getValue().equals(csdlLabelledEle.getValue())) {
+      return false;
+    }
+    if (this.getAnnotations().size() == csdlLabelledEle.getAnnotations().size()) {
+      for (int i = 0; i < this.getAnnotations().size() ; i++) {
+        if (!this.getAnnotations().get(i).equals(csdlLabelledEle.getAnnotations().get(i))) {
+          return false;
+        }
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
 }

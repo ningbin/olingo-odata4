@@ -40,4 +40,20 @@ public class CsdlPath extends CsdlDynamicExpression {
     this.value = value;
     return this;
   }
+  
+  @Override
+  public boolean equals (Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof CsdlPath)) {
+      return false;
+    }
+    CsdlPath csdlPath = (CsdlPath) obj;
+    if (this.getValue() != null && 
+        !this.getValue().equals(csdlPath.getValue())) {
+      return false;
+    }
+    return true;
+  }
 }

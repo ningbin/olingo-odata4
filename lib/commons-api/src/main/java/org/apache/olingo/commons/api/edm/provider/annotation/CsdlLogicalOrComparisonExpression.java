@@ -145,4 +145,34 @@ public class CsdlLogicalOrComparisonExpression extends CsdlDynamicExpression imp
     }
     return this;
   }
+  
+  @Override
+  public boolean equals (Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof CsdlLogicalOrComparisonExpression)) {
+      return false;
+    }
+    CsdlLogicalOrComparisonExpression csdlLogComp = (CsdlLogicalOrComparisonExpression) obj;
+    if (!this.getLeft().equals(csdlLogComp.getLeft())) {
+      return false;
+    }
+    if (!this.getRight().equals(csdlLogComp.getRight())) {
+      return false;
+    }
+    if (!this.getType().equals(csdlLogComp.getType())) {
+      return false;
+    }
+    if (this.getAnnotations().size() == csdlLogComp.getAnnotations().size()) {
+      for (int i = 0; i < this.getAnnotations().size() ; i++) {
+        if (!this.getAnnotations().get(i).equals(csdlLogComp.getAnnotations().get(i))) {
+          return false;
+        }
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
 }

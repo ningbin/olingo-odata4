@@ -261,4 +261,101 @@ public abstract class CsdlDynamicExpression extends CsdlExpression {
   public CsdlUrlRef asUrlRef() {
     return isUrlRef() ? (CsdlUrlRef) this : null;
   }
+  
+  @Override
+  public boolean equals (Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof CsdlDynamicExpression)) {
+      return false;
+    }
+    CsdlDynamicExpression csdlDynExp = (CsdlDynamicExpression) obj;
+    if (this.isAnnotationPath() == csdlDynExp.isAnnotationPath()) {
+      if (!this.asAnnotationPath().equals(csdlDynExp.asAnnotationPath())) {
+        return false;
+      }
+    }
+    if (this.isApply() == csdlDynExp.isApply()) {
+      if (!this.asApply().equals(csdlDynExp.asApply())) {
+        return false;
+      }
+    }
+    if (this.isCast() == csdlDynExp.isCast()) {
+      if (!this.asCast().equals(csdlDynExp.asCast())) {
+        return false;
+      }
+    }
+    if (this.isCollection() == csdlDynExp.isCollection()) {
+      if (!this.asCollection().equals(csdlDynExp.asCollection())) {
+        return false;
+      }
+    }
+    if (this.isConstant() == csdlDynExp.isConstant()) {
+      if (!this.asConstant().equals(csdlDynExp.asConstant())) {
+        return false;
+      }
+    }
+    if (this.isDynamic() == csdlDynExp.isDynamic()) {
+      if (!this.asDynamic().equals(csdlDynExp.asDynamic())) {
+        return false;
+      }
+    }
+    if (this.isIf() == csdlDynExp.isIf()) {
+      if (!this.asIf().equals(csdlDynExp.asIf())) {
+        return false;
+      }
+    }
+    if (this.isIsOf() == csdlDynExp.isIsOf()) {
+      if (!this.asIsOf().equals(csdlDynExp.asIsOf())) {
+        return false;
+      }
+    }
+    if (this.isLabeledElement() == csdlDynExp.isLabeledElement()) {
+      if (!this.asLabeledElement().equals(csdlDynExp.asLabeledElement())) {
+        return false;
+      }
+    }
+    if (this.isLabeledElementReference() == csdlDynExp.isLabeledElementReference()) {
+      if (!this.asLabeledElementReference().equals(csdlDynExp.asLabeledElementReference())) {
+        return false;
+      }
+    }
+    if (this.isLogicalOrComparison() == csdlDynExp.isLogicalOrComparison()) {
+      if (!this.asLogicalOrComparison().equals(csdlDynExp.asLogicalOrComparison())) {
+        return false;
+      }
+    }
+    if (this.isNavigationPropertyPath() == csdlDynExp.isNavigationPropertyPath()) {
+      if (!this.asNavigationPropertyPath().equals(csdlDynExp.asNavigationPropertyPath())) {
+        return false;
+      }
+    }
+    if (this.isNull() == csdlDynExp.isNull()) {
+      if (!this.asNull().equals(csdlDynExp.asNull())) {
+        return false;
+      }
+    }
+    if (this.isPath() == csdlDynExp.isPath()) {
+      if (!this.asPath().equals(csdlDynExp.asPath())) {
+        return false;
+      }
+    }
+    if (this.isPropertyPath() == csdlDynExp.isPropertyPath()) {
+      if (!this.asPropertyPath().equals(csdlDynExp.asPropertyPath())) {
+        return false;
+      }
+    }
+    if (this.isRecord() == csdlDynExp.isRecord()) {
+      if (!this.asRecord().equals(csdlDynExp.asRecord())) {
+        return false;
+      }
+    }
+    if (this.isUrlRef() == csdlDynExp.isUrlRef()) {
+      if (!this.asUrlRef().equals(csdlDynExp.asUrlRef())) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

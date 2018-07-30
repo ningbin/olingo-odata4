@@ -73,4 +73,27 @@ public class CsdlApply extends CsdlDynamicExpression implements CsdlAnnotatable 
     this.parameters = parameters;
     return this;
   }
+  
+  @Override
+  public boolean equals (Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof CsdlApply)) {
+      return false;
+    }
+    CsdlApply annotApply = (CsdlApply) obj;
+    if (this.getFunction() != null && 
+        !this.getFunction().equalsIgnoreCase(annotApply.getFunction())) {
+      return false;
+    }
+    if (this.getParameters().size() == annotApply.getParameters().size()) {
+      for (int i = 0; i < this.getParameters().size(); i++) {
+        if (!this.getParameters().get(i).equals(annotApply.getParameters().get(i))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 }

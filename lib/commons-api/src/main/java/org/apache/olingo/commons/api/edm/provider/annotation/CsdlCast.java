@@ -126,4 +126,41 @@ public class CsdlCast extends CsdlDynamicExpression implements CsdlAnnotatable {
     this.value = value;
     return this;
   }
+  
+  @Override
+  public boolean equals (Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof CsdlCast)) {
+      return false;
+    }
+    CsdlCast csdlCast = (CsdlCast) obj;
+    if (this.getType() != null && 
+        !this.getType().equalsIgnoreCase(csdlCast.getType())) {
+      return false;
+    }
+    if (this.getMaxLength() != csdlCast.getMaxLength()) {
+      return false;
+    }
+    if (this.getPrecision() != csdlCast.getPrecision()) {
+      return false;
+    }
+    if (this.getScale() != csdlCast.getScale()) {
+      return false;
+    }
+    if (!String.valueOf(this.getSrid()).equals(String.valueOf(csdlCast.getSrid()))) {
+      return false;
+    }
+    if (this.getAnnotations().size() == csdlCast.getAnnotations().size()) {
+      for (int i = 0; i < this.getAnnotations().size() ; i++) {
+        if (!this.getAnnotations().get(i).equals(csdlCast.getAnnotations().get(i))) {
+          return false;
+        }
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
 }

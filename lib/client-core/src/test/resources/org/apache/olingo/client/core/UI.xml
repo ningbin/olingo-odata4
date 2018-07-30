@@ -116,7 +116,7 @@
               collection of vCard.ContactData or
               UI.Contacts or
               UI.GeoLocation or
-              collection of UI.GeoLocationType
+               of UI.GeoLocationType
           </String>
         </Annotation>
         <Annotation Term="UI.ThingPerspective" />

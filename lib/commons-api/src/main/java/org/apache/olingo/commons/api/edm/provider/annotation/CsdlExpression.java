@@ -53,4 +53,27 @@ public abstract class CsdlExpression extends CsdlAbstractEdmItem {
   public CsdlDynamicExpression asDynamic() {
     return isDynamic() ? (CsdlDynamicExpression) this : null;
   }
+  
+  @Override
+  public boolean equals (Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof CsdlExpression)) {
+      return false;
+    }
+    CsdlExpression csdlExp = (CsdlExpression) obj;
+    if (this.isDynamic() == csdlExp.isDynamic()) {
+      if (!this.asDynamic().equals(csdlExp.asDynamic())) {
+        return false;
+      }
+    } else if (this.isConstant() == csdlExp.isConstant()) {
+      if (!this.asConstant().equals(csdlExp.asConstant())) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
 }

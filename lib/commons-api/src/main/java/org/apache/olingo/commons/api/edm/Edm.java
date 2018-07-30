@@ -90,6 +90,28 @@ public interface Edm {
    * @return {@link EdmEntityType}
    */
   EdmEntityType getEntityType(FullQualifiedName name);
+  
+  /**
+   * Get entity type with annotations by full qualified name.
+   * <br/>
+   * See {@link EdmEntityType} for more information.
+   *
+   * @param name full qualified name of entity type
+   * @return {@link EdmEntityType}
+   */
+  EdmEntityType getEntityTypeWithAnnotations(FullQualifiedName name);
+    
+  /**
+   * Get entity type with annotations by full qualified name.
+   * <br/>
+   * See {@link EdmEntityType} for more information.
+   *
+   * @param name full qualified name of entity type
+   * @param isEntityDerivedFromES flag to indicate if annotations of 
+   * properties and navigation properties have to be derived from Entity Set
+   * @return {@link EdmEntityType}
+   */
+  EdmEntityType getEntityTypeWithAnnotations(FullQualifiedName name, boolean isEntityDerivedFromES);
 
   /**
    * Get complex type by full qualified name..
@@ -100,6 +122,28 @@ public interface Edm {
    * @return {@link EdmComplexType}
    */
   EdmComplexType getComplexType(FullQualifiedName name);
+  
+  /**
+   * Get complex type with annotations by full qualified name..
+   * <br/>
+   * See {@link EdmComplexType} for more information.
+   *
+   * @param name full qualified name of complex type
+   * @return {@link EdmComplexType}
+   */
+  EdmComplexType getComplexTypeWithAnnotations(FullQualifiedName name);
+  
+  /**
+   * Get complex type with annotations by full qualified name..
+   * <br/>
+   * See {@link EdmComplexType} for more information.
+   *
+   * @param name full qualified name of complex type
+   * @param isComplexDerivedFromES flag to indicate if annotations of 
+   * properties and navigation properties have to be derived from Entity Set
+   * @return {@link EdmComplexType}
+   */
+  EdmComplexType getComplexTypeWithAnnotations(FullQualifiedName name, boolean isComplexDerivedFromES);
 
   /**
    * Get unbound Action by full qualified name.

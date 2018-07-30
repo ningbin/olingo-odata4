@@ -128,4 +128,23 @@ public class CsdlConstantExpression extends CsdlExpression {
     return this;
   }
 
+  @Override
+  public boolean equals (Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof CsdlConstantExpression)) {
+      return false;
+    }
+    CsdlConstantExpression csdlConstExp = (CsdlConstantExpression) obj;
+    if (this.getValue() != null && 
+        !this.getValue().equalsIgnoreCase(csdlConstExp.getValue())) {
+      return false;
+    }
+    if (this.getType() != null && 
+        !this.getType().equals(csdlConstExp.getType())) {
+      return false;
+    }
+    return true;
+  }
 }

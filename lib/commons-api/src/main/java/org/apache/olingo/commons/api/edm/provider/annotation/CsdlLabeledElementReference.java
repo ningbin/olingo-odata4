@@ -38,4 +38,20 @@ public class CsdlLabeledElementReference extends CsdlDynamicExpression {
     this.value = value;
     return this;
   }
+  
+  @Override
+  public boolean equals (Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof CsdlLabeledElementReference)) {
+      return false;
+    }
+    CsdlLabeledElementReference csdlLabelledEleRef = (CsdlLabeledElementReference) obj;
+    if (this.getValue() != null && 
+        !this.getValue().equalsIgnoreCase(csdlLabelledEleRef.getValue())) {
+      return false;
+    }
+    return true;
+  }
 }

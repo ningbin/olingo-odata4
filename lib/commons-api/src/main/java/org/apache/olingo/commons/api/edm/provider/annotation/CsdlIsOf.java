@@ -126,4 +126,44 @@ return this;
     return this;
   }
 
+  @Override
+  public boolean equals (Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof CsdlIsOf)) {
+      return false;
+    }
+    CsdlIsOf csdlIsOf = (CsdlIsOf) obj;
+    if (this.getType() != null && 
+        !this.getType().equalsIgnoreCase(csdlIsOf.getType())) {
+      return false;
+    }
+    if (this.getMaxLength() != csdlIsOf.getMaxLength()) {
+      return false;
+    }
+    if (this.getPrecision() != csdlIsOf.getPrecision()) {
+      return false;
+    }
+    if (this.getScale() != csdlIsOf.getScale()) {
+      return false;
+    }
+    if (!String.valueOf(this.getSrid()).equals(String.valueOf(csdlIsOf.getSrid()))) {
+      return false;
+    }
+    if (this.getValue() != null && 
+        !this.getValue().equals(csdlIsOf.getValue())) {
+      return false;
+    }
+    if (this.getAnnotations().size() == csdlIsOf.getAnnotations().size()) {
+      for (int i = 0; i < this.getAnnotations().size(); i++) {
+        if (!this.getAnnotations().get(i).equals(csdlIsOf.getAnnotations().get(i))) {
+          return false;
+        }
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
 }

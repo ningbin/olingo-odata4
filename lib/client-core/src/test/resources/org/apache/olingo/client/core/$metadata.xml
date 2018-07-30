@@ -43,6 +43,7 @@
           <PropertyRef Name="DraftUUID"/>
         </Key>
         <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="ComplexProperty" Type="SEPMRA_SO_MAN2.CTPrim" Nullable="true"/>
         <Property Name="DraftEntityType" Type="Edm.String" MaxLength="30"/>
         <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
         <Property Name="CreatedByUser" Type="Edm.String" MaxLength="12"/>
@@ -579,7 +580,7 @@
         </Annotation>
       </Annotations>
       <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="SEPMRA_SO_MAN2.SEPMRA_C_SalesOrderCustCntctVHType">
-        <Annotation Term="Common.SemanticKey">
+        <Annotation Term="UI.SelectionFields">
           <Collection>
             <PropertyPath>ContactPerson</PropertyPath>
           </Collection>
