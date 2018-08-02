@@ -79,7 +79,9 @@ public class CsdlRecord extends CsdlDynamicExpression implements CsdlAnnotatable
       return false;
     }
     CsdlRecord csdlRecord = (CsdlRecord) obj;
-    if (this.getType() != null && 
+    if (this.getType() == null && csdlRecord.getType() != null) {
+      return false;
+    } else if (this.getType() != null && 
         !this.getType().equalsIgnoreCase(csdlRecord.getType())) {
       return false;
     }

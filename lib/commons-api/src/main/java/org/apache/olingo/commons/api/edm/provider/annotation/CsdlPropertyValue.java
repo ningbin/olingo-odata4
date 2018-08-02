@@ -81,11 +81,15 @@ public class CsdlPropertyValue extends CsdlAbstractEdmItem implements CsdlAnnota
       return false;
     }
     CsdlPropertyValue csdlPropertyValue = (CsdlPropertyValue) obj;
-    if (this.getProperty() != null && 
+    if (this.getProperty() == null && csdlPropertyValue.getProperty() != null) {
+      return false;
+    } else if (this.getProperty() != null && 
         !this.getProperty().equalsIgnoreCase(csdlPropertyValue.getProperty())) {
       return false;
     }
-    if (this.getValue() != null && 
+    if (this.getValue() == null && csdlPropertyValue.getValue() != null) {
+      return false;
+    } else if (this.getValue() != null && 
         !this.getValue().equals(csdlPropertyValue.getValue())) {
       return false;
     }

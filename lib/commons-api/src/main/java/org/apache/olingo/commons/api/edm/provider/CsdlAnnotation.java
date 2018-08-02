@@ -21,7 +21,6 @@ package org.apache.olingo.commons.api.edm.provider;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.olingo.commons.api.edm.provider.annotation.CsdlDynamicExpression;
 import org.apache.olingo.commons.api.edm.provider.annotation.CsdlExpression;
 
 /**
@@ -114,14 +113,21 @@ public class CsdlAnnotation extends CsdlAbstractEdmItem implements CsdlAnnotatab
       return false;
     }
     CsdlAnnotation csdlAnnot = (CsdlAnnotation) obj;
-    if (!this.getTerm().equalsIgnoreCase(csdlAnnot.getTerm())) {
+    if (this.getTerm() == null && csdlAnnot.getTerm() != null) {
+      return false;
+    } else if (this.getTerm() != null && 
+        !this.getTerm().equalsIgnoreCase(csdlAnnot.getTerm())) {
       return false;
     }
-    if (this.getQualifier()!= null && 
+    if (this.getQualifier() == null && csdlAnnot.getQualifier() != null) {
+      return false;
+    } else if (this.getQualifier() != null && 
         !this.getQualifier().equalsIgnoreCase(csdlAnnot.getQualifier())) {
       return false;
     }
-    if (this.getExpression() != null &&
+    if (this.getExpression() == null && csdlAnnot.getExpression() != null) {
+      return false;
+    } else if (this.getExpression() != null &&
         !this.getExpression().equals(csdlAnnot.getExpression())) {
       return false;
     }
@@ -131,6 +137,8 @@ public class CsdlAnnotation extends CsdlAbstractEdmItem implements CsdlAnnotatab
           return false;
         }
       }
+    } else {
+      return false;
     }
     return true;
   }

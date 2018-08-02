@@ -48,7 +48,9 @@ public class CsdlPropertyPath extends CsdlDynamicExpression {
       return false;
     }
     CsdlPropertyPath csdlPropPath = (CsdlPropertyPath) obj;
-    if (this.getValue() != null && 
+    if (this.getValue() == null && csdlPropPath.getValue() != null) {
+      return false;
+    } else if (this.getValue() != null && 
         !this.getValue().equals(csdlPropPath.getValue())) {
       return false;
     }

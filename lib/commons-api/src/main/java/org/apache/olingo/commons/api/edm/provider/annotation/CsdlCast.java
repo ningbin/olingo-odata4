@@ -136,7 +136,15 @@ public class CsdlCast extends CsdlDynamicExpression implements CsdlAnnotatable {
       return false;
     }
     CsdlCast csdlCast = (CsdlCast) obj;
-    if (this.getType() != null && 
+    if (this.getValue() == null && csdlCast.getValue() != null) {
+      return false;
+    } else if (this.getValue() != null && 
+        !this.getValue().equals(csdlCast.getValue())) {
+      return false;
+    }
+    if (this.getType() == null && csdlCast.getType() != null) {
+      return false;
+    } else if (this.getType() != null && 
         !this.getType().equalsIgnoreCase(csdlCast.getType())) {
       return false;
     }
@@ -149,7 +157,10 @@ public class CsdlCast extends CsdlDynamicExpression implements CsdlAnnotatable {
     if (this.getScale() != csdlCast.getScale()) {
       return false;
     }
-    if (!String.valueOf(this.getSrid()).equals(String.valueOf(csdlCast.getSrid()))) {
+    if (this.getSrid() == null && csdlCast.getSrid() != null) {
+      return false;
+    } else if (this.getSrid() != null &&
+        !String.valueOf(this.getSrid()).equals(String.valueOf(csdlCast.getSrid()))) {
       return false;
     }
     if (this.getAnnotations().size() == csdlCast.getAnnotations().size()) {

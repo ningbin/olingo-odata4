@@ -50,7 +50,9 @@ public class CsdlPath extends CsdlDynamicExpression {
       return false;
     }
     CsdlPath csdlPath = (CsdlPath) obj;
-    if (this.getValue() != null && 
+    if (this.getValue() == null && csdlPath.getValue() != null) {
+      return false;
+    } else if (this.getValue() != null && 
         !this.getValue().equals(csdlPath.getValue())) {
       return false;
     }

@@ -79,11 +79,15 @@ public class CsdlLabeledElement extends CsdlDynamicExpression implements CsdlAnn
       return false;
     }
     CsdlLabeledElement csdlLabelledEle = (CsdlLabeledElement) obj;
-    if (this.getName() != null && 
+    if (this.getName() == null && csdlLabelledEle.getName() != null) {
+      return false;
+    } else if (this.getName() != null && 
         !this.getName().equalsIgnoreCase(csdlLabelledEle.getName())) {
       return false;
     }
-    if (this.getValue() != null && 
+    if (this.getValue() == null && csdlLabelledEle.getValue() != null) {
+      return false;
+    } else if (this.getValue() != null && 
         !this.getValue().equals(csdlLabelledEle.getValue())) {
       return false;
     }

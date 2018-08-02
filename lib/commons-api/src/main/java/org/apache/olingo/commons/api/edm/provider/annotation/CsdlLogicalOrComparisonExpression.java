@@ -155,13 +155,22 @@ public class CsdlLogicalOrComparisonExpression extends CsdlDynamicExpression imp
       return false;
     }
     CsdlLogicalOrComparisonExpression csdlLogComp = (CsdlLogicalOrComparisonExpression) obj;
-    if (!this.getLeft().equals(csdlLogComp.getLeft())) {
+    if (this.getLeft() == null && csdlLogComp.getLeft() != null) {
+      return false;
+    } else if (this.getLeft() != null && 
+        !this.getLeft().equals(csdlLogComp.getLeft())) {
+      return false;
+    } 
+    if (this.getRight() == null && csdlLogComp.getRight() != null) {
+      return false;
+    } else if (this.getRight() != null && 
+        !this.getRight().equals(csdlLogComp.getRight())) {
       return false;
     }
-    if (!this.getRight().equals(csdlLogComp.getRight())) {
+    if (this.getType() == null && csdlLogComp.getType() != null) {
       return false;
-    }
-    if (!this.getType().equals(csdlLogComp.getType())) {
+    } else if (this.getType() != null && 
+        !this.getType().equals(csdlLogComp.getType())) {
       return false;
     }
     if (this.getAnnotations().size() == csdlLogComp.getAnnotations().size()) {

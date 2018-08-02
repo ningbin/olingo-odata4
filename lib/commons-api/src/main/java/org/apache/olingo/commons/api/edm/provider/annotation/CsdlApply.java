@@ -83,8 +83,10 @@ public class CsdlApply extends CsdlDynamicExpression implements CsdlAnnotatable 
       return false;
     }
     CsdlApply annotApply = (CsdlApply) obj;
-    if (this.getFunction() != null && 
-        !this.getFunction().equalsIgnoreCase(annotApply.getFunction())) {
+    if (this.getFunction() == null && annotApply.getFunction() != null) {
+      return false;
+    } else if (this.getFunction() != null && 
+        !this.getFunction().equals(annotApply.getFunction())) {
       return false;
     }
     if (this.getParameters().size() == annotApply.getParameters().size()) {
@@ -93,6 +95,17 @@ public class CsdlApply extends CsdlDynamicExpression implements CsdlAnnotatable 
           return false;
         }
       }
+    } else {
+      return false;
+    }
+    if (this.getAnnotations().size() == annotApply.getAnnotations().size()) {
+      for (int i = 0; i < this.getAnnotations().size(); i++) {
+        if (!this.getAnnotations().get(i).equals(annotApply.getAnnotations().get(i))) {
+          return false;
+        }
+      }
+    } else {
+      return false;
     }
     return true;
   }

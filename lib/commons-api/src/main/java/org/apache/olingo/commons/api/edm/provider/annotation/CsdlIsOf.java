@@ -135,7 +135,9 @@ return this;
       return false;
     }
     CsdlIsOf csdlIsOf = (CsdlIsOf) obj;
-    if (this.getType() != null && 
+    if (this.getType() == null && csdlIsOf.getType() != null) {
+      return false;
+    } else if (this.getType() != null && 
         !this.getType().equalsIgnoreCase(csdlIsOf.getType())) {
       return false;
     }
@@ -148,10 +150,15 @@ return this;
     if (this.getScale() != csdlIsOf.getScale()) {
       return false;
     }
-    if (!String.valueOf(this.getSrid()).equals(String.valueOf(csdlIsOf.getSrid()))) {
+    if (this.getSrid() == null && csdlIsOf.getSrid() != null) {
+      return false;
+    } else if (this.getSrid() != null &&
+        !String.valueOf(this.getSrid()).equals(String.valueOf(csdlIsOf.getSrid()))) {
       return false;
     }
-    if (this.getValue() != null && 
+    if (this.getValue() == null && csdlIsOf.getValue() != null) {
+      return false;
+    } else if (this.getValue() != null && 
         !this.getValue().equals(csdlIsOf.getValue())) {
       return false;
     }

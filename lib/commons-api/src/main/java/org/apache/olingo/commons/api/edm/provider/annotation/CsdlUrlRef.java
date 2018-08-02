@@ -65,7 +65,9 @@ public class CsdlUrlRef extends CsdlDynamicExpression implements CsdlAnnotatable
       return false;
     }
     CsdlUrlRef csdlUrlRef = (CsdlUrlRef) obj;
-    if (this.getValue() != null && 
+    if (this.getValue() == null && csdlUrlRef.getValue() != null) {
+      return false;
+    } else if (this.getValue() != null && 
         !this.getValue().equals(csdlUrlRef.getValue())) {
       return false;
     }

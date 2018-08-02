@@ -100,13 +100,22 @@ public class CsdlIf extends CsdlDynamicExpression implements CsdlAnnotatable {
       return false;
     }
     CsdlIf csdlIf = (CsdlIf) obj;
-    if (!this.getGuard().equals(csdlIf.getGuard())) {
+    if (this.getGuard() == null && csdlIf.getGuard() != null) {
+      return false;
+    } else if (this.getGuard() != null && 
+        !this.getGuard().equals(csdlIf.getGuard())) {
       return false;
     }
-    if (!this.getThen().equals(csdlIf.getThen())) {
+    if (this.getThen() == null && csdlIf.getThen() != null) {
+      return false;
+    } else if (this.getThen() != null && 
+        !this.getThen().equals(csdlIf.getThen())) {
       return false;
     }
-    if (!this.getElse().equals(csdlIf.getElse())) {
+    if (this.getElse() == null && csdlIf.getElse() != null) {
+      return false;
+    } else if (this.getElse() != null && 
+        !this.getElse().equals(csdlIf.getElse())) {
       return false;
     }
     if (this.getAnnotations().size() == csdlIf.getAnnotations().size()) {
