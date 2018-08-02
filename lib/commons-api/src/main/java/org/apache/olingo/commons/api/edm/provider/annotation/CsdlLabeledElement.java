@@ -102,4 +102,14 @@ public class CsdlLabeledElement extends CsdlDynamicExpression implements CsdlAnn
     }
     return true;
   }
+  
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    result = prime * result + ((value == null) ? 0 : value.hashCode());
+    result = prime * result + ((annotations.size() == 0) ? 0 : annotations.hashCode());
+    return result;
+  }
 }

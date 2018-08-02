@@ -45,6 +45,19 @@ public class CsdlUrlRefTest {
     csdlUrlRef2.setAnnotations(csdlAnnotations);
     
     assertTrue(csdlUrlRef1.equals(csdlUrlRef2));
+    assertNotNull(csdlUrlRef1.toString());
+  }
+  
+  @Test
+  public void compareCsdlUrlRefWithNoAnnot() {
+    CsdlUrlRef csdlUrlRef1 = new CsdlUrlRef();
+    csdlUrlRef1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    
+    CsdlUrlRef csdlUrlRef2 = new CsdlUrlRef();
+    csdlUrlRef2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    
+    assertTrue(csdlUrlRef1.equals(csdlUrlRef2));
+    assertNotNull(csdlUrlRef1.toString());
   }
   
   @Test
@@ -60,6 +73,7 @@ public class CsdlUrlRefTest {
     csdlUrlRef2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlUrlRef1.equals(csdlUrlRef2));
+    assertNotNull(csdlUrlRef1.toString());
   }
   
   @Test

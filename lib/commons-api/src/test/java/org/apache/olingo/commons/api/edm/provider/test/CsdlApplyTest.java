@@ -56,6 +56,19 @@ public class CsdlApplyTest {
     csdlApply2.setAnnotations(csdlAnnotations);
     
     assertTrue(csdlApply1.equals(csdlApply2));
+    assertNotNull(csdlApply1.toString());
+  }
+  
+  @Test
+  public void compareCsdlApplyWithEmptyParamsAndAnnot() {
+    CsdlApply csdlApply1 = new CsdlApply();
+    csdlApply1.setFunction("Function");
+
+    CsdlApply csdlApply2 = new CsdlApply();
+    csdlApply2.setFunction("Function");
+    
+    assertTrue(csdlApply1.equals(csdlApply2));
+    assertNotNull(csdlApply1.toString());
   }
   
   @Test
@@ -165,6 +178,7 @@ public class CsdlApplyTest {
     csdlApply2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlApply1.equals(csdlApply2));
+    assertNotNull(csdlApply1.toString());
   }
   
   @Test

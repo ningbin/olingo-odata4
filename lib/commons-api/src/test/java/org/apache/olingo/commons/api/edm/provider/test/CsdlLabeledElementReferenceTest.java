@@ -35,6 +35,8 @@ public class CsdlLabeledElementReferenceTest {
     labeledElementReference2.setValue("value");
     
     assertTrue(labeledElementReference1.equals(labeledElementReference2));
+    assertNotNull(labeledElementReference1.toString());
+    
   }
   
   @Test
@@ -66,6 +68,7 @@ public class CsdlLabeledElementReferenceTest {
     labeledElementReference2.setValue("value");
     
     assertFalse(labeledElementReference1.equals(labeledElementReference2));
+    assertNotNull(labeledElementReference1.toString());
   }
   
   @Test

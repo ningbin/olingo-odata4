@@ -56,6 +56,23 @@ public class CsdlIsOfTest {
     csdlIsOf2.setAnnotations(csdlAnnotations);
     
     assertTrue(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf1.toString());
+  }
+  
+  @Test
+  public void compareCsdlIsOfWithEmptyProperties() {
+    CsdlIsOf csdlIsOf1 = new CsdlIsOf();
+    csdlIsOf1.setType("Edm.String");
+    csdlIsOf1.setSrid(SRID.valueOf("1234"));
+    csdlIsOf1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    
+    CsdlIsOf csdlIsOf2 = new CsdlIsOf();
+    csdlIsOf2.setType("Edm.String");
+    csdlIsOf2.setSrid(SRID.valueOf("1234"));
+    csdlIsOf2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    
+    assertTrue(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf1.toString());
   }
   
   @Test
@@ -136,6 +153,7 @@ public class CsdlIsOfTest {
     csdlIsOf2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf1.toString());
   }
   
   @Test
@@ -186,6 +204,7 @@ public class CsdlIsOfTest {
     csdlIsOf2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf1.toString());
   }
   
   @Test
@@ -236,6 +255,7 @@ public class CsdlIsOfTest {
     csdlIsOf2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf1.toString());
   }
   
   @Test

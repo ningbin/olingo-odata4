@@ -36,6 +36,7 @@ public class CsdlConstantExpressionTest {
     exp2.setValue("value1");
     
     assertTrue(exp1.equals(exp2));
+    assertNotNull(exp1.toString());
   }
   
   @Test
@@ -81,6 +82,7 @@ public class CsdlConstantExpressionTest {
     CsdlConstantExpression exp2 = new CsdlConstantExpression(ConstantExpressionType.Date, "value2");
     
     assertFalse(exp1.equals(exp2));
+    assertNotNull(exp1.toString());
   }
   
   @Test
@@ -90,6 +92,7 @@ public class CsdlConstantExpressionTest {
     CsdlConstantExpression exp2 = new CsdlConstantExpression(ConstantExpressionType.Date, "value1");
     
     assertFalse(exp1.equals(exp2));
+    assertNotNull(exp1.toString());
   }
   
   @Test

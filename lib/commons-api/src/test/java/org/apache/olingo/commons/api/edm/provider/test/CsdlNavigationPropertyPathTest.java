@@ -35,6 +35,7 @@ public class CsdlNavigationPropertyPathTest {
     exp2.setValue("value1");
     
     assertTrue(exp1.equals(exp2));
+    assertNotNull(exp1.toString());
   }
   
   @Test
@@ -46,6 +47,7 @@ public class CsdlNavigationPropertyPathTest {
     exp2.setValue("value1");
     
     assertFalse(exp1.equals(exp2));
+    assertNotNull(exp1.toString());
   }
   
   @Test

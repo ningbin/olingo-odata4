@@ -19,6 +19,7 @@
 package org.apache.olingo.commons.api.edm.provider.test;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -51,6 +52,19 @@ public class CsdlRecordTest {
     record2.setPropertyValues(propertyValues);
     
     assertTrue(record1.equals(record2));
+    assertNotNull(record1.toString());
+  }
+  
+  @Test
+  public void compareCsdlRecordWithNoAnnotAndProp() {
+    CsdlRecord record1 = new CsdlRecord();
+    record1.setType("Type1");
+    
+    CsdlRecord record2 = new CsdlRecord();
+    record2.setType("Type1");
+    
+    assertTrue(record1.equals(record2));
+    assertNotNull(record1.toString());
   }
   
   @Test
@@ -70,6 +84,7 @@ public class CsdlRecordTest {
     record2.setPropertyValues(propertyValues);
     
     assertTrue(record1.equals(record2));
+    assertNotNull(record1.toString());
   }
   
   @Test

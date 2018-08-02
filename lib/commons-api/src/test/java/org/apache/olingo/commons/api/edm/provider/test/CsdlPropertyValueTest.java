@@ -47,6 +47,21 @@ public class CsdlPropertyValueTest {
     csdlPropertyValue2.setAnnotations(csdlAnnotations);
     
     assertTrue(csdlPropertyValue1.equals(csdlPropertyValue2));
+    assertNotNull(csdlPropertyValue1.toString());
+  }
+  
+  @Test
+  public void compareCsdlPropertyValueWithNoAnnot() {
+    CsdlPropertyValue csdlPropertyValue1 = new CsdlPropertyValue();
+    csdlPropertyValue1.setProperty("Prop1");
+    csdlPropertyValue1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    
+    CsdlPropertyValue csdlPropertyValue2 = new CsdlPropertyValue();
+    csdlPropertyValue2.setProperty("Prop1");
+    csdlPropertyValue2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    
+    assertTrue(csdlPropertyValue1.equals(csdlPropertyValue2));
+    assertNotNull(csdlPropertyValue1.toString());
   }
   
   @Test
@@ -64,6 +79,7 @@ public class CsdlPropertyValueTest {
     csdlPropertyValue2.setAnnotations(csdlAnnotations);
     
     assertTrue(csdlPropertyValue1.equals(csdlPropertyValue2));
+    assertNotNull(csdlPropertyValue1.toString());
   }
   
   @Test
@@ -81,6 +97,7 @@ public class CsdlPropertyValueTest {
     csdlPropertyValue2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlPropertyValue1.equals(csdlPropertyValue2));
+    assertNotNull(csdlPropertyValue1.toString());
   }
   
   @Test

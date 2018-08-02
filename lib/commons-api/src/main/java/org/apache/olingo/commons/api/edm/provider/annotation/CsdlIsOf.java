@@ -173,4 +173,18 @@ return this;
     }
     return true;
   }
+  
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((type == null) ? 0 : type.hashCode());
+    result = prime * result + ((maxLength == null) ? 0 : maxLength.hashCode());
+    result = prime * result + ((precision == null) ? 0 : precision.hashCode());
+    result = prime * result + ((scale == null) ? 0 : scale.hashCode());
+    result = prime * result + ((srid == null) ? 0 : srid.hashCode());
+    result = prime * result + ((value == null) ? 0 : value.hashCode());
+    result = prime * result + ((annotations.size() == 0) ? 0 : annotations.hashCode());
+    return result;
+  }
 }

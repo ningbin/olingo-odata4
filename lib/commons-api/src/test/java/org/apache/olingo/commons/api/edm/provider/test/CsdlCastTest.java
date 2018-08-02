@@ -58,6 +58,29 @@ public class CsdlCastTest {
     csdlCast2.setAnnotations(csdlAnnotations);
     
     assertTrue(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast1.toString());
+  }
+  
+  @Test
+  public void compareCsdlCastWithNoAnnot() {
+    CsdlCast csdlCast1 = new CsdlCast();
+    csdlCast1.setType("type1");
+    csdlCast1.setPrecision(10);
+    csdlCast1.setScale(2);
+    csdlCast1.setMaxLength(10);
+    csdlCast1.setSrid(SRID.valueOf("1234"));
+    csdlCast1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+
+    CsdlCast csdlCast2 = new CsdlCast();
+    csdlCast2.setType("type1");
+    csdlCast2.setPrecision(10);
+    csdlCast2.setScale(2);
+    csdlCast2.setMaxLength(10);
+    csdlCast2.setSrid(SRID.valueOf("1234"));
+    csdlCast2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+
+    assertTrue(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast1.toString());
   }
   
   @Test
@@ -83,6 +106,7 @@ public class CsdlCastTest {
     csdlCast2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast1.toString());
   }
   
   @Test
@@ -111,7 +135,7 @@ public class CsdlCastTest {
   }
   
   @Test
-  public void negCompareCsdlApplyWithBothNullFunction() {
+  public void negCompareCsdlApplyWithBothNullTypes() {
     CsdlCast csdlCast1 = new CsdlCast();
     csdlCast1.setType(null);
     csdlCast1.setPrecision(10);
@@ -356,6 +380,7 @@ public class CsdlCastTest {
     csdlCast2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast2.toString());
   }
   
   
@@ -420,6 +445,7 @@ public class CsdlCastTest {
     csdlCast2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast1.toString());
   }
   
   @Test
@@ -474,5 +500,19 @@ public class CsdlCastTest {
     csdlCast2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlCast1.equals(csdlCast2));
+  }
+  
+  @Test
+  public void compareCsdlCastWithNoValues() {
+    CsdlCast csdlCast1 = new CsdlCast();
+    csdlCast1.setType("type1");
+    csdlCast1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+
+    CsdlCast csdlCast2 = new CsdlCast();
+    csdlCast2.setType("type1");
+    csdlCast2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    
+    assertTrue(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast1.toString());
   }
 }

@@ -51,6 +51,23 @@ public class CsdlIfTest {
     csdlIf2.setAnnotations(csdlAnnotations);
     
     assertTrue(csdlIf1.equals(csdlIf2));
+    assertNotNull(csdlIf1.toString());
+  }
+  
+  @Test
+  public void compareCsdlIfWithNoAnnotations() {
+    CsdlIf csdlIf1 = new CsdlIf();
+    csdlIf1.setGuard(new CsdlConstantExpression(ConstantExpressionType.Bool));
+    csdlIf1.setThen(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIf1.setElse(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    
+    CsdlIf csdlIf2 = new CsdlIf();
+    csdlIf2.setGuard(new CsdlConstantExpression(ConstantExpressionType.Bool));
+    csdlIf2.setThen(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIf2.setElse(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    
+    assertTrue(csdlIf1.equals(csdlIf2));
+    assertNotNull(csdlIf1.toString());
   }
   
   @Test
@@ -68,6 +85,7 @@ public class CsdlIfTest {
     csdlIf2.setAnnotations(csdlAnnotations);
     
     assertTrue(csdlIf1.equals(csdlIf2));
+    assertNotNull(csdlIf1.toString());
   }
   
   @Test
@@ -106,6 +124,7 @@ public class CsdlIfTest {
     csdlIf2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlIf1.equals(csdlIf2));
+    assertNotNull(csdlIf1.toString());
   }
   
   @Test
@@ -125,6 +144,7 @@ public class CsdlIfTest {
     csdlIf2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlIf1.equals(csdlIf2));
+    assertNotNull(csdlIf1.toString());
   }
   
   @Test

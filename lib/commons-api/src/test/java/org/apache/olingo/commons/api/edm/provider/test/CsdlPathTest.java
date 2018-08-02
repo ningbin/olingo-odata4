@@ -35,6 +35,7 @@ public class CsdlPathTest {
     csdlPath2.setValue("value1");
     
     assertTrue(csdlPath1.equals(csdlPath2));
+    assertNotNull(csdlPath1.toString());
   }
   
   @Test
@@ -46,6 +47,7 @@ public class CsdlPathTest {
     csdlPath2.setValue("value1");
     
     assertFalse(csdlPath1.equals(csdlPath2));
+    assertNotNull(csdlPath1.toString());
   }
   
   @Test

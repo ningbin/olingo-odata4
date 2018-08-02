@@ -67,4 +67,12 @@ public class CsdlCollection extends CsdlDynamicExpression {
     }
     return true;
   }
+  
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((items.size() == 0) ? 0 : items.hashCode());
+    return result;
+  }
 }

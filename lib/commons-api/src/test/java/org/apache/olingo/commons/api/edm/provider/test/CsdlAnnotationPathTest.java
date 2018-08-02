@@ -18,8 +18,7 @@
  */
 package org.apache.olingo.commons.api.edm.provider.test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.apache.olingo.commons.api.edm.provider.annotation.CsdlAnnotationPath;
 import org.apache.olingo.commons.api.edm.provider.annotation.CsdlLabeledElement;
@@ -74,5 +73,7 @@ public class CsdlAnnotationPathTest {
     CsdlAnnotationPath path1 = new CsdlAnnotationPath().setValue("value");
     CsdlAnnotationPath path2 = new CsdlAnnotationPath().setValue(null);
     assertFalse(path1.equals(path2));
+    assertNotNull(path1.toString());
+    assertNotNull(path2.toString());
   }
 }

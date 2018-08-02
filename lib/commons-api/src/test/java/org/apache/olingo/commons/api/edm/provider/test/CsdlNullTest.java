@@ -19,6 +19,7 @@
 package org.apache.olingo.commons.api.edm.provider.test;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -42,6 +43,17 @@ public class CsdlNullTest {
     csdlNull2.setAnnotations(csdlAnnotations);
     
     assertTrue(csdlNull1.equals(csdlNull2));
+    assertNotNull(csdlNull1.toString());
+  }
+  
+  @Test
+  public void compareCsdlNullWithEmptyAnnot() {
+    CsdlNull csdlNull1 = new CsdlNull();
+    
+    CsdlNull csdlNull2 = new CsdlNull();
+    
+    assertTrue(csdlNull1.equals(csdlNull2));
+    assertNotNull(csdlNull1.toString());
   }
   
   @Test

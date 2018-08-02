@@ -47,6 +47,21 @@ public class CsdlLabelledElementTest {
     csdlLabeledElement2.setAnnotations(csdlAnnotations);
     
     assertTrue(csdlLabeledElement1.equals(csdlLabeledElement2));
+    assertNotNull(csdlLabeledElement1.toString());
+  }
+  
+  @Test
+  public void compareCsdlLabelledEleWithEmptyAnnot() {
+    CsdlLabeledElement csdlLabeledElement1 = new CsdlLabeledElement();
+    csdlLabeledElement1.setName("name");
+    csdlLabeledElement1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    
+    CsdlLabeledElement csdlLabeledElement2 = new CsdlLabeledElement();
+    csdlLabeledElement2.setName("name");
+    csdlLabeledElement2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    
+    assertTrue(csdlLabeledElement1.equals(csdlLabeledElement2));
+    assertNotNull(csdlLabeledElement1.toString());
   }
   
   @Test
@@ -130,6 +145,7 @@ public class CsdlLabelledElementTest {
     csdlLabeledElement2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlLabeledElement1.equals(csdlLabeledElement2));
+    assertNotNull(csdlLabeledElement1.toString());
   }
   
   @Test
@@ -164,6 +180,7 @@ public class CsdlLabelledElementTest {
     csdlLabeledElement2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlLabeledElement1.equals(csdlLabeledElement2));
+    assertNotNull(csdlLabeledElement1.toString());
   }
   
   @Test

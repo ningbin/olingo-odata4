@@ -19,6 +19,7 @@
 package org.apache.olingo.commons.api.edm.provider.test;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.olingo.commons.api.edm.provider.annotation.CsdlLabeledElement;
@@ -32,6 +33,7 @@ public class CsdlPropertyPathTest {
     CsdlPropertyPath path1 = new CsdlPropertyPath().setValue("value");
     CsdlPropertyPath path2 = new CsdlPropertyPath().setValue("value");
     assertTrue(path1.equals(path2));
+    assertNotNull(path1.toString());
   }
   
   @Test
@@ -60,6 +62,7 @@ public class CsdlPropertyPathTest {
     CsdlPropertyPath path1 = new CsdlPropertyPath().setValue(null);
     CsdlPropertyPath path2 = new CsdlPropertyPath().setValue("value2");
     assertFalse(path1.equals(path2));
+    assertNotNull(path1.toString());
   }
   
   @Test

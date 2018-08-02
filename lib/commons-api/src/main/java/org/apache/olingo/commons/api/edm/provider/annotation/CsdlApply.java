@@ -109,4 +109,14 @@ public class CsdlApply extends CsdlDynamicExpression implements CsdlAnnotatable 
     }
     return true;
   }
+  
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((function == null) ? 0 : function.hashCode());
+    result = prime * result + ((parameters.size() == 0) ? 0 : parameters.hashCode());
+    result = prime * result + ((annotations.size() == 0) ? 0 : annotations.hashCode());
+    return result;
+  }
 }

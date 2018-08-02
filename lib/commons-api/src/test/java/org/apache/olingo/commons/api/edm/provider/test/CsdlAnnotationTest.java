@@ -81,6 +81,32 @@ public class CsdlAnnotationTest {
   }
   
   @Test
+  public void compareAnnotationWithEmptyAnnot() {
+    CsdlAnnotation annot1 = new CsdlAnnotation();
+    annot1.setQualifier("Qualifier1");
+    annot1.setTerm("ns.term");
+    annot1.setExpression(new CsdlAnnotationPath());
+    
+    CsdlAnnotation annot2 = new CsdlAnnotation();
+    annot2.setQualifier("Qualifier1");
+    annot2.setTerm("ns.term");
+    annot2.setExpression(new CsdlAnnotationPath());
+    
+    assertTrue(annot1.equals(annot2));
+    assertTrue(annot1.getExpression().isDynamic());
+    assertTrue(annot2.getExpression().isDynamic());
+    assertNotNull(annot1.getExpression().asDynamic());
+    assertNotNull(annot2.getExpression().asDynamic());
+    assertTrue(annot1.getExpression().asDynamic().isAnnotationPath());
+    assertTrue(annot2.getExpression().asDynamic().isAnnotationPath());
+    assertNotNull(annot1.getExpression().asDynamic().asAnnotationPath());
+    assertNotNull(annot2.getExpression().asDynamic().asAnnotationPath());
+    assertTrue(annot1.getExpression().asDynamic()
+        .equals(annot2.getExpression().asDynamic()));
+    assertNotNull(annot1.toString());
+  }
+  
+  @Test
   public void compareAnnotationWithConstExp() {
     CsdlAnnotation annot1 = new CsdlAnnotation();
     annot1.setQualifier("Qualifier1");
@@ -229,6 +255,7 @@ public class CsdlAnnotationTest {
     assertNotNull(annot2.getExpression().asDynamic().asLabeledElement());
     assertTrue(annot1.getExpression().asDynamic()
         .equals(annot2.getExpression().asDynamic()));
+    assertNotNull(annot1.toString());
   }
   
   @Test
@@ -362,6 +389,7 @@ public class CsdlAnnotationTest {
     annot2.setTerm(null);
     annot2.setAnnotations(csdlAnnotations);
     annot2.setExpression(new CsdlPropertyPath());
+    assertNotNull(annot2.toString());
     
     assertTrue(annot1.equals(annot2));
     assertTrue(annot1.getExpression().isDynamic());
@@ -460,6 +488,7 @@ public class CsdlAnnotationTest {
     assertTrue(annot2.getExpression().isDynamic());
     assertNotNull(annot2.getExpression().asDynamic());
     assertNotNull(annot2.getExpression().asDynamic().asRecord());
+    assertNotNull(annot2.toString());
   }
   
   @Test
@@ -504,5 +533,6 @@ public class CsdlAnnotationTest {
     assertTrue(annot1.equals(annot2));
     assertNull(annot1.getExpression());
     assertNull(annot2.getExpression());
+    assertNotNull(annot1.toString());
   }
 }

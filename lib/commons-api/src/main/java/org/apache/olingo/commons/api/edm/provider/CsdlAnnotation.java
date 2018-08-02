@@ -142,4 +142,16 @@ public class CsdlAnnotation extends CsdlAbstractEdmItem implements CsdlAnnotatab
     }
     return true;
   }
+  
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((term == null) ? 0 : term.hashCode());
+    result = prime * result + ((qualifier == null) ? 0 : qualifier.hashCode());
+    result = prime * result + ((annotationExpression == null) ? 0 : 
+      annotationExpression.hashCode());
+    result = prime * result + ((annotations.size() == 0) ? 0 : annotations.hashCode());
+    return result;
+  }
 }
