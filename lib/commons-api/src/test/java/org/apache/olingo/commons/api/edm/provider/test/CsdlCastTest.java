@@ -215,6 +215,77 @@ public class CsdlCastTest {
   }
   
   @Test
+  public void negCompareCsdlCastWithNullAnnot() {
+    CsdlCast csdlCast1 = new CsdlCast();
+    csdlCast1.setType("type1");
+    csdlCast1.setPrecision(10);
+    csdlCast1.setScale(2);
+    csdlCast1.setMaxLength(10);
+    csdlCast1.setSrid(SRID.valueOf("1234"));
+
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlCast1.setAnnotations(csdlAnnotations);
+    
+    CsdlCast csdlCast2 = new CsdlCast();
+    csdlCast2.setType("type1");
+    csdlCast2.setPrecision(10);
+    csdlCast2.setScale(2);
+    csdlCast2.setMaxLength(10);
+    csdlCast2.setSrid(SRID.valueOf("1234"));
+    csdlCast2.setAnnotations(null);
+    
+    assertFalse(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast2.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlCastWithOtherAnnotNull() {
+    CsdlCast csdlCast1 = new CsdlCast();
+    csdlCast1.setType("type1");
+    csdlCast1.setPrecision(10);
+    csdlCast1.setScale(2);
+    csdlCast1.setMaxLength(10);
+    csdlCast1.setSrid(SRID.valueOf("1234"));
+
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlCast1.setAnnotations(null);
+    
+    CsdlCast csdlCast2 = new CsdlCast();
+    csdlCast2.setType("type1");
+    csdlCast2.setPrecision(10);
+    csdlCast2.setScale(2);
+    csdlCast2.setMaxLength(10);
+    csdlCast2.setSrid(SRID.valueOf("1234"));
+    csdlCast2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast1.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlCastWithBothAnnotNull() {
+    CsdlCast csdlCast1 = new CsdlCast();
+    csdlCast1.setType("type1");
+    csdlCast1.setPrecision(10);
+    csdlCast1.setScale(2);
+    csdlCast1.setMaxLength(10);
+    csdlCast1.setSrid(SRID.valueOf("1234"));
+    csdlCast1.setAnnotations(null);
+    
+    CsdlCast csdlCast2 = new CsdlCast();
+    csdlCast2.setType("type1");
+    csdlCast2.setPrecision(10);
+    csdlCast2.setScale(2);
+    csdlCast2.setMaxLength(10);
+    csdlCast2.setSrid(SRID.valueOf("1234"));
+    csdlCast2.setAnnotations(null);
+    
+    assertTrue(csdlCast1.equals(csdlCast2));
+  }
+  
+  @Test
   public void negCompareCsdlCastWithDiffPrec() {
     CsdlCast csdlCast1 = new CsdlCast();
     csdlCast1.setType("type1");
@@ -240,6 +311,60 @@ public class CsdlCastTest {
     csdlCast2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlCast1.equals(csdlCast2));
+  }
+  
+  @Test
+  public void negCompareCsdlCastWithOtherPrecNull() {
+    CsdlCast csdlCast1 = new CsdlCast();
+    csdlCast1.setType("type1");
+    csdlCast1.setPrecision(null);
+    csdlCast1.setScale(2);
+    csdlCast1.setMaxLength(10);
+    csdlCast1.setSrid(SRID.valueOf("1234"));
+
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlCast1.setAnnotations(csdlAnnotations);
+    
+    CsdlCast csdlCast2 = new CsdlCast();
+    csdlCast2.setType("type1");
+    csdlCast2.setPrecision(10);
+    csdlCast2.setScale(2);
+    csdlCast2.setMaxLength(10);
+    csdlCast2.setSrid(SRID.valueOf("1234"));
+    csdlCast2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast2.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlCastWithNullPrec() {
+    CsdlCast csdlCast1 = new CsdlCast();
+    csdlCast1.setType("type1");
+    csdlCast1.setPrecision(10);
+    csdlCast1.setScale(2);
+    csdlCast1.setMaxLength(10);
+    csdlCast1.setSrid(SRID.valueOf("1234"));
+
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlCast1.setAnnotations(csdlAnnotations);
+    
+    CsdlCast csdlCast2 = new CsdlCast();
+    csdlCast2.setType("type1");
+    csdlCast2.setPrecision(null);
+    csdlCast2.setScale(2);
+    csdlCast2.setMaxLength(10);
+    csdlCast2.setSrid(SRID.valueOf("1234"));
+
+    csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term1"));
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term2"));
+    csdlCast2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast2.toString());
   }
   
   @Test
@@ -271,6 +396,60 @@ public class CsdlCastTest {
   }
   
   @Test
+  public void negCompareCsdlCastWithNullScale() {
+    CsdlCast csdlCast1 = new CsdlCast();
+    csdlCast1.setType("type1");
+    csdlCast1.setPrecision(10);
+    csdlCast1.setScale(3);
+    csdlCast1.setMaxLength(10);
+    csdlCast1.setSrid(SRID.valueOf("1234"));
+
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlCast1.setAnnotations(csdlAnnotations);
+    
+    CsdlCast csdlCast2 = new CsdlCast();
+    csdlCast2.setType("type1");
+    csdlCast2.setPrecision(10);
+    csdlCast2.setScale(null);
+    csdlCast2.setMaxLength(10);
+    csdlCast2.setSrid(SRID.valueOf("1234"));
+
+    csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term1"));
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term2"));
+    csdlCast2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast2.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlCastWithOtherScaleNull() {
+    CsdlCast csdlCast1 = new CsdlCast();
+    csdlCast1.setType("type1");
+    csdlCast1.setPrecision(10);
+    csdlCast1.setScale(null);
+    csdlCast1.setMaxLength(10);
+    csdlCast1.setSrid(SRID.valueOf("1234"));
+
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlCast1.setAnnotations(csdlAnnotations);
+    
+    CsdlCast csdlCast2 = new CsdlCast();
+    csdlCast2.setType("type1");
+    csdlCast2.setPrecision(10);
+    csdlCast2.setScale(3);
+    csdlCast2.setMaxLength(10);
+    csdlCast2.setSrid(SRID.valueOf("1234"));
+    csdlCast2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast2.toString());
+  }
+  
+  @Test
   public void negCompareCsdlCastWithDiffMaxLen() {
     CsdlCast csdlCast1 = new CsdlCast();
     csdlCast1.setType("type1");
@@ -296,6 +475,35 @@ public class CsdlCastTest {
     csdlCast2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlCast1.equals(csdlCast2));
+  }
+  
+  @Test
+  public void negCompareCsdlCastWithNullMaxLen() {
+    CsdlCast csdlCast1 = new CsdlCast();
+    csdlCast1.setType("type1");
+    csdlCast1.setPrecision(10);
+    csdlCast1.setScale(3);
+    csdlCast1.setMaxLength(20);
+    csdlCast1.setSrid(SRID.valueOf("1234"));
+
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlCast1.setAnnotations(csdlAnnotations);
+    
+    CsdlCast csdlCast2 = new CsdlCast();
+    csdlCast2.setType("type1");
+    csdlCast2.setPrecision(10);
+    csdlCast2.setScale(2);
+    csdlCast2.setMaxLength(null);
+    csdlCast2.setSrid(SRID.valueOf("1234"));
+
+    csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term1"));
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term2"));
+    csdlCast2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast2.toString());
   }
   
   @Test
@@ -327,6 +535,31 @@ public class CsdlCastTest {
   }
   
   @Test
+  public void negCompareCsdlCastWithOtherMaxLenNull() {
+    CsdlCast csdlCast1 = new CsdlCast();
+    csdlCast1.setType("type1");
+    csdlCast1.setPrecision(10);
+    csdlCast1.setScale(3);
+    csdlCast1.setMaxLength(null);
+    csdlCast1.setSrid(SRID.valueOf("1234"));
+
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlCast1.setAnnotations(csdlAnnotations);
+    
+    CsdlCast csdlCast2 = new CsdlCast();
+    csdlCast2.setType("type1");
+    csdlCast2.setPrecision(10);
+    csdlCast2.setScale(3);
+    csdlCast2.setMaxLength(10);
+    csdlCast2.setSrid(SRID.valueOf("1234"));
+    csdlCast2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast1.toString());
+  }
+  
+  @Test
   public void negCompareCsdlCastWithNullSrid() {
     CsdlCast csdlCast1 = new CsdlCast();
     csdlCast1.setType("type1");
@@ -344,7 +577,7 @@ public class CsdlCastTest {
     csdlCast2.setPrecision(10);
     csdlCast2.setScale(3);
     csdlCast2.setMaxLength(10);
-    csdlCast2.setSrid(SRID.valueOf("1234"));
+    csdlCast2.setSrid(SRID.valueOf("12345"));
 
     csdlAnnotations = new ArrayList<CsdlAnnotation>();
     csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term1"));
@@ -352,6 +585,7 @@ public class CsdlCastTest {
     csdlCast2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlCast1.equals(csdlCast2));
+    assertNotNull(csdlCast1.toString());
   }
   
   @Test

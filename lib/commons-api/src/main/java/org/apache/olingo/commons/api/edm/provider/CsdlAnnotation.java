@@ -113,27 +113,20 @@ public class CsdlAnnotation extends CsdlAbstractEdmItem implements CsdlAnnotatab
       return false;
     }
     CsdlAnnotation csdlAnnot = (CsdlAnnotation) obj;
-    if (this.getTerm() == null && csdlAnnot.getTerm() != null) {
-      return false;
-    } else if (this.getTerm() != null && 
-        !this.getTerm().equalsIgnoreCase(csdlAnnot.getTerm())) {
-      return false;
-    }
-    if (this.getQualifier() == null && csdlAnnot.getQualifier() != null) {
-      return false;
-    } else if (this.getQualifier() != null && 
-        !this.getQualifier().equalsIgnoreCase(csdlAnnot.getQualifier())) {
-      return false;
-    }
-    if (this.getExpression() == null && csdlAnnot.getExpression() != null) {
-      return false;
-    } else if (this.getExpression() != null &&
-        !this.getExpression().equals(csdlAnnot.getExpression())) {
-      return false;
-    }
-    if (this.getAnnotations().size() == csdlAnnot.getAnnotations().size()) {
+    return (this.getTerm() == null ? csdlAnnot.getTerm() == null : 
+      this.getTerm().equals(csdlAnnot.getTerm()))
+        && (this.getQualifier() == null ? csdlAnnot.getQualifier() == null :
+          this.getQualifier().equals(csdlAnnot.getQualifier()))
+        && (this.getExpression() == null ? csdlAnnot.getExpression() == null :
+          this.getExpression().equals(csdlAnnot.getExpression()))
+        && (this.getAnnotations() == null ? csdlAnnot.getAnnotations() == null : 
+          (csdlAnnot.getAnnotations() == null ? false : checkAnnotations(csdlAnnot.getAnnotations())));
+  }
+  
+  private boolean checkAnnotations(List<CsdlAnnotation> csdlAnnots) {
+    if (this.getAnnotations().size() == csdlAnnots.size()) {
       for (int i = 0; i < this.getAnnotations().size(); i++) {
-        if (!this.getAnnotations().get(i).equals(csdlAnnot.getAnnotations().get(i))) {
+        if (!this.getAnnotations().get(i).equals(csdlAnnots.get(i))) {
           return false;
         }
       }
@@ -142,7 +135,7 @@ public class CsdlAnnotation extends CsdlAbstractEdmItem implements CsdlAnnotatab
     }
     return true;
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -151,7 +144,7 @@ public class CsdlAnnotation extends CsdlAbstractEdmItem implements CsdlAnnotatab
     result = prime * result + ((qualifier == null) ? 0 : qualifier.hashCode());
     result = prime * result + ((annotationExpression == null) ? 0 : 
       annotationExpression.hashCode());
-    result = prime * result + ((annotations.size() == 0) ? 0 : annotations.hashCode());
+    result = prime * result + ((annotations == null) ? 0 : annotations.hashCode());
     return result;
   }
 }

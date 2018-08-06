@@ -57,6 +57,18 @@ public class CsdlNullTest {
   }
   
   @Test
+  public void compareCsdlNullWithNullAnnot() {
+    CsdlNull csdlNull1 = new CsdlNull();
+    csdlNull1.setAnnotations(null);
+    
+    CsdlNull csdlNull2 = new CsdlNull();
+    csdlNull2.setAnnotations(null);
+    
+    assertTrue(csdlNull1.equals(csdlNull2));
+    assertNotNull(csdlNull1.toString());
+  }
+  
+  @Test
   public void negCompareCsdlNullWithDiffAnnot() {
     CsdlNull csdlNull1 = new CsdlNull();
     List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
@@ -69,6 +81,34 @@ public class CsdlNullTest {
     csdlNull2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlNull1.equals(csdlNull2));
+  }
+  
+  @Test
+  public void negCompareCsdlNullWithAnnotNull() {
+    CsdlNull csdlNull1 = new CsdlNull();
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlNull1.setAnnotations(null);
+    
+    CsdlNull csdlNull2 = new CsdlNull();
+    csdlNull2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlNull1.equals(csdlNull2));
+    assertNotNull(csdlNull1.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlNullWithOtherAnnotNull() {
+    CsdlNull csdlNull1 = new CsdlNull();
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlNull1.setAnnotations(csdlAnnotations);
+    
+    CsdlNull csdlNull2 = new CsdlNull();
+    csdlNull2.setAnnotations(null);
+    
+    assertFalse(csdlNull1.equals(csdlNull2));
+    assertNotNull(csdlNull2.toString());
   }
   
   @Test

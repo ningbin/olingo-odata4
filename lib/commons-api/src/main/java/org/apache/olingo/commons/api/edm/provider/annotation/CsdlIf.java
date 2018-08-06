@@ -100,27 +100,21 @@ public class CsdlIf extends CsdlDynamicExpression implements CsdlAnnotatable {
       return false;
     }
     CsdlIf csdlIf = (CsdlIf) obj;
-    if (this.getGuard() == null && csdlIf.getGuard() != null) {
-      return false;
-    } else if (this.getGuard() != null && 
-        !this.getGuard().equals(csdlIf.getGuard())) {
-      return false;
-    }
-    if (this.getThen() == null && csdlIf.getThen() != null) {
-      return false;
-    } else if (this.getThen() != null && 
-        !this.getThen().equals(csdlIf.getThen())) {
-      return false;
-    }
-    if (this.getElse() == null && csdlIf.getElse() != null) {
-      return false;
-    } else if (this.getElse() != null && 
-        !this.getElse().equals(csdlIf.getElse())) {
-      return false;
-    }
-    if (this.getAnnotations().size() == csdlIf.getAnnotations().size()) {
+    return (this.getGuard() == null ? csdlIf.getGuard() == null :
+      this.getGuard().equals(csdlIf.getGuard()))
+        && (this.getThen() == null ? csdlIf.getThen() == null :
+          this.getThen().equals(csdlIf.getThen()))
+        && (this.getElse() == null ? csdlIf.getElse() == null :
+          this.getElse().equals(csdlIf.getElse()))
+        && (this.getAnnotations() == null ? csdlIf.getAnnotations() == null :
+          (csdlIf.getAnnotations() == null ? false : 
+            checkAnnotations(csdlIf.getAnnotations())));
+  }
+  
+  private boolean checkAnnotations(List<CsdlAnnotation> csdlIfAnnotations) {
+    if (this.getAnnotations().size() == csdlIfAnnotations.size()) {
       for (int i = 0; i < this.getAnnotations().size(); i++) {
-        if (!this.getAnnotations().get(i).equals(csdlIf.getAnnotations().get(i))) {
+        if (!this.getAnnotations().get(i).equals(csdlIfAnnotations.get(i))) {
           return false;
         }
       }
@@ -129,7 +123,7 @@ public class CsdlIf extends CsdlDynamicExpression implements CsdlAnnotatable {
     }
     return true;
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -137,7 +131,7 @@ public class CsdlIf extends CsdlDynamicExpression implements CsdlAnnotatable {
     result = prime * result + ((guard == null) ? 0 : guard.hashCode());
     result = prime * result + ((_then == null) ? 0 : _then.hashCode());
     result = prime * result + ((_else == null) ? 0 : _else.hashCode());
-    result = prime * result + ((annotations.size() == 0) ? 0 : annotations.hashCode());
+    result = prime * result + ((annotations == null) ? 0 : annotations.hashCode());
     return result;
   }
 }

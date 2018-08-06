@@ -195,45 +195,96 @@ public class EdmProviderImpl extends AbstractEdm {
       List<CsdlAnnotations> annotationGrps = schema.getAnnotationGroups();
       for (CsdlAnnotations annotationGrp : annotationGrps) {
         if (annotationGrp.getTarget().equalsIgnoreCase(typeName.getFullQualifiedNameAsString())) {
-          for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
-            if (!compareAnnotations(structuralType.getAnnotations(), annotation)) {
-              structuralType.getAnnotations().addAll(annotationGrp.getAnnotations());
-            }
-          }
+          addAnnotationsToStructuralTypes(structuralType, annotationGrp);
         } else {
-          List<CsdlProperty> properties = structuralType.getProperties();
-          for (CsdlProperty property : properties) {
-            if (!isPropAnnotationsCleared) {
-              structuralType.getProperty(property.getName()).getAnnotations().clear();
-            }
-            if (annotationGrp.getTarget().equalsIgnoreCase(
-                typeName.getFullQualifiedNameAsString() + "/" + property.getName())) {
-              for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
-                if (!compareAnnotations(structuralType.getProperty(
-                    property.getName()).getAnnotations(), annotation)) {
-                  structuralType.getProperty(property.getName()).getAnnotations().add(annotation); 
-                }
-              }
-            }
-          }
-          List<CsdlNavigationProperty> navProperties = structuralType.getNavigationProperties();
-          for (CsdlNavigationProperty navProperty : navProperties) {
-            if (!isNavPropAnnotationsCleared) {
-              structuralType.getNavigationProperty(navProperty.getName()).getAnnotations().clear();
-            }
-            if (annotationGrp.getTarget().equalsIgnoreCase(typeName + "/" + navProperty.getName())) {
-              for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
-                if (!compareAnnotations(structuralType.getNavigationProperty(
-                    navProperty.getName()).getAnnotations(), annotation)) {
-                  structuralType.getNavigationProperty(navProperty.getName()).getAnnotations().
-                  add(annotation);
-                }
-              }
-            }
-          }
+          checkAnnotationsOnStructuralProperties(structuralType, typeName, isPropAnnotationsCleared, annotationGrp);
+          checkAnnotationsOnStructuralNavProperties(structuralType, typeName, isNavPropAnnotationsCleared,
+              annotationGrp);
           isPropAnnotationsCleared = true;
           isNavPropAnnotationsCleared = true;
         }
+      }
+    }
+  }
+
+  /** Check if annotations are added on navigation properties of a structural type
+   * @param structuralType
+   * @param typeName
+   * @param isNavPropAnnotationsCleared
+   * @param annotationGrp
+   */
+  private void checkAnnotationsOnStructuralNavProperties(CsdlStructuralType structuralType, FullQualifiedName typeName,
+      boolean isNavPropAnnotationsCleared, CsdlAnnotations annotationGrp) {
+    List<CsdlNavigationProperty> navProperties = structuralType.getNavigationProperties();
+    for (CsdlNavigationProperty navProperty : navProperties) {
+      if (!isNavPropAnnotationsCleared) {
+        structuralType.getNavigationProperty(navProperty.getName()).getAnnotations().clear();
+      }
+      if (annotationGrp.getTarget().equalsIgnoreCase(typeName + "/" + navProperty.getName())) {
+        addAnnotationsToStructuralTypeNavProperties(structuralType, annotationGrp, navProperty);
+      }
+    }
+  }
+
+  /** Check if annotations are added on properties of a structural type
+   * @param structuralType
+   * @param typeName
+   * @param isPropAnnotationsCleared
+   * @param annotationGrp
+   */
+  private void checkAnnotationsOnStructuralProperties(CsdlStructuralType structuralType, FullQualifiedName typeName,
+      boolean isPropAnnotationsCleared, CsdlAnnotations annotationGrp) {
+    List<CsdlProperty> properties = structuralType.getProperties();
+    for (CsdlProperty property : properties) {
+      if (!isPropAnnotationsCleared) {
+        structuralType.getProperty(property.getName()).getAnnotations().clear();
+      }
+      if (annotationGrp.getTarget().equalsIgnoreCase(
+          typeName.getFullQualifiedNameAsString() + "/" + property.getName())) {
+        addAnnotationsToStructuralTypeProperties(structuralType, annotationGrp, property);
+      }
+    }
+  }
+
+  /**
+   * @param structuralType
+   * @param annotationGrp
+   * @param navProperty
+   */
+  private void addAnnotationsToStructuralTypeNavProperties(CsdlStructuralType structuralType,
+      CsdlAnnotations annotationGrp, CsdlNavigationProperty navProperty) {
+    for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+      if (!compareAnnotations(structuralType.getNavigationProperty(
+          navProperty.getName()).getAnnotations(), annotation)) {
+        structuralType.getNavigationProperty(navProperty.getName()).getAnnotations().
+        add(annotation);
+      }
+    }
+  }
+
+  /**
+   * @param structuralType
+   * @param annotationGrp
+   * @param property
+   */
+  private void addAnnotationsToStructuralTypeProperties(CsdlStructuralType structuralType,
+      CsdlAnnotations annotationGrp, CsdlProperty property) {
+    for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+      if (!compareAnnotations(structuralType.getProperty(
+          property.getName()).getAnnotations(), annotation)) {
+        structuralType.getProperty(property.getName()).getAnnotations().add(annotation); 
+      }
+    }
+  }
+
+  /**
+   * @param structuralType
+   * @param annotationGrp
+   */
+  private void addAnnotationsToStructuralTypes(CsdlStructuralType structuralType, CsdlAnnotations annotationGrp) {
+    for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+      if (!compareAnnotations(structuralType.getAnnotations(), annotation)) {
+        structuralType.getAnnotations().addAll(annotationGrp.getAnnotations());
       }
     }
   }

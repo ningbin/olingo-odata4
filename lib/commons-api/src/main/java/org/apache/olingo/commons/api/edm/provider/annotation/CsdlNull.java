@@ -50,9 +50,15 @@ public class CsdlNull extends CsdlDynamicExpression implements CsdlAnnotatable {
       return false;
     }
     CsdlNull csdlNull = (CsdlNull) obj;
-    if (this.getAnnotations().size() == csdlNull.getAnnotations().size()) {
+    return (this.getAnnotations() == null ? csdlNull.getAnnotations() == null :
+      (csdlNull.getAnnotations() == null ? false : 
+        checkAnnotations(csdlNull.getAnnotations())));
+  }
+  
+  private boolean checkAnnotations(List<CsdlAnnotation> csdlNullAnnot) {
+    if (this.getAnnotations().size() == csdlNullAnnot.size()) {
       for (int i = 0; i < this.getAnnotations().size() ; i++) {
-        if (!this.getAnnotations().get(i).equals(csdlNull.getAnnotations().get(i))) {
+        if (!this.getAnnotations().get(i).equals(csdlNullAnnot.get(i))) {
           return false;
         }
       }
@@ -61,12 +67,12 @@ public class CsdlNull extends CsdlDynamicExpression implements CsdlAnnotatable {
     }
     return true;
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((annotations.size() == 0) ? 0 : 
+    result = prime * result + ((annotations == null) ? 0 : 
       annotations.hashCode());
     return result;
   }

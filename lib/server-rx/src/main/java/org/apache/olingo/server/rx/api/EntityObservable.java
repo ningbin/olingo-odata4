@@ -35,17 +35,6 @@ public abstract class EntityObservable extends AbstractEntityCollectionObject{
   
   private URI next;
   private Integer count;
-
-  /**
-   * {@inheritDoc}
-   * <p/>
-   * <b>ATTENTION:</b> <code>iterator</code> is not supported.
-   */
-/*  @Override
-  public final Iterator<Entity> iterator() {
-    //"iterator is not supported for iteration over Entities."
-    throw new ODataNotSupportedException("Entity Observable does not support iterator()");
-  }*/
   
   /**
    * {@inheritDoc}
@@ -106,5 +95,39 @@ public abstract class EntityObservable extends AbstractEntityCollectionObject{
    */
   public void setCount(final Integer count) {
     this.count = count;
+  }
+  
+  @Override
+  public boolean equals (Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof EntityObservable)) {
+      return false;
+    }
+    EntityObservable entityObservable = (EntityObservable) obj;
+    
+    return getAnnotations().equals(entityObservable.getAnnotations())
+        && (next == null ? entityObservable.next == null : next.equals(entityObservable.next))
+        && (count == null ? entityObservable.count == null : count.equals(entityObservable.count))
+        && (getBaseURI() == null ? entityObservable.getBaseURI() == null : 
+          getBaseURI().equals(entityObservable.getBaseURI()))
+        && (getTitle() == null ? entityObservable.getTitle() == null : 
+          getTitle().equals(entityObservable.getTitle()))
+        && (getId() == null ? entityObservable.getId() == null : 
+          getId().equals(entityObservable.getId()));
+  }
+  
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((count == null) ? 0 : count.hashCode());
+    result = prime * result + ((next == null) ? 0 : next.hashCode());
+    result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
+    result = prime * result + ((getTitle() == null) ? 0 : getTitle().hashCode());
+    result = prime * result + ((getBaseURI() == null) ? 0 : getBaseURI().hashCode());
+    result = prime * result + ((getAnnotations() == null) ? 0 : getAnnotations().hashCode());
+    return result;
   }
 }

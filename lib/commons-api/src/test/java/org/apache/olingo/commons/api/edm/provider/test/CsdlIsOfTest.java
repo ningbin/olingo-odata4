@@ -103,6 +103,81 @@ public class CsdlIsOfTest {
   }
   
   @Test
+  public void negCompareCsdlIsOfWithAnnotNull() {
+    CsdlIsOf csdlIsOf1 = new CsdlIsOf();
+    csdlIsOf1.setMaxLength(1);
+    csdlIsOf1.setPrecision(2);
+    csdlIsOf1.setScale(3);
+    csdlIsOf1.setType("Edm.String");
+    csdlIsOf1.setSrid(SRID.valueOf("1234"));
+    csdlIsOf1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlIsOf1.setAnnotations(null);
+    
+    CsdlIsOf csdlIsOf2 = new CsdlIsOf();
+    csdlIsOf2.setMaxLength(1);
+    csdlIsOf2.setPrecision(2);
+    csdlIsOf2.setScale(3);
+    csdlIsOf2.setType("Edm.String");
+    csdlIsOf2.setSrid(SRID.valueOf("1234"));
+    csdlIsOf2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIsOf2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf1.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlIsOfWithOtherAnnotNull() {
+    CsdlIsOf csdlIsOf1 = new CsdlIsOf();
+    csdlIsOf1.setMaxLength(1);
+    csdlIsOf1.setPrecision(2);
+    csdlIsOf1.setScale(3);
+    csdlIsOf1.setType("Edm.String");
+    csdlIsOf1.setSrid(SRID.valueOf("1234"));
+    csdlIsOf1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlIsOf1.setAnnotations(csdlAnnotations);
+    
+    CsdlIsOf csdlIsOf2 = new CsdlIsOf();
+    csdlIsOf2.setMaxLength(1);
+    csdlIsOf2.setPrecision(2);
+    csdlIsOf2.setScale(3);
+    csdlIsOf2.setType("Edm.String");
+    csdlIsOf2.setSrid(SRID.valueOf("1234"));
+    csdlIsOf2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIsOf2.setAnnotations(null);
+    
+    assertFalse(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf2.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlIsOfWithBothAnnotNull() {
+    CsdlIsOf csdlIsOf1 = new CsdlIsOf();
+    csdlIsOf1.setMaxLength(1);
+    csdlIsOf1.setPrecision(2);
+    csdlIsOf1.setScale(3);
+    csdlIsOf1.setType("Edm.String");
+    csdlIsOf1.setSrid(SRID.valueOf("1234"));
+    csdlIsOf1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIsOf1.setAnnotations(null);
+    
+    CsdlIsOf csdlIsOf2 = new CsdlIsOf();
+    csdlIsOf2.setMaxLength(1);
+    csdlIsOf2.setPrecision(2);
+    csdlIsOf2.setScale(3);
+    csdlIsOf2.setType("Edm.String");
+    csdlIsOf2.setSrid(SRID.valueOf("1234"));
+    csdlIsOf2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIsOf2.setAnnotations(null);
+    
+    assertTrue(csdlIsOf1.equals(csdlIsOf2));
+  }
+  
+  @Test
   public void negCompareCsdlIsOfWithDiffAnnotSize() {
     CsdlIsOf csdlIsOf1 = new CsdlIsOf();
     csdlIsOf1.setMaxLength(1);
@@ -182,6 +257,32 @@ public class CsdlIsOfTest {
   }
   
   @Test
+  public void negCompareCsdlIsOfWithBothTypeNull() {
+    CsdlIsOf csdlIsOf1 = new CsdlIsOf();
+    csdlIsOf1.setMaxLength(1);
+    csdlIsOf1.setPrecision(2);
+    csdlIsOf1.setScale(3);
+    csdlIsOf1.setType(null);
+    csdlIsOf1.setSrid(SRID.valueOf("1234"));
+    csdlIsOf1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlIsOf1.setAnnotations(csdlAnnotations);
+    
+    CsdlIsOf csdlIsOf2 = new CsdlIsOf();
+    csdlIsOf2.setMaxLength(1);
+    csdlIsOf2.setPrecision(2);
+    csdlIsOf2.setScale(3);
+    csdlIsOf2.setType(null);
+    csdlIsOf2.setSrid(SRID.valueOf("1234"));
+    csdlIsOf2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIsOf2.setAnnotations(csdlAnnotations);
+    
+    assertTrue(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf1.toString());
+  }
+  
+  @Test
   public void negCompareCsdlIsOfWithValueNull() {
     CsdlIsOf csdlIsOf1 = new CsdlIsOf();
     csdlIsOf1.setMaxLength(1);
@@ -230,6 +331,32 @@ public class CsdlIsOfTest {
     csdlIsOf2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlIsOf1.equals(csdlIsOf2));
+  }
+  
+  @Test
+  public void negCompareCsdlIsOfWithBothValueNull() {
+    CsdlIsOf csdlIsOf1 = new CsdlIsOf();
+    csdlIsOf1.setMaxLength(1);
+    csdlIsOf1.setPrecision(2);
+    csdlIsOf1.setScale(3);
+    csdlIsOf1.setType("Edm.String");
+    csdlIsOf1.setSrid(SRID.valueOf("1234"));
+    csdlIsOf1.setValue(null);
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlIsOf1.setAnnotations(csdlAnnotations);
+    
+    CsdlIsOf csdlIsOf2 = new CsdlIsOf();
+    csdlIsOf2.setMaxLength(1);
+    csdlIsOf2.setPrecision(2);
+    csdlIsOf2.setScale(3);
+    csdlIsOf2.setType("Edm.String");
+    csdlIsOf2.setSrid(SRID.valueOf("1234"));
+    csdlIsOf2.setValue(null);
+    csdlIsOf2.setAnnotations(csdlAnnotations);
+    
+    assertTrue(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf2.toString());
   }
   
   @Test
@@ -284,6 +411,58 @@ public class CsdlIsOfTest {
   }
   
   @Test
+  public void negCompareCsdlIsOfWithPrecNull() {
+    CsdlIsOf csdlIsOf1 = new CsdlIsOf();
+    csdlIsOf1.setMaxLength(1);
+    csdlIsOf1.setPrecision(null);
+    csdlIsOf1.setScale(3);
+    csdlIsOf1.setType("Edm.String");
+    csdlIsOf1.setSrid(SRID.valueOf("1234"));
+    csdlIsOf1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlIsOf1.setAnnotations(csdlAnnotations);
+    
+    CsdlIsOf csdlIsOf2 = new CsdlIsOf();
+    csdlIsOf2.setMaxLength(1);
+    csdlIsOf2.setPrecision(3);
+    csdlIsOf2.setScale(3);
+    csdlIsOf2.setType("Edm.String");
+    csdlIsOf2.setSrid(SRID.valueOf("1234"));
+    csdlIsOf2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIsOf2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf1.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlIsOfWithOtherPrecNull() {
+    CsdlIsOf csdlIsOf1 = new CsdlIsOf();
+    csdlIsOf1.setMaxLength(1);
+    csdlIsOf1.setPrecision(10);
+    csdlIsOf1.setScale(3);
+    csdlIsOf1.setType("Edm.String");
+    csdlIsOf1.setSrid(SRID.valueOf("1234"));
+    csdlIsOf1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlIsOf1.setAnnotations(csdlAnnotations);
+    
+    CsdlIsOf csdlIsOf2 = new CsdlIsOf();
+    csdlIsOf2.setMaxLength(1);
+    csdlIsOf2.setPrecision(null);
+    csdlIsOf2.setScale(3);
+    csdlIsOf2.setType("Edm.String");
+    csdlIsOf2.setSrid(SRID.valueOf("1234"));
+    csdlIsOf2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIsOf2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf2.toString());
+  }
+  
+  @Test
   public void negCompareCsdlIsOfWithDiffScale() {
     CsdlIsOf csdlIsOf1 = new CsdlIsOf();
     csdlIsOf1.setMaxLength(1);
@@ -306,6 +485,58 @@ public class CsdlIsOfTest {
     csdlIsOf2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlIsOf1.equals(csdlIsOf2));
+  }
+  
+  @Test
+  public void negCompareCsdlIsOfWithNullScale() {
+    CsdlIsOf csdlIsOf1 = new CsdlIsOf();
+    csdlIsOf1.setMaxLength(1);
+    csdlIsOf1.setPrecision(2);
+    csdlIsOf1.setScale(null);
+    csdlIsOf1.setType("Edm.String");
+    csdlIsOf1.setSrid(SRID.valueOf("1234"));
+    csdlIsOf1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlIsOf1.setAnnotations(csdlAnnotations);
+    
+    CsdlIsOf csdlIsOf2 = new CsdlIsOf();
+    csdlIsOf2.setMaxLength(1);
+    csdlIsOf2.setPrecision(2);
+    csdlIsOf2.setScale(4);
+    csdlIsOf2.setType("Edm.String");
+    csdlIsOf2.setSrid(SRID.valueOf("1234"));
+    csdlIsOf2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIsOf2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf1.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlIsOfWithOtherScaleNull() {
+    CsdlIsOf csdlIsOf1 = new CsdlIsOf();
+    csdlIsOf1.setMaxLength(1);
+    csdlIsOf1.setPrecision(2);
+    csdlIsOf1.setScale(2);
+    csdlIsOf1.setType("Edm.String");
+    csdlIsOf1.setSrid(SRID.valueOf("1234"));
+    csdlIsOf1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlIsOf1.setAnnotations(csdlAnnotations);
+    
+    CsdlIsOf csdlIsOf2 = new CsdlIsOf();
+    csdlIsOf2.setMaxLength(1);
+    csdlIsOf2.setPrecision(2);
+    csdlIsOf2.setScale(null);
+    csdlIsOf2.setType("Edm.String");
+    csdlIsOf2.setSrid(SRID.valueOf("1234"));
+    csdlIsOf2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIsOf2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf2.toString());
   }
   
   @Test
@@ -334,6 +565,58 @@ public class CsdlIsOfTest {
   }
   
   @Test
+  public void negCompareCsdlIsOfWithMaxLenNull() {
+    CsdlIsOf csdlIsOf1 = new CsdlIsOf();
+    csdlIsOf1.setMaxLength(null);
+    csdlIsOf1.setPrecision(2);
+    csdlIsOf1.setScale(3);
+    csdlIsOf1.setType("Edm.String");
+    csdlIsOf1.setSrid(SRID.valueOf("1234"));
+    csdlIsOf1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlIsOf1.setAnnotations(csdlAnnotations);
+    
+    CsdlIsOf csdlIsOf2 = new CsdlIsOf();
+    csdlIsOf2.setMaxLength(1);
+    csdlIsOf2.setPrecision(2);
+    csdlIsOf2.setScale(3);
+    csdlIsOf2.setType("Edm.String");
+    csdlIsOf2.setSrid(SRID.valueOf("1234"));
+    csdlIsOf2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIsOf2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf1.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlIsOfWithOtherMaxLenNull() {
+    CsdlIsOf csdlIsOf1 = new CsdlIsOf();
+    csdlIsOf1.setMaxLength(10);
+    csdlIsOf1.setPrecision(2);
+    csdlIsOf1.setScale(3);
+    csdlIsOf1.setType("Edm.String");
+    csdlIsOf1.setSrid(SRID.valueOf("1234"));
+    csdlIsOf1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlIsOf1.setAnnotations(csdlAnnotations);
+    
+    CsdlIsOf csdlIsOf2 = new CsdlIsOf();
+    csdlIsOf2.setMaxLength(null);
+    csdlIsOf2.setPrecision(2);
+    csdlIsOf2.setScale(3);
+    csdlIsOf2.setType("Edm.String");
+    csdlIsOf2.setSrid(SRID.valueOf("1234"));
+    csdlIsOf2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIsOf2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf2.toString());
+  }
+  
+  @Test
   public void negCompareCsdlIsOfWithOtherSridNull() {
     CsdlIsOf csdlIsOf1 = new CsdlIsOf();
     csdlIsOf1.setMaxLength(1);
@@ -356,14 +639,15 @@ public class CsdlIsOfTest {
     csdlIsOf2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlIsOf1.equals(csdlIsOf2));
+    assertNotNull(csdlIsOf2.toString());
   }
   
   @Test
   public void compareCsdlIsOfWithAllValuesNull() {
     CsdlIsOf csdlIsOf1 = new CsdlIsOf();
-    csdlIsOf1.setMaxLength(1);
-    csdlIsOf1.setPrecision(2);
-    csdlIsOf1.setScale(3);
+    csdlIsOf1.setMaxLength(null);
+    csdlIsOf1.setPrecision(null);
+    csdlIsOf1.setScale(null);
     csdlIsOf1.setType(null);
     csdlIsOf1.setSrid(null);
     csdlIsOf1.setValue(null);
@@ -372,9 +656,9 @@ public class CsdlIsOfTest {
     csdlIsOf1.setAnnotations(csdlAnnotations);
     
     CsdlIsOf csdlIsOf2 = new CsdlIsOf();
-    csdlIsOf2.setMaxLength(1);
-    csdlIsOf2.setPrecision(2);
-    csdlIsOf2.setScale(3);
+    csdlIsOf2.setMaxLength(null);
+    csdlIsOf2.setPrecision(null);
+    csdlIsOf2.setScale(null);
     csdlIsOf2.setType(null);
     csdlIsOf2.setSrid(null);
     csdlIsOf2.setValue(null);

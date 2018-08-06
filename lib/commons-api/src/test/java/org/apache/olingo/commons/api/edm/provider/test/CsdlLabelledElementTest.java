@@ -131,6 +131,57 @@ public class CsdlLabelledElementTest {
   }
   
   @Test
+  public void negCompareCsdlLabelledEleWithNullAnnot() {
+    CsdlLabeledElement csdlLabeledElement1 = new CsdlLabeledElement();
+    csdlLabeledElement1.setName("name");
+    csdlLabeledElement1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlLabeledElement1.setAnnotations(null);
+    
+    CsdlLabeledElement csdlLabeledElement2 = new CsdlLabeledElement();
+    csdlLabeledElement2.setName("name");
+    csdlLabeledElement2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlLabeledElement2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlLabeledElement1.equals(csdlLabeledElement2));
+    assertNotNull(csdlLabeledElement1.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlLabelledEleWithOtherAnnotNull() {
+    CsdlLabeledElement csdlLabeledElement1 = new CsdlLabeledElement();
+    csdlLabeledElement1.setName("name");
+    csdlLabeledElement1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlLabeledElement1.setAnnotations(csdlAnnotations);
+    
+    CsdlLabeledElement csdlLabeledElement2 = new CsdlLabeledElement();
+    csdlLabeledElement2.setName("name");
+    csdlLabeledElement2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlLabeledElement2.setAnnotations(null);
+    
+    assertFalse(csdlLabeledElement1.equals(csdlLabeledElement2));
+    assertNotNull(csdlLabeledElement2.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlLabelledEleWithAllNulls() {
+    CsdlLabeledElement csdlLabeledElement1 = new CsdlLabeledElement();
+    csdlLabeledElement1.setName(null);
+    csdlLabeledElement1.setValue(null);
+    csdlLabeledElement1.setAnnotations(null);
+    
+    CsdlLabeledElement csdlLabeledElement2 = new CsdlLabeledElement();
+    csdlLabeledElement2.setName(null);
+    csdlLabeledElement2.setValue(null);
+    csdlLabeledElement2.setAnnotations(null);
+    
+    assertTrue(csdlLabeledElement1.equals(csdlLabeledElement2));
+  }
+  
+  @Test
   public void negCompareCsdlLabelledEleWithNameNull() {
     CsdlLabeledElement csdlLabeledElement1 = new CsdlLabeledElement();
     csdlLabeledElement1.setName(null);

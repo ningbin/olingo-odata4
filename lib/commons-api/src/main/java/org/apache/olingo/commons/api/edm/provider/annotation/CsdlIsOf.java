@@ -135,36 +135,27 @@ return this;
       return false;
     }
     CsdlIsOf csdlIsOf = (CsdlIsOf) obj;
-    if (this.getType() == null && csdlIsOf.getType() != null) {
-      return false;
-    } else if (this.getType() != null && 
-        !this.getType().equalsIgnoreCase(csdlIsOf.getType())) {
-      return false;
-    }
-    if (this.getMaxLength() != csdlIsOf.getMaxLength()) {
-      return false;
-    }
-    if (this.getPrecision() != csdlIsOf.getPrecision()) {
-      return false;
-    }
-    if (this.getScale() != csdlIsOf.getScale()) {
-      return false;
-    }
-    if (this.getSrid() == null && csdlIsOf.getSrid() != null) {
-      return false;
-    } else if (this.getSrid() != null &&
-        !String.valueOf(this.getSrid()).equals(String.valueOf(csdlIsOf.getSrid()))) {
-      return false;
-    }
-    if (this.getValue() == null && csdlIsOf.getValue() != null) {
-      return false;
-    } else if (this.getValue() != null && 
-        !this.getValue().equals(csdlIsOf.getValue())) {
-      return false;
-    }
-    if (this.getAnnotations().size() == csdlIsOf.getAnnotations().size()) {
+    return (this.getType() == null ? csdlIsOf.getType() == null :
+      this.getType().equals(csdlIsOf.getType()))
+        && (this.getMaxLength() == null ? csdlIsOf.getMaxLength() == null :
+          this.getMaxLength().equals(csdlIsOf.getMaxLength()))
+        && (this.getPrecision() == null ? csdlIsOf.getPrecision() == null : 
+          this.getPrecision().equals(csdlIsOf.getPrecision()))
+        && (this.getScale() == null ? csdlIsOf.getScale() == null :
+          this.getScale().equals(csdlIsOf.getScale()))
+        && (this.getSrid() == null ? csdlIsOf.getSrid() == null :
+          this.getSrid().equals(csdlIsOf.getSrid()))
+        && (this.getValue() == null ? csdlIsOf.getValue() == null :
+          this.getValue().equals(csdlIsOf.getValue()))
+        && (this.getAnnotations() == null ? csdlIsOf.getAnnotations() == null :
+          (csdlIsOf.getAnnotations() == null ? false : 
+            checkAnnotations(csdlIsOf.getAnnotations())));
+  }
+  
+  private boolean checkAnnotations(List<CsdlAnnotation> csdlIsOfannot) {
+    if (this.getAnnotations().size() == csdlIsOfannot.size()) {
       for (int i = 0; i < this.getAnnotations().size(); i++) {
-        if (!this.getAnnotations().get(i).equals(csdlIsOf.getAnnotations().get(i))) {
+        if (!this.getAnnotations().get(i).equals(csdlIsOfannot.get(i))) {
           return false;
         }
       }
@@ -173,7 +164,7 @@ return this;
     }
     return true;
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -184,7 +175,7 @@ return this;
     result = prime * result + ((scale == null) ? 0 : scale.hashCode());
     result = prime * result + ((srid == null) ? 0 : srid.hashCode());
     result = prime * result + ((value == null) ? 0 : value.hashCode());
-    result = prime * result + ((annotations.size() == 0) ? 0 : annotations.hashCode());
+    result = prime * result + ((annotations == null) ? 0 : annotations.hashCode());
     return result;
   }
 }

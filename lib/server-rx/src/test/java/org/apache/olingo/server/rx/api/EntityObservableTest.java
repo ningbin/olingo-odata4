@@ -18,13 +18,13 @@
  */
 package org.apache.olingo.server.rx.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.olingo.commons.api.data.Entity;
+import org.apache.olingo.commons.api.data.EntityIterator;
 import org.apache.olingo.commons.api.ex.ODataNotSupportedException;
 import org.junit.Test;
 
@@ -93,5 +93,210 @@ public class EntityObservableTest {
       }
     };
     assertNotNull(observable.getObservable());
+  }
+  
+  @Test
+  public void compareObservableTest() throws URISyntaxException {
+    EntityObservable observable1 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable1.setCount(1);
+    URI next = new URI("next");
+    observable1.setNext(next);
+    observable1.setBaseURI(next);
+    observable1.setId(next);
+    
+    EntityObservable observable2 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable2.setCount(1);
+    observable2.setNext(next);
+    observable2.setBaseURI(next);
+    observable2.setId(next);
+    assertTrue(observable1.equals(observable2));
+    assertNotNull(observable1.toString());
+  }
+  
+  @Test
+  public void negCompareObservableWithNullNext() throws URISyntaxException {
+    EntityObservable observable1 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable1.setCount(1);
+    URI next = new URI("next");
+    observable1.setNext(null);
+    
+    EntityObservable observable2 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable2.setCount(1);
+    observable2.setNext(next);
+    assertFalse(observable1.equals(observable2));
+    assertNotNull(observable1.toString());
+  }
+  
+  @Test
+  public void negCompareObservableWithOtherNextNull() throws URISyntaxException {
+    EntityObservable observable1 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable1.setCount(1);
+    URI next = new URI("http://next");
+    observable1.setNext(next);
+    
+    EntityObservable observable2 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable2.setCount(1);
+    observable2.setNext(null);
+    assertFalse(observable1.equals(observable2));
+  }
+  
+  @Test
+  public void negCompareObservableWithBothNextNonNull() throws URISyntaxException {
+    EntityObservable observable1 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable1.setCount(1);
+    URI next = new URI("http://next");
+    observable1.setNext(next);
+    
+    EntityObservable observable2 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable2.setCount(1);
+    next = new URI("http://next1");
+    observable2.setNext(next);
+    assertFalse(observable1.equals(observable2));
+  }
+  
+  @Test
+  public void negCompareObservableWithBothNull() throws URISyntaxException {
+    EntityObservable observable1 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable1.setCount(1);
+    observable1.setNext(null);
+    
+    EntityObservable observable2 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable2.setCount(1);
+    observable2.setNext(null);
+    assertTrue(observable1.equals(observable2));
+  }
+  
+  @Test
+  public void negCompareObservableWithDiffCount() throws URISyntaxException {
+    EntityObservable observable1 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable1.setCount(1);
+    observable1.setNext(null);
+    
+    EntityObservable observable2 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable2.setCount(2);
+    observable2.setNext(null);
+    assertFalse(observable1.equals(observable2));
+  }
+  
+  @Test
+  public void negCompareObservableWithBothCountNull() throws URISyntaxException {
+    EntityObservable observable1 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable1.setNext(null);
+    observable1.setCount(null);
+    
+    EntityObservable observable2 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable2.setCount(null);
+    observable2.setNext(null);
+    assertTrue(observable1.equals(observable2));
+    assertNotNull(observable1.toString());
+  }
+  
+  @Test
+  public void negCompareObservableWithNullObj() throws URISyntaxException {
+    EntityObservable observable1 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable1.setNext(null);
+    
+    EntityObservable observable2 = null;
+    assertFalse(observable1.equals(observable2));
+  }
+  
+  @Test
+  public void negCompareObservableWithOtherInstance() throws URISyntaxException {
+    EntityObservable observable1 = new EntityObservable() {
+      @Override
+      public Observable<Entity> getObservable() {
+        return null;
+      }
+    };
+    observable1.setNext(null);
+    
+    EntityIterator iterator = new EntityIterator() {
+      
+      @Override
+      public Entity next() {
+        return null;
+      }
+      
+      @Override
+      public boolean hasNext() {
+        return false;
+      }
+    };
+    assertFalse(observable1.equals(iterator));
   }
 }

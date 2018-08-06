@@ -273,4 +273,139 @@ public class CsdlApplyTest {
     
     assertFalse(csdlApply1.equals(csdlApply2));
   }
+  
+  @Test
+  public void negCompareCsdlApplyWithOtherNullParams() {
+    CsdlApply csdlApply1 = new CsdlApply();
+    csdlApply1.setFunction("Function");
+
+    List<CsdlExpression> parameters = new ArrayList<CsdlExpression>();
+    parameters.add(new CsdlConstantExpression(ConstantExpressionType.String));
+    parameters.add(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    csdlApply1.setParameters(null);
+
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlApply1.setAnnotations(csdlAnnotations);
+    
+    CsdlApply csdlApply2 = new CsdlApply();
+    csdlApply2.setFunction("Function");
+    parameters = new ArrayList<CsdlExpression>();
+    parameters.add(new CsdlConstantExpression(ConstantExpressionType.String));
+    parameters.add(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.Or));
+    csdlApply2.setParameters(parameters);
+    csdlApply2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlApply1.equals(csdlApply2));
+  }
+  
+  @Test
+  public void negCompareCsdlApplyWithOtherNullAnnot() {
+    CsdlApply csdlApply1 = new CsdlApply();
+    csdlApply1.setFunction("Function");
+
+    List<CsdlExpression> parameters = new ArrayList<CsdlExpression>();
+    parameters.add(new CsdlConstantExpression(ConstantExpressionType.String));
+    parameters.add(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    csdlApply1.setParameters(parameters);
+
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlApply1.setAnnotations(null);
+    
+    CsdlApply csdlApply2 = new CsdlApply();
+    csdlApply2.setFunction("Function");
+    parameters = new ArrayList<CsdlExpression>();
+    parameters.add(new CsdlConstantExpression(ConstantExpressionType.String));
+    parameters.add(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.Or));
+    csdlApply2.setParameters(parameters);
+    csdlApply2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlApply1.equals(csdlApply2));
+  }
+  
+  @Test
+  public void negCompareCsdlApplyWithNullParams() {
+    CsdlApply csdlApply1 = new CsdlApply();
+    csdlApply1.setFunction("Function");
+
+    List<CsdlExpression> parameters = new ArrayList<CsdlExpression>();
+    parameters.add(new CsdlConstantExpression(ConstantExpressionType.String));
+    parameters.add(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    csdlApply1.setParameters(parameters);
+
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlApply1.setAnnotations(csdlAnnotations);
+    
+    CsdlApply csdlApply2 = new CsdlApply();
+    csdlApply2.setFunction("Function");
+    csdlApply2.setParameters(null);
+    csdlApply2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlApply1.equals(csdlApply2));
+    assertNotNull(csdlApply2.toString());
+  }
+  
+  @Test
+  public void compareCsdlApplyWithBothNullParams() {
+    CsdlApply csdlApply1 = new CsdlApply();
+    csdlApply1.setFunction("Function");
+
+    csdlApply1.setParameters(null);
+
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlApply1.setAnnotations(csdlAnnotations);
+    
+    CsdlApply csdlApply2 = new CsdlApply();
+    csdlApply2.setFunction("Function");
+    csdlApply2.setParameters(null);
+    csdlApply2.setAnnotations(csdlAnnotations);
+    
+    assertTrue(csdlApply1.equals(csdlApply2));
+  }
+  
+  @Test
+  public void negCompareCsdlApplyWithNullAnnot() {
+    CsdlApply csdlApply1 = new CsdlApply();
+    csdlApply1.setFunction("Function");
+
+    List<CsdlExpression> parameters = new ArrayList<CsdlExpression>();
+    parameters.add(new CsdlConstantExpression(ConstantExpressionType.String));
+    parameters.add(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    csdlApply1.setParameters(parameters);
+
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlApply1.setAnnotations(csdlAnnotations);
+    
+    CsdlApply csdlApply2 = new CsdlApply();
+    csdlApply2.setFunction("Function");
+    csdlApply2.setParameters(parameters);
+    csdlApply2.setAnnotations(null);
+    
+    assertFalse(csdlApply1.equals(csdlApply2));
+    assertNotNull(csdlApply2.toString());
+  }
+  
+  @Test
+  public void compareCsdlApplyWithBothNullAnnot() {
+    CsdlApply csdlApply1 = new CsdlApply();
+    csdlApply1.setFunction("Function");
+
+    List<CsdlExpression> parameters = new ArrayList<CsdlExpression>();
+    parameters.add(new CsdlConstantExpression(ConstantExpressionType.String));
+    parameters.add(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    csdlApply1.setParameters(parameters);
+
+    csdlApply1.setAnnotations(null);
+    
+    CsdlApply csdlApply2 = new CsdlApply();
+    csdlApply2.setFunction("Function");
+    csdlApply2.setParameters(parameters);
+    csdlApply2.setAnnotations(null);
+    
+    assertTrue(csdlApply1.equals(csdlApply2));
+  }
 }

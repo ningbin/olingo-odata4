@@ -436,6 +436,93 @@ public class CsdlAnnotationTest {
   }
   
   @Test
+  public void negCompareAnnotationAnnotNull() {
+    CsdlAnnotation annot1 = new CsdlAnnotation();
+    annot1.setQualifier("Qualifier1");
+    annot1.setTerm("ns.term");
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    annot1.setAnnotations(null);
+    annot1.setExpression(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    
+    CsdlAnnotation annot2 = new CsdlAnnotation();
+    annot2.setQualifier("Qualifier1");
+    annot2.setTerm("ns.term");
+    annot2.setAnnotations(csdlAnnotations);
+    annot2.setExpression(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    
+    assertFalse(annot1.equals(annot2));
+    assertTrue(annot1.getExpression().isDynamic());
+    assertTrue(annot2.getExpression().isDynamic());
+    assertNotNull(annot1.getExpression().asDynamic());
+    assertNotNull(annot2.getExpression().asDynamic());
+    assertTrue(annot1.getExpression().asDynamic().isLogicalOrComparison());
+    assertTrue(annot2.getExpression().asDynamic().isLogicalOrComparison());
+    assertNotNull(annot1.getExpression().asDynamic().asLogicalOrComparison());
+    assertNotNull(annot2.getExpression().asDynamic().asLogicalOrComparison());
+    assertTrue(annot1.getExpression().asDynamic()
+        .equals(annot2.getExpression().asDynamic()));
+    assertNotNull(annot1.toString());
+  }
+  
+  @Test
+  public void negCompareAnnotationOtherAnnotNull() {
+    CsdlAnnotation annot1 = new CsdlAnnotation();
+    annot1.setQualifier("Qualifier1");
+    annot1.setTerm("ns.term");
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    annot1.setAnnotations(csdlAnnotations);
+    annot1.setExpression(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    
+    CsdlAnnotation annot2 = new CsdlAnnotation();
+    annot2.setQualifier("Qualifier1");
+    annot2.setTerm("ns.term");
+    annot2.setAnnotations(null);
+    annot2.setExpression(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    
+    assertFalse(annot1.equals(annot2));
+    assertTrue(annot1.getExpression().isDynamic());
+    assertTrue(annot2.getExpression().isDynamic());
+    assertNotNull(annot1.getExpression().asDynamic());
+    assertNotNull(annot2.getExpression().asDynamic());
+    assertTrue(annot1.getExpression().asDynamic().isLogicalOrComparison());
+    assertTrue(annot2.getExpression().asDynamic().isLogicalOrComparison());
+    assertNotNull(annot1.getExpression().asDynamic().asLogicalOrComparison());
+    assertNotNull(annot2.getExpression().asDynamic().asLogicalOrComparison());
+    assertTrue(annot1.getExpression().asDynamic()
+        .equals(annot2.getExpression().asDynamic()));
+    assertNotNull(annot2.toString());
+  }
+  
+  @Test
+  public void negCompareAnnotationBothAnnotNull() {
+    CsdlAnnotation annot1 = new CsdlAnnotation();
+    annot1.setQualifier("Qualifier1");
+    annot1.setTerm("ns.term");
+    annot1.setAnnotations(null);
+    annot1.setExpression(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    
+    CsdlAnnotation annot2 = new CsdlAnnotation();
+    annot2.setQualifier("Qualifier1");
+    annot2.setTerm("ns.term");
+    annot2.setAnnotations(null);
+    annot2.setExpression(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    
+    assertTrue(annot1.equals(annot2));
+    assertTrue(annot1.getExpression().isDynamic());
+    assertTrue(annot2.getExpression().isDynamic());
+    assertNotNull(annot1.getExpression().asDynamic());
+    assertNotNull(annot2.getExpression().asDynamic());
+    assertTrue(annot1.getExpression().asDynamic().isLogicalOrComparison());
+    assertTrue(annot2.getExpression().asDynamic().isLogicalOrComparison());
+    assertNotNull(annot1.getExpression().asDynamic().asLogicalOrComparison());
+    assertNotNull(annot2.getExpression().asDynamic().asLogicalOrComparison());
+    assertTrue(annot1.getExpression().asDynamic()
+        .equals(annot2.getExpression().asDynamic()));
+  }
+  
+  @Test
   public void negCompareAnnotationWithDiffAnnotSize() {
     CsdlAnnotation annot1 = new CsdlAnnotation();
     annot1.setQualifier("Qualifier1");

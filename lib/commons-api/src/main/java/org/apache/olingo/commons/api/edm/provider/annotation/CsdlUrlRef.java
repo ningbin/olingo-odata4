@@ -65,15 +65,17 @@ public class CsdlUrlRef extends CsdlDynamicExpression implements CsdlAnnotatable
       return false;
     }
     CsdlUrlRef csdlUrlRef = (CsdlUrlRef) obj;
-    if (this.getValue() == null && csdlUrlRef.getValue() != null) {
-      return false;
-    } else if (this.getValue() != null && 
-        !this.getValue().equals(csdlUrlRef.getValue())) {
-      return false;
-    }
-    if (this.getAnnotations().size() == csdlUrlRef.getAnnotations().size()) {
+    return (this.getValue() == null ? csdlUrlRef.getValue() == null :
+      this.getValue().equals(csdlUrlRef.getValue()))
+        && (this.getAnnotations() == null ? csdlUrlRef.getAnnotations() == null : 
+          csdlUrlRef.getAnnotations() == null ? false : 
+            checkAnnotations(csdlUrlRef.getAnnotations()));
+  }
+  
+  private boolean checkAnnotations(List<CsdlAnnotation> csdlUrlRefAnnot) {
+    if (this.getAnnotations().size() == csdlUrlRefAnnot.size()) {
       for (int i = 0; i < this.getAnnotations().size() ; i++) {
-        if (!this.getAnnotations().get(i).equals(csdlUrlRef.getAnnotations().get(i))) {
+        if (!this.getAnnotations().get(i).equals(csdlUrlRefAnnot.get(i))) {
           return false;
         }
       }
@@ -82,13 +84,13 @@ public class CsdlUrlRef extends CsdlDynamicExpression implements CsdlAnnotatable
     }
     return true;
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((value == null) ? 0 : value.hashCode());
-    result = prime * result + ((annotations.size() == 0) ? 0 : annotations.hashCode());
+    result = prime * result + ((annotations == null) ? 0 : annotations.hashCode());
     return result;
   }
 }

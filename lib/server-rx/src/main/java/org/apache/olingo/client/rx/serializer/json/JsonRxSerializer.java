@@ -46,16 +46,10 @@ public class JsonRxSerializer extends JsonEntitySerializer {
     super(serverMode, contentType);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public <T> void write(final Writer writer, final T entityCollection) throws ODataSerializerException {
     final List<ODataSerializerException> ex = new ArrayList<ODataSerializerException>();
-    final List<JsonGenerator> json = new ArrayList<JsonGenerator>();
-    try {
-      json.add(new JsonFactory().createGenerator(writer));
-    } catch (IOException e) {
-      ex.add(new ODataSerializerException(e));
-    }
+    final List<JsonGenerator> json = getJsonGenerator(writer, ex);
     if (entityCollection instanceof EntityObservable) {
       try {
         json.get(0).writeStartObject();
@@ -68,26 +62,38 @@ public class JsonRxSerializer extends JsonEntitySerializer {
         } catch (IOException e) {
           ex.add(new ODataSerializerException(e));
         }
-      
+      serializeEntity(entityCollection, ex, json);
+    } else {
+      throw new ODataNotSupportedException("Streaming is supported only for Entity Collection");
+    }
+  }
+
+  /**
+   * @param entityCollection
+   * @param ex
+   * @param json
+   * @throws ODataSerializerException
+   */
+  @SuppressWarnings("unchecked")
+  private <T> void serializeEntity(final T entityCollection, final List<ODataSerializerException> ex,
+      final List<JsonGenerator> json) throws ODataSerializerException {
       ((EntityObservable) entityCollection).getObservable().subscribe(new Observer<Entity>() {
 
         @Override
         public void onSubscribe(Disposable d) {
-          
+       // Provides the Observer with the means of cancelling the connection with the Observable.
         }
 
         @Override
         public void onNext(Entity entity) {
           try {
-            try {
-              doSerialize(entity, json.get(0));
-            } catch (IOException e) {
-              ex.add(new ODataSerializerException(e));
-            }
+            doSerialize(entity, json.get(0));
+          } catch (IOException e) {
+            ex.add(new ODataSerializerException(e));
           } catch (final EdmPrimitiveTypeException e) {
             ex.add(new ODataSerializerException(e));
           }
-        }
+         } 
 
         @Override
         public void onError(Throwable e) {
@@ -96,7 +102,8 @@ public class JsonRxSerializer extends JsonEntitySerializer {
 
         @Override
         public void onComplete() {
-          
+       // Notifies the Observer that the Observable has finished sending push-based notifications
+          // No task to be performed on Complete
         }
         
       });
@@ -111,22 +118,29 @@ public class JsonRxSerializer extends JsonEntitySerializer {
       if (!ex.isEmpty()) {
         throw ex.get(0);
       }
-    } else {
-      throw new ODataNotSupportedException("Streaming is supported only for Entity Collection");
+  }
+
+  /**
+   * @param writer
+   * @param ex
+   * @return
+   */
+  private List<JsonGenerator> getJsonGenerator(final Writer writer, final List<ODataSerializerException> ex) {
+    final List<JsonGenerator> json = new ArrayList<JsonGenerator>();
+    try {
+      json.add(new JsonFactory().createGenerator(writer));
+    } catch (IOException e) {
+      ex.add(new ODataSerializerException(e));
     }
+    return json;
   }
   
   @SuppressWarnings("unchecked")
   @Override
   public <T> void write(final Writer writer, final ResWrap<T> container) throws ODataSerializerException {
     final List<ODataSerializerException> ex = new ArrayList<ODataSerializerException>();
-    final List<JsonGenerator> json = new ArrayList<JsonGenerator>();
+    final List<JsonGenerator> json = getJsonGenerator(writer, ex);
     T entityCollection = container.getPayload();
-    try {
-      json.add(new JsonFactory().createGenerator(writer));
-    } catch (IOException e) {
-      ex.add(new ODataSerializerException(e));
-    }
     if (entityCollection instanceof EntityObservable) {
       try {
         json.get(0).writeStartObject();
@@ -139,48 +153,7 @@ public class JsonRxSerializer extends JsonEntitySerializer {
           ex.add(new ODataSerializerException(e));
         }
       
-      ((EntityObservable) entityCollection).getObservable().subscribe(new Observer<Entity>() {
-
-        @Override
-        public void onSubscribe(Disposable d) {
-          
-        }
-
-        @Override
-        public void onNext(Entity entity) {
-          try {
-            try {
-              doSerialize(entity, json.get(0));
-            } catch (IOException e) {
-              ex.add(new ODataSerializerException(e));
-            }
-          } catch (final EdmPrimitiveTypeException e) {
-            ex.add(new ODataSerializerException(e));
-          }
-        }
-
-        @Override
-        public void onError(Throwable e) {
-          ex.add(new ODataSerializerException(e.getMessage(), e));
-        }
-
-        @Override
-        public void onComplete() {
-          
-        }
-        
-      });
-      try {
-        json.get(0).writeEndArray();
-        json.get(0).writeEndObject();
-        json.get(0).flush();
-      } catch (IOException e1) {
-        ex.add(new ODataSerializerException(e1));
-      }
-      
-      if (!ex.isEmpty()) {
-        throw ex.get(0);
-      }
+      serializeEntity(entityCollection, ex, json);
     } else {
       throw new ODataNotSupportedException("Streaming is supported only for Entity Collection");
     }
@@ -216,15 +189,9 @@ public class JsonRxSerializer extends JsonEntitySerializer {
     } else {
       jgen.writeNumberField(Constants.JSON_COUNT, count);
     }
-    if (serverMode) {
-      if (entitySet.getNext() != null) {
-        jgen.writeStringField(Constants.JSON_NEXT_LINK,
-            entitySet.getNext().toASCIIString());
-      }
-      /*if (entitySet.getDeltaLink() != null && !isODataMetadataNone) {
-        jgen.writeStringField(Constants.JSON_DELTA_LINK,
-            entitySet.getDeltaLink().toASCIIString());
-      }*/
+    if (serverMode && entitySet.getNext() != null) {
+      jgen.writeStringField(Constants.JSON_NEXT_LINK,
+          entitySet.getNext().toASCIIString());
     }
 
     for (Annotation annotation : entitySet.getAnnotations()) {

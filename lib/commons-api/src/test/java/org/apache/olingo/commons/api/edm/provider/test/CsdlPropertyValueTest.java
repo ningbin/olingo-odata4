@@ -122,16 +122,29 @@ public class CsdlPropertyValueTest {
     CsdlPropertyValue csdlPropertyValue1 = new CsdlPropertyValue();
     csdlPropertyValue1.setProperty("Prop1");
     csdlPropertyValue1.setValue(null);
-    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
-    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
-    csdlPropertyValue1.setAnnotations(csdlAnnotations);
+    csdlPropertyValue1.setAnnotations(null);
     
     CsdlPropertyValue csdlPropertyValue2 = new CsdlPropertyValue();
     csdlPropertyValue2.setProperty("Prop1");
     csdlPropertyValue2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
-    csdlPropertyValue2.setAnnotations(csdlAnnotations);
+    csdlPropertyValue2.setAnnotations(null);
     
     assertFalse(csdlPropertyValue1.equals(csdlPropertyValue2));
+  }
+  
+  @Test
+  public void negCompareCsdlPropertyValueWithAllNull() {
+    CsdlPropertyValue csdlPropertyValue1 = new CsdlPropertyValue();
+    csdlPropertyValue1.setProperty(null);
+    csdlPropertyValue1.setValue(null);
+    csdlPropertyValue1.setAnnotations(null);
+    
+    CsdlPropertyValue csdlPropertyValue2 = new CsdlPropertyValue();
+    csdlPropertyValue2.setProperty(null);
+    csdlPropertyValue2.setValue(null);
+    csdlPropertyValue2.setAnnotations(null);
+    
+    assertTrue(csdlPropertyValue1.equals(csdlPropertyValue2));
   }
   
   @Test
@@ -168,6 +181,42 @@ public class CsdlPropertyValueTest {
     csdlPropertyValue2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlPropertyValue1.equals(csdlPropertyValue2));
+  }
+  
+  @Test
+  public void negCompareCsdlPropertyValueWithAnnotNull() {
+    CsdlPropertyValue csdlPropertyValue1 = new CsdlPropertyValue();
+    csdlPropertyValue1.setProperty("Prop1");
+    csdlPropertyValue1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlPropertyValue1.setAnnotations(null);
+    
+    CsdlPropertyValue csdlPropertyValue2 = new CsdlPropertyValue();
+    csdlPropertyValue2.setProperty("Prop1");
+    csdlPropertyValue2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlPropertyValue2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlPropertyValue1.equals(csdlPropertyValue2));
+    assertNotNull(csdlPropertyValue1.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlPropertyValueWithOtherAnnotNull() {
+    CsdlPropertyValue csdlPropertyValue1 = new CsdlPropertyValue();
+    csdlPropertyValue1.setProperty("Prop1");
+    csdlPropertyValue1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlPropertyValue1.setAnnotations(csdlAnnotations);
+    
+    CsdlPropertyValue csdlPropertyValue2 = new CsdlPropertyValue();
+    csdlPropertyValue2.setProperty("Prop1");
+    csdlPropertyValue2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlPropertyValue2.setAnnotations(null);
+    
+    assertFalse(csdlPropertyValue1.equals(csdlPropertyValue2));
+    assertNotNull(csdlPropertyValue2.toString());
   }
   
   @Test

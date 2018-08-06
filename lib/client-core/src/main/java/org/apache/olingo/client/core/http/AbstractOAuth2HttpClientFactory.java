@@ -180,10 +180,10 @@ public abstract class AbstractOAuth2HttpClientFactory
           return this.httpClient;
         }
   } catch(ClassNotFoundException e) {
-    final DefaultHttpClient httpClient = new DefaultHttpClient();
-    httpClient.getParams().setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
-    accessToken(httpClient);
-    httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
+    final DefaultHttpClient _httpClient = new DefaultHttpClient();
+    _httpClient.getParams().setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
+    accessToken(_httpClient);
+    _httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
 
       @Override
       public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
@@ -194,20 +194,20 @@ public abstract class AbstractOAuth2HttpClientFactory
         }
       }
     });
-    httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
+    _httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
 
       @Override
       public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
-          refreshToken(httpClient);
+          refreshToken(_httpClient);
 
           if (currentRequest != null) {
-            httpClient.execute(currentRequest);
+            _httpClient.execute(currentRequest);
           }
         }
       }
     });
-    return httpClient;
+    return _httpClient;
     }
   }
 

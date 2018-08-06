@@ -115,15 +115,13 @@ public class CsdlLogicalOrComparisonExpressionTest {
         CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And);
     exp1.setLeft(null);
     exp1.setRight(null);
-    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
-    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
-    exp1.setAnnotations(csdlAnnotations);
+    exp1.setAnnotations(null);
     
     CsdlLogicalOrComparisonExpression exp2 = new 
         CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And);
     exp2.setLeft(null);
     exp2.setRight(null);
-    exp2.setAnnotations(csdlAnnotations);
+    exp2.setAnnotations(null);
     
     assertTrue(exp1.equals(exp2));
     assertNotNull(exp1.toString());
@@ -208,6 +206,46 @@ public class CsdlLogicalOrComparisonExpressionTest {
     exp2.setAnnotations(csdlAnnotations);
     
     assertFalse(exp1.equals(exp2));
+  }
+  
+  @Test
+  public void negCompareLogicalOrComparisonExpressionWithAnnotNull() {
+    CsdlLogicalOrComparisonExpression exp1 = new 
+        CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And);
+    exp1.setLeft(new CsdlConstantExpression(ConstantExpressionType.String));
+    exp1.setRight(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    exp1.setAnnotations(null);
+    
+    CsdlLogicalOrComparisonExpression exp2 = new 
+        CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And);
+    exp2.setLeft(new CsdlConstantExpression(ConstantExpressionType.String));
+    exp2.setRight(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    exp2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(exp1.equals(exp2));
+    assertNotNull(exp1.toString());
+  }
+  
+  @Test
+  public void negCompareLogicalOrComparisonExpressionWithOtherAnnotNull() {
+    CsdlLogicalOrComparisonExpression exp1 = new 
+        CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And);
+    exp1.setLeft(new CsdlConstantExpression(ConstantExpressionType.String));
+    exp1.setRight(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    exp1.setAnnotations(csdlAnnotations);
+    
+    CsdlLogicalOrComparisonExpression exp2 = new 
+        CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And);
+    exp2.setLeft(new CsdlConstantExpression(ConstantExpressionType.String));
+    exp2.setRight(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    exp2.setAnnotations(null);
+    
+    assertFalse(exp1.equals(exp2));
+    assertNotNull(exp2.toString());
   }
   
   @Test

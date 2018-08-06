@@ -155,27 +155,21 @@ public class CsdlLogicalOrComparisonExpression extends CsdlDynamicExpression imp
       return false;
     }
     CsdlLogicalOrComparisonExpression csdlLogComp = (CsdlLogicalOrComparisonExpression) obj;
-    if (this.getLeft() == null && csdlLogComp.getLeft() != null) {
-      return false;
-    } else if (this.getLeft() != null && 
-        !this.getLeft().equals(csdlLogComp.getLeft())) {
-      return false;
-    } 
-    if (this.getRight() == null && csdlLogComp.getRight() != null) {
-      return false;
-    } else if (this.getRight() != null && 
-        !this.getRight().equals(csdlLogComp.getRight())) {
-      return false;
-    }
-    if (this.getType() == null && csdlLogComp.getType() != null) {
-      return false;
-    } else if (this.getType() != null && 
-        !this.getType().equals(csdlLogComp.getType())) {
-      return false;
-    }
-    if (this.getAnnotations().size() == csdlLogComp.getAnnotations().size()) {
+    return (this.getLeft() == null ? csdlLogComp.getLeft() == null :
+      this.getLeft().equals(csdlLogComp.getLeft()))
+        && (this.getRight() == null ? csdlLogComp.getRight() == null : 
+          this.getRight().equals(csdlLogComp.getRight()))
+        && (this.getType() == null ? csdlLogComp.getType() == null : 
+          this.getType().equals(csdlLogComp.getType()))
+        && (this.getAnnotations() == null ? csdlLogComp.getAnnotations() == null : 
+          (csdlLogComp.getAnnotations() == null ? false :
+            checkAnnotations(csdlLogComp.getAnnotations())));
+  }
+  
+  private boolean checkAnnotations(List<CsdlAnnotation> csdlLogCompAnnot) {
+    if (this.getAnnotations().size() == csdlLogCompAnnot.size()) {
       for (int i = 0; i < this.getAnnotations().size() ; i++) {
-        if (!this.getAnnotations().get(i).equals(csdlLogComp.getAnnotations().get(i))) {
+        if (!this.getAnnotations().get(i).equals(csdlLogCompAnnot.get(i))) {
           return false;
         }
       }
@@ -184,7 +178,7 @@ public class CsdlLogicalOrComparisonExpression extends CsdlDynamicExpression imp
     }
     return true;
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -192,7 +186,7 @@ public class CsdlLogicalOrComparisonExpression extends CsdlDynamicExpression imp
     result = prime * result + ((type == null) ? 0 : type.hashCode());
     result = prime * result + ((left == null) ? 0 : left.hashCode());
     result = prime * result + ((right == null) ? 0 : right.hashCode());
-    result = prime * result + ((annotations.size() == 0) ? 0 : 
+    result = prime * result + ((annotations == null) ? 0 : 
       annotations.hashCode());
     return result;
   }

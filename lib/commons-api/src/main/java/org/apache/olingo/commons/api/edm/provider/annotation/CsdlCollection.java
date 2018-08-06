@@ -56,9 +56,15 @@ public class CsdlCollection extends CsdlDynamicExpression {
       return false;
     }
     CsdlCollection annotColl = (CsdlCollection) obj;
-    if (this.getItems().size() == annotColl.getItems().size()) {
+    return (this.getItems() == null ? annotColl.getItems() == null :
+      (annotColl.getItems() == null ? false :
+          checkItems(annotColl.getItems())));
+  }
+  
+  private boolean checkItems(List<CsdlExpression> annotCollItems) {
+    if (this.getItems().size() == annotCollItems.size()) {
       for (int i = 0; i < this.getItems().size(); i++) {
-        if (!this.getItems().get(i).equals(annotColl.getItems().get(i))) {
+        if (!this.getItems().get(i).equals(annotCollItems.get(i))) {
           return false;
         }
       }
@@ -67,12 +73,12 @@ public class CsdlCollection extends CsdlDynamicExpression {
     }
     return true;
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((items.size() == 0) ? 0 : items.hashCode());
+    result = prime * result + ((items == null) ? 0 : items.hashCode());
     return result;
   }
 }

@@ -136,36 +136,27 @@ public class CsdlCast extends CsdlDynamicExpression implements CsdlAnnotatable {
       return false;
     }
     CsdlCast csdlCast = (CsdlCast) obj;
-    if (this.getValue() == null && csdlCast.getValue() != null) {
-      return false;
-    } else if (this.getValue() != null && 
-        !this.getValue().equals(csdlCast.getValue())) {
-      return false;
-    }
-    if (this.getType() == null && csdlCast.getType() != null) {
-      return false;
-    } else if (this.getType() != null && 
-        !this.getType().equalsIgnoreCase(csdlCast.getType())) {
-      return false;
-    }
-    if (this.getMaxLength() != csdlCast.getMaxLength()) {
-      return false;
-    }
-    if (this.getPrecision() != csdlCast.getPrecision()) {
-      return false;
-    }
-    if (this.getScale() != csdlCast.getScale()) {
-      return false;
-    }
-    if (this.getSrid() == null && csdlCast.getSrid() != null) {
-      return false;
-    } else if (this.getSrid() != null &&
-        !String.valueOf(this.getSrid()).equals(String.valueOf(csdlCast.getSrid()))) {
-      return false;
-    }
-    if (this.getAnnotations().size() == csdlCast.getAnnotations().size()) {
-      for (int i = 0; i < this.getAnnotations().size() ; i++) {
-        if (!this.getAnnotations().get(i).equals(csdlCast.getAnnotations().get(i))) {
+    return (this.getValue() == null ? csdlCast.getValue() == null :
+      this.getValue().equals(csdlCast.getValue()))
+        && (this.getType() == null ? csdlCast.getType() == null :
+        this.getType().equals(csdlCast.getType()))
+        && (this.getMaxLength() == null ? csdlCast.getMaxLength() == null :
+          this.getMaxLength().equals(csdlCast.getMaxLength()))
+        && (this.getPrecision() == null ? csdlCast.getPrecision() == null :
+          this.getPrecision().equals(csdlCast.getPrecision()))
+        && (this.getScale() == null ? csdlCast.getScale() == null :
+         this.getScale().equals(csdlCast.getScale()))
+        && (this.getSrid() == null ? csdlCast.getSrid() == null :
+          String.valueOf(this.getSrid()).equals(String.valueOf(csdlCast.getSrid())))
+        && (this.getAnnotations() == null ? csdlCast.getAnnotations() == null :
+          (csdlCast.getAnnotations() == null ? false : 
+            checkAnnotations(csdlCast.getAnnotations())));
+  }
+  
+  private boolean checkAnnotations(List<CsdlAnnotation> csdlCastAnnotations) {
+    if (this.getAnnotations().size() == csdlCastAnnotations.size()) {
+      for (int i = 0; i < this.getAnnotations().size(); i++) {
+        if (!this.getAnnotations().get(i).equals(csdlCastAnnotations.get(i))) {
           return false;
         }
       }
@@ -174,7 +165,7 @@ public class CsdlCast extends CsdlDynamicExpression implements CsdlAnnotatable {
     }
     return true;
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -185,7 +176,7 @@ public class CsdlCast extends CsdlDynamicExpression implements CsdlAnnotatable {
     result = prime * result + ((scale == null) ? 0 : scale.hashCode());
     result = prime * result + ((srid == null) ? 0 : srid.hashCode());
     result = prime * result + ((value == null) ? 0 : value.hashCode());
-    result = prime * result + ((annotations.size() == 0) ? 0 : annotations.hashCode());
+    result = prime * result + ((annotations == null) ? 0 : annotations.hashCode());
     return result;
   }
 }

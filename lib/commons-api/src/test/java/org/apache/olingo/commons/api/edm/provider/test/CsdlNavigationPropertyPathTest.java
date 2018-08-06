@@ -51,6 +51,18 @@ public class CsdlNavigationPropertyPathTest {
   }
   
   @Test
+  public void compareCsdlNavigationPropertyPathWithBothNullValue() {
+    CsdlNavigationPropertyPath exp1 = new CsdlNavigationPropertyPath();
+    exp1.setValue(null);
+    
+    CsdlNavigationPropertyPath exp2 = new CsdlNavigationPropertyPath();
+    exp2.setValue(null);
+    
+    assertTrue(exp1.equals(exp2));
+    assertNotNull(exp1.toString());
+  }
+  
+  @Test
   public void negCompareCsdlNavigationPropertyPathWithOtherNullValue() {
     CsdlNavigationPropertyPath exp1 = new CsdlNavigationPropertyPath();
     exp1.setValue("value1");

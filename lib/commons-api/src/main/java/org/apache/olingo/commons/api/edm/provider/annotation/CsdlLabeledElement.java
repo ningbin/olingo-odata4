@@ -79,21 +79,20 @@ public class CsdlLabeledElement extends CsdlDynamicExpression implements CsdlAnn
       return false;
     }
     CsdlLabeledElement csdlLabelledEle = (CsdlLabeledElement) obj;
-    if (this.getName() == null && csdlLabelledEle.getName() != null) {
-      return false;
-    } else if (this.getName() != null && 
-        !this.getName().equalsIgnoreCase(csdlLabelledEle.getName())) {
-      return false;
-    }
-    if (this.getValue() == null && csdlLabelledEle.getValue() != null) {
-      return false;
-    } else if (this.getValue() != null && 
-        !this.getValue().equals(csdlLabelledEle.getValue())) {
-      return false;
-    }
-    if (this.getAnnotations().size() == csdlLabelledEle.getAnnotations().size()) {
+    return (this.getName() == null ? csdlLabelledEle.getName() == null :
+      this.getName().equals(csdlLabelledEle.getName()))
+        && (this.getValue() == null ? csdlLabelledEle.getValue() == null :
+          this.getValue().equals(csdlLabelledEle.getValue()))
+        && (this.getAnnotations() == null ? csdlLabelledEle.getAnnotations() == null :
+          csdlLabelledEle.getAnnotations() == null ? false : 
+            checkAnnotations(csdlLabelledEle.getAnnotations()));
+  }
+  
+  private boolean checkAnnotations(List<CsdlAnnotation> csdlLabelledEleAnnotations) {
+    if (this.getAnnotations().size() == csdlLabelledEleAnnotations.size()) {
       for (int i = 0; i < this.getAnnotations().size() ; i++) {
-        if (!this.getAnnotations().get(i).equals(csdlLabelledEle.getAnnotations().get(i))) {
+        if (!this.getAnnotations().get(i).equals(
+            csdlLabelledEleAnnotations.get(i))) {
           return false;
         }
       }
@@ -102,14 +101,14 @@ public class CsdlLabeledElement extends CsdlDynamicExpression implements CsdlAnn
     }
     return true;
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((name == null) ? 0 : name.hashCode());
     result = prime * result + ((value == null) ? 0 : value.hashCode());
-    result = prime * result + ((annotations.size() == 0) ? 0 : annotations.hashCode());
+    result = prime * result + ((annotations == null) ? 0 : annotations.hashCode());
     return result;
   }
 }

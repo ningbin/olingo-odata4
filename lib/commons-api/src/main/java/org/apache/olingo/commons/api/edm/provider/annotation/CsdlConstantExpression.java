@@ -137,19 +137,11 @@ public class CsdlConstantExpression extends CsdlExpression {
       return false;
     }
     CsdlConstantExpression csdlConstExp = (CsdlConstantExpression) obj;
-    if (this.getValue() == null && csdlConstExp.getValue() != null) {
-      return false;
-    } else if (this.getValue() != null && 
-        !this.getValue().equalsIgnoreCase(csdlConstExp.getValue())) {
-      return false;
-    }
-    if (this.getType() == null && csdlConstExp.getType() != null) {
-      return false;
-    } else if (this.getType() != null && 
-        !this.getType().equals(csdlConstExp.getType())) {
-      return false;
-    }
-    return true;
+    
+    return (this.getValue() == null ? csdlConstExp.getValue() == null :
+      this.getValue().equals(csdlConstExp.getValue()))
+        && (this.getType() == null ? csdlConstExp.getType() == null :
+          this.getType().equals(csdlConstExp.getType()));
   }
   
   @Override

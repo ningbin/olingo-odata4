@@ -186,6 +186,25 @@ public class CsdlIfTest {
   }
   
   @Test
+  public void compareCsdlIfWithBothElseNull() {
+    CsdlIf csdlIf1 = new CsdlIf();
+    csdlIf1.setGuard(new CsdlConstantExpression(ConstantExpressionType.Bool));
+    csdlIf1.setThen(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIf1.setElse(null);
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlIf1.setAnnotations(csdlAnnotations);
+    
+    CsdlIf csdlIf2 = new CsdlIf();
+    csdlIf2.setGuard(new CsdlConstantExpression(ConstantExpressionType.Bool));
+    csdlIf2.setThen(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIf2.setElse(null);
+    csdlIf2.setAnnotations(csdlAnnotations);
+    
+    assertTrue(csdlIf1.equals(csdlIf2));
+  }
+  
+  @Test
   public void negCompareCsdlIfWithNullOtherElse() {
     CsdlIf csdlIf1 = new CsdlIf();
     csdlIf1.setGuard(new CsdlConstantExpression(ConstantExpressionType.Bool));
@@ -245,6 +264,64 @@ public class CsdlIfTest {
     csdlIf2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlIf1.equals(csdlIf2));
+  }
+  
+  @Test
+  public void negCompareCsdlIfWithNullAnnot() {
+    CsdlIf csdlIf1 = new CsdlIf();
+    csdlIf1.setGuard(new CsdlConstantExpression(ConstantExpressionType.Bool));
+    csdlIf1.setThen(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIf1.setElse(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlIf1.setAnnotations(csdlAnnotations);
+    
+    CsdlIf csdlIf2 = new CsdlIf();
+    csdlIf2.setGuard(new CsdlConstantExpression(ConstantExpressionType.Bool));
+    csdlIf2.setThen(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIf2.setElse(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    csdlIf2.setAnnotations(null);
+    
+    assertFalse(csdlIf1.equals(csdlIf2));
+    assertNotNull(csdlIf2.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlIfWithOtherNullAnnot() {
+    CsdlIf csdlIf1 = new CsdlIf();
+    csdlIf1.setGuard(new CsdlConstantExpression(ConstantExpressionType.Bool));
+    csdlIf1.setThen(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIf1.setElse(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlIf1.setAnnotations(null);
+    
+    CsdlIf csdlIf2 = new CsdlIf();
+    csdlIf2.setGuard(new CsdlConstantExpression(ConstantExpressionType.Bool));
+    csdlIf2.setThen(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIf2.setElse(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    csdlIf2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlIf1.equals(csdlIf2));
+    assertNotNull(csdlIf1.toString());
+  }
+  
+  @Test
+  public void compareCsdlIfWithBothNullAnnot() {
+    CsdlIf csdlIf1 = new CsdlIf();
+    csdlIf1.setGuard(new CsdlConstantExpression(ConstantExpressionType.Bool));
+    csdlIf1.setThen(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIf1.setElse(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    csdlIf1.setAnnotations(null);
+    
+    CsdlIf csdlIf2 = new CsdlIf();
+    csdlIf2.setGuard(new CsdlConstantExpression(ConstantExpressionType.Bool));
+    csdlIf2.setThen(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlIf2.setElse(new CsdlLogicalOrComparisonExpression(LogicalOrComparisonExpressionType.And));
+    csdlIf2.setAnnotations(null);
+    
+    assertTrue(csdlIf1.equals(csdlIf2));
+    assertNotNull(csdlIf1.toString());
   }
   
   @Test

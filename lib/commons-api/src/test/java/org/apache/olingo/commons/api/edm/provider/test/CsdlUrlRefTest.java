@@ -92,16 +92,14 @@ public class CsdlUrlRefTest {
   }
   
   @Test
-  public void compareCsdlUrlRefWithBothNullValue() {
+  public void compareCsdlUrlRefWithAllNullValue() {
     CsdlUrlRef csdlUrlRef1 = new CsdlUrlRef();
     csdlUrlRef1.setValue(null);
-    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
-    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
-    csdlUrlRef1.setAnnotations(csdlAnnotations);
+    csdlUrlRef1.setAnnotations(null);
     
     CsdlUrlRef csdlUrlRef2 = new CsdlUrlRef();
     csdlUrlRef2.setValue(null);
-    csdlUrlRef2.setAnnotations(csdlAnnotations);
+    csdlUrlRef2.setAnnotations(null);
     
     assertTrue(csdlUrlRef1.equals(csdlUrlRef2));
   }
@@ -121,6 +119,38 @@ public class CsdlUrlRefTest {
     csdlUrlRef2.setAnnotations(csdlAnnotations);
     
     assertFalse(csdlUrlRef1.equals(csdlUrlRef2));
+  }
+  
+  @Test
+  public void negCompareCsdlUrlRefWithAnnotNull() {
+    CsdlUrlRef csdlUrlRef1 = new CsdlUrlRef();
+    csdlUrlRef1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlUrlRef1.setAnnotations(null);
+    
+    CsdlUrlRef csdlUrlRef2 = new CsdlUrlRef();
+    csdlUrlRef2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlUrlRef2.setAnnotations(csdlAnnotations);
+    
+    assertFalse(csdlUrlRef1.equals(csdlUrlRef2));
+    assertNotNull(csdlUrlRef1.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlUrlRefWithOtherAnnotNull() {
+    CsdlUrlRef csdlUrlRef1 = new CsdlUrlRef();
+    csdlUrlRef1.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    csdlUrlRef1.setAnnotations(csdlAnnotations);
+    
+    CsdlUrlRef csdlUrlRef2 = new CsdlUrlRef();
+    csdlUrlRef2.setValue(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlUrlRef2.setAnnotations(null);
+    
+    assertFalse(csdlUrlRef1.equals(csdlUrlRef2));
+    assertNotNull(csdlUrlRef2.toString());
   }
   
   @Test

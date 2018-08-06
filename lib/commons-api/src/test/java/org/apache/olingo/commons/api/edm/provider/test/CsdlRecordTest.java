@@ -68,20 +68,16 @@ public class CsdlRecordTest {
   }
   
   @Test
-  public void compareCsdlRecordWithNullValues() {
+  public void compareCsdlRecordWithAllNullValues() {
     CsdlRecord record1 = new CsdlRecord();
     record1.setType(null);
-    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
-    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
-    record1.setAnnotations(csdlAnnotations);
-    List<CsdlPropertyValue> propertyValues = new ArrayList<CsdlPropertyValue>();
-    propertyValues.add(new CsdlPropertyValue());
-    record1.setPropertyValues(propertyValues);
+    record1.setAnnotations(null);
+    record1.setPropertyValues(null);
     
     CsdlRecord record2 = new CsdlRecord();
     record2.setType(null);
-    record2.setAnnotations(csdlAnnotations);
-    record2.setPropertyValues(propertyValues);
+    record2.setAnnotations(null);
+    record2.setPropertyValues(null);
     
     assertTrue(record1.equals(record2));
     assertNotNull(record1.toString());
@@ -147,6 +143,46 @@ public class CsdlRecordTest {
   }
   
   @Test
+  public void negCompareCsdlRecordWithAnnotNull() {
+    CsdlRecord record1 = new CsdlRecord();
+    record1.setType("Type1");
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    record1.setAnnotations(null);
+    List<CsdlPropertyValue> propertyValues = new ArrayList<CsdlPropertyValue>();
+    propertyValues.add(new CsdlPropertyValue());
+    record1.setPropertyValues(propertyValues);
+    
+    CsdlRecord record2 = new CsdlRecord();
+    record2.setType("Type1");
+    record2.setAnnotations(csdlAnnotations);
+    record2.setPropertyValues(propertyValues);
+    
+    assertFalse(record1.equals(record2));
+    assertNotNull(record1.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlRecordWithOtherAnnotNull() {
+    CsdlRecord record1 = new CsdlRecord();
+    record1.setType("Type1");
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    record1.setAnnotations(csdlAnnotations);
+    List<CsdlPropertyValue> propertyValues = new ArrayList<CsdlPropertyValue>();
+    propertyValues.add(new CsdlPropertyValue());
+    record1.setPropertyValues(propertyValues);
+    
+    CsdlRecord record2 = new CsdlRecord();
+    record2.setType("Type1");
+    record2.setAnnotations(null);
+    record2.setPropertyValues(propertyValues);
+    
+    assertFalse(record1.equals(record2));
+    assertNotNull(record2.toString());
+  }
+  
+  @Test
   public void negCompareCsdlRecordWithDiffAnnotSize() {
     CsdlRecord record1 = new CsdlRecord();
     record1.setType("Type1");
@@ -187,6 +223,46 @@ public class CsdlRecordTest {
     record2.setPropertyValues(propertyValues);
     
     assertFalse(record1.equals(record2));
+  }
+  
+  @Test
+  public void negCompareCsdlRecordWithNullPropertyValues() {
+    CsdlRecord record1 = new CsdlRecord();
+    record1.setType("Type1");
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    record1.setAnnotations(csdlAnnotations);
+    List<CsdlPropertyValue> propertyValues = new ArrayList<CsdlPropertyValue>();
+    propertyValues.add(new CsdlPropertyValue());
+    record1.setPropertyValues(null);
+    
+    CsdlRecord record2 = new CsdlRecord();
+    record2.setType("Type1");
+    record2.setAnnotations(csdlAnnotations);
+    record2.setPropertyValues(propertyValues);
+    
+    assertFalse(record1.equals(record2));
+    assertNotNull(record1.toString());
+  }
+  
+  @Test
+  public void negCompareCsdlRecordWithOtherPropertyValuesNull() {
+    CsdlRecord record1 = new CsdlRecord();
+    record1.setType("Type1");
+    List<CsdlAnnotation> csdlAnnotations = new ArrayList<CsdlAnnotation>();
+    csdlAnnotations.add(new CsdlAnnotation().setTerm("ns.term"));
+    record1.setAnnotations(csdlAnnotations);
+    List<CsdlPropertyValue> propertyValues = new ArrayList<CsdlPropertyValue>();
+    propertyValues.add(new CsdlPropertyValue());
+    record1.setPropertyValues(propertyValues);
+    
+    CsdlRecord record2 = new CsdlRecord();
+    record2.setType("Type1");
+    record2.setAnnotations(csdlAnnotations);
+    record2.setPropertyValues(null);
+    
+    assertFalse(record1.equals(record2));
+    assertNotNull(record1.toString());
   }
   
   @Test

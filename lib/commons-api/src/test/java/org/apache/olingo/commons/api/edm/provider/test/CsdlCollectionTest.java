@@ -59,6 +59,46 @@ public class CsdlCollectionTest {
     assertTrue(csdlCollection1.equals(csdlCollection2));
     assertNotNull(csdlCollection1.toString());
   }
+  
+  @Test
+  public void compareCsdlCollWithBothItemsNull() {
+    CsdlCollection csdlCollection1 = new CsdlCollection();
+    csdlCollection1.setItems(null);
+    
+    CsdlCollection csdlCollection2 = new CsdlCollection();
+    csdlCollection2.setItems(null);
+    
+    assertTrue(csdlCollection1.equals(csdlCollection2));
+    assertNotNull(csdlCollection1.toString());
+  }
+  
+  @Test
+  public void compareCsdlCollWithItemsNull() {
+    CsdlCollection csdlCollection1 = new CsdlCollection();
+    List<CsdlExpression> items = new ArrayList<CsdlExpression>();
+    items.add(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlCollection1.setItems(null);
+    
+    CsdlCollection csdlCollection2 = new CsdlCollection();
+    csdlCollection2.setItems(items);
+    
+    assertFalse(csdlCollection1.equals(csdlCollection2));
+    assertNotNull(csdlCollection1.toString());
+  }
+  
+  @Test
+  public void compareCsdlCollWithOtherItemsNull() {
+    CsdlCollection csdlCollection1 = new CsdlCollection();
+    List<CsdlExpression> items = new ArrayList<CsdlExpression>();
+    items.add(new CsdlConstantExpression(ConstantExpressionType.String));
+    csdlCollection1.setItems(items);
+    
+    CsdlCollection csdlCollection2 = new CsdlCollection();
+    csdlCollection2.setItems(null);
+    
+    assertFalse(csdlCollection1.equals(csdlCollection2));
+    assertNotNull(csdlCollection2.toString());
+  }
 
   @Test
   public void negCompareCsdlCollWithNullObj() {

@@ -209,10 +209,8 @@ public abstract class AbstractEdm implements Edm {
       boolean isEntityDerivedFromES) {
     this.isEntityDerivedFromES = isEntityDerivedFromES;
     final FullQualifiedName fqn = resolvePossibleAlias(namespaceOrAliasFQN);
-    if (!isPreviousES()) {
-      if (getEntityContainer() != null) {
-        getEntityContainer().getEntitySetsWithAnnotations();
-      }
+    if (!isPreviousES() && getEntityContainer() != null) {
+       getEntityContainer().getEntitySetsWithAnnotations();
     }
     EdmEntityType entityType = entityTypesDerivedFromES.get(fqn);
     if (entityType == null) {
@@ -230,10 +228,8 @@ public abstract class AbstractEdm implements Edm {
       boolean isComplexDerivedFromES) {
     this.isComplexDerivedFromES = isComplexDerivedFromES;
     final FullQualifiedName fqn = resolvePossibleAlias(namespaceOrAliasFQN);
-    if (!isPreviousES()) {
-      if (getEntityContainer() != null) {
-        getEntityContainer().getEntitySetsWithAnnotations();
-      }
+    if (!isPreviousES() && getEntityContainer() != null) {
+       getEntityContainer().getEntitySetsWithAnnotations();
     }
     EdmComplexType complexType = complexTypesDerivedFromES.get(fqn);
     if (complexType == null) {

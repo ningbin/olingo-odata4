@@ -83,24 +83,20 @@ public class CsdlApply extends CsdlDynamicExpression implements CsdlAnnotatable 
       return false;
     }
     CsdlApply annotApply = (CsdlApply) obj;
-    if (this.getFunction() == null && annotApply.getFunction() != null) {
-      return false;
-    } else if (this.getFunction() != null && 
-        !this.getFunction().equals(annotApply.getFunction())) {
-      return false;
-    }
-    if (this.getParameters().size() == annotApply.getParameters().size()) {
-      for (int i = 0; i < this.getParameters().size(); i++) {
-        if (!this.getParameters().get(i).equals(annotApply.getParameters().get(i))) {
-          return false;
-        }
-      }
-    } else {
-      return false;
-    }
-    if (this.getAnnotations().size() == annotApply.getAnnotations().size()) {
+    return (this.getFunction() == null ? annotApply.getFunction() == null :
+      this.getFunction().equals(annotApply.getFunction()))
+      && (this.getParameters() == null ? annotApply.getParameters() == null :
+        (annotApply.getParameters() == null ? false : 
+          checkParamaters(annotApply.getParameters())))
+        && (this.getAnnotations() == null ? annotApply.getAnnotations() == null :
+          (annotApply.getAnnotations() == null ? false : 
+            checkAnnotations(annotApply.getAnnotations())));
+  }
+  
+  private boolean checkAnnotations(List<CsdlAnnotation> annotApplyannotations) {
+    if (this.getAnnotations().size() == annotApplyannotations.size()) {
       for (int i = 0; i < this.getAnnotations().size(); i++) {
-        if (!this.getAnnotations().get(i).equals(annotApply.getAnnotations().get(i))) {
+        if (!this.getAnnotations().get(i).equals(annotApplyannotations.get(i))) {
           return false;
         }
       }
@@ -109,14 +105,27 @@ public class CsdlApply extends CsdlDynamicExpression implements CsdlAnnotatable 
     }
     return true;
   }
-  
+
+  private boolean checkParamaters(List<CsdlExpression> annotApplyParams) {
+    if (this.getParameters().size() == annotApplyParams.size()) {
+      for (int i = 0; i < this.getParameters().size(); i++) {
+        if (!this.getParameters().get(i).equals(annotApplyParams.get(i))) {
+          return false;
+        }
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((function == null) ? 0 : function.hashCode());
-    result = prime * result + ((parameters.size() == 0) ? 0 : parameters.hashCode());
-    result = prime * result + ((annotations.size() == 0) ? 0 : annotations.hashCode());
+    result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+    result = prime * result + ((annotations == null) ? 0 : annotations.hashCode());
     return result;
   }
 }
