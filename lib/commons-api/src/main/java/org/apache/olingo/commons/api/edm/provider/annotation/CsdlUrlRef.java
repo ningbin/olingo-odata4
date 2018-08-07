@@ -67,12 +67,14 @@ public class CsdlUrlRef extends CsdlDynamicExpression implements CsdlAnnotatable
     CsdlUrlRef csdlUrlRef = (CsdlUrlRef) obj;
     return (this.getValue() == null ? csdlUrlRef.getValue() == null :
       this.getValue().equals(csdlUrlRef.getValue()))
-        && (this.getAnnotations() == null ? csdlUrlRef.getAnnotations() == null : 
-          csdlUrlRef.getAnnotations() == null ? false : 
+        && (this.getAnnotations() == null ? csdlUrlRef.getAnnotations() == null :
             checkAnnotations(csdlUrlRef.getAnnotations()));
   }
   
   private boolean checkAnnotations(List<CsdlAnnotation> csdlUrlRefAnnot) {
+    if (csdlUrlRefAnnot == null) {
+      return false;
+    }
     if (this.getAnnotations().size() == csdlUrlRefAnnot.size()) {
       for (int i = 0; i < this.getAnnotations().size() ; i++) {
         if (!this.getAnnotations().get(i).equals(csdlUrlRefAnnot.get(i))) {

@@ -162,11 +162,13 @@ public class CsdlLogicalOrComparisonExpression extends CsdlDynamicExpression imp
         && (this.getType() == null ? csdlLogComp.getType() == null : 
           this.getType().equals(csdlLogComp.getType()))
         && (this.getAnnotations() == null ? csdlLogComp.getAnnotations() == null : 
-          (csdlLogComp.getAnnotations() == null ? false :
-            checkAnnotations(csdlLogComp.getAnnotations())));
+            checkAnnotations(csdlLogComp.getAnnotations()));
   }
   
   private boolean checkAnnotations(List<CsdlAnnotation> csdlLogCompAnnot) {
+    if (csdlLogCompAnnot == null) {
+      return false;
+    }
     if (this.getAnnotations().size() == csdlLogCompAnnot.size()) {
       for (int i = 0; i < this.getAnnotations().size() ; i++) {
         if (!this.getAnnotations().get(i).equals(csdlLogCompAnnot.get(i))) {

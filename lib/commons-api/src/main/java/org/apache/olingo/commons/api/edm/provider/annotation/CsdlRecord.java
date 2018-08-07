@@ -82,14 +82,15 @@ public class CsdlRecord extends CsdlDynamicExpression implements CsdlAnnotatable
     return (this.getType() == null ? csdlRecord.getType() == null :
       this.getType().equals(csdlRecord.getType()))
         && (this.getAnnotations() == null ? csdlRecord.getAnnotations() == null :
-          (csdlRecord.getAnnotations() == null ? false : 
-            checkAnnotations(csdlRecord.getAnnotations())))
+            checkAnnotations(csdlRecord.getAnnotations()))
         && (this.getPropertyValues() == null ? csdlRecord.getPropertyValues() == null :
-          (csdlRecord.getPropertyValues() == null ? false : 
-            checkPropertyValues(csdlRecord.getPropertyValues())));
+            checkPropertyValues(csdlRecord.getPropertyValues()));
   }
   
   private boolean checkPropertyValues(List<CsdlPropertyValue> csdlRecordpropertyValues) {
+    if (csdlRecordpropertyValues == null) {
+      return false;
+    }
     if (this.getPropertyValues().size() == csdlRecordpropertyValues.size()) {
       for (int i = 0; i < this.getPropertyValues().size(); i++) {
         if (!this.getPropertyValues().get(i).equals(
@@ -104,6 +105,9 @@ public class CsdlRecord extends CsdlDynamicExpression implements CsdlAnnotatable
   }
 
   private boolean checkAnnotations(List<CsdlAnnotation> csdlRecordAnnot) {
+    if (csdlRecordAnnot == null) {
+      return false;
+    }
     if (this.getAnnotations().size() == csdlRecordAnnot.size()) {
       for (int i = 0; i < this.getAnnotations().size() ; i++) {
         if (!this.getAnnotations().get(i).equals(csdlRecordAnnot.get(i))) {

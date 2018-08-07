@@ -149,11 +149,13 @@ public class CsdlCast extends CsdlDynamicExpression implements CsdlAnnotatable {
         && (this.getSrid() == null ? csdlCast.getSrid() == null :
           String.valueOf(this.getSrid()).equals(String.valueOf(csdlCast.getSrid())))
         && (this.getAnnotations() == null ? csdlCast.getAnnotations() == null :
-          (csdlCast.getAnnotations() == null ? false : 
-            checkAnnotations(csdlCast.getAnnotations())));
+          checkAnnotations(csdlCast.getAnnotations()));
   }
   
   private boolean checkAnnotations(List<CsdlAnnotation> csdlCastAnnotations) {
+    if (csdlCastAnnotations == null) {
+      return false;
+    }
     if (this.getAnnotations().size() == csdlCastAnnotations.size()) {
       for (int i = 0; i < this.getAnnotations().size(); i++) {
         if (!this.getAnnotations().get(i).equals(csdlCastAnnotations.get(i))) {

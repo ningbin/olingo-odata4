@@ -228,13 +228,7 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
   private void addAnnotations(CsdlSingleton singleton, FullQualifiedName entityContainerName) {
     boolean isPropAnnotationsCleared = false;
     boolean isNavPropAnnotationsCleared = false;
-    CsdlEntityType entityType;
-    try {
-      entityType = singleton.getTypeFQN() != null ? this.provider.getEntityType(new FullQualifiedName(
-          singleton.getTypeFQN().getFullQualifiedNameAsString())) : null;
-   } catch (ODataException e) {
-     throw new EdmException(e);
-   }
+    CsdlEntityType entityType = fetchEntityTypeFromSingleton(singleton);
     if (entityType == null) {
       return;
     }
@@ -246,28 +240,64 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
         if (annotationGrp.getTarget().
             equalsIgnoreCase(entityContainerName + "/" + singleton.getName())) {
           isSingletonAnnotationsIncluded = true;
-          for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
-            if (!compareAnnotations(singleton.getAnnotations(), annotation)) {
-              singleton.getAnnotations().add(annotation);
-            }
-          }
+          addAnnotationsToSingleton(singleton, annotationGrp);
         } else {
-          for (CsdlProperty propertyName : entityType.getProperties()) {
-            if (!isPropAnnotationsCleared) {
-              entityType.getProperty(propertyName.getName()).getAnnotations().clear();
-            }
-            if (isPropertyComplex(propertyName)) {
-              CsdlComplexType complexType = getComplexTypeFromProperty(propertyName);
-              addAnnotationsToComplexTypeIncludedFromSingleton(singleton, 
-                 annotationGrp, propertyName, isNavPropAnnotationsCleared, complexType);
-            }
-          }
+          addAnnotationsToPropertiesDerivedFromSingleton(singleton, isPropAnnotationsCleared,
+              isNavPropAnnotationsCleared, entityType, annotationGrp);
           isPropAnnotationsCleared = true;
           isNavPropAnnotationsCleared = true;
         }
       }
     }
    }
+
+  /** adds annotations to entity type properties derived from singleton
+   * @param singleton
+   * @param isPropAnnotationsCleared
+   * @param isNavPropAnnotationsCleared
+   * @param entityType
+   * @param annotationGrp
+   */
+  private void addAnnotationsToPropertiesDerivedFromSingleton(CsdlSingleton singleton, boolean isPropAnnotationsCleared,
+      boolean isNavPropAnnotationsCleared, CsdlEntityType entityType, CsdlAnnotations annotationGrp) {
+    for (CsdlProperty propertyName : entityType.getProperties()) {
+      if (!isPropAnnotationsCleared) {
+        entityType.getProperty(propertyName.getName()).getAnnotations().clear();
+      }
+      if (isPropertyComplex(propertyName)) {
+        CsdlComplexType complexType = getComplexTypeFromProperty(propertyName);
+        addAnnotationsToComplexTypeIncludedFromSingleton(singleton, 
+           annotationGrp, propertyName, isNavPropAnnotationsCleared, complexType);
+      }
+    }
+  }
+
+  /** Adds annotation to singleton
+   * @param singleton
+   * @param annotationGrp
+   */
+  private void addAnnotationsToSingleton(CsdlSingleton singleton, CsdlAnnotations annotationGrp) {
+    for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+      if (!compareAnnotations(singleton.getAnnotations(), annotation)) {
+        singleton.getAnnotations().add(annotation);
+      }
+    }
+  }
+
+  /**
+   * @param singleton
+   * @return
+   */
+  private CsdlEntityType fetchEntityTypeFromSingleton(CsdlSingleton singleton) {
+    CsdlEntityType entityType;
+    try {
+      entityType = singleton.getTypeFQN() != null ? this.provider.getEntityType(new FullQualifiedName(
+          singleton.getTypeFQN().getFullQualifiedNameAsString())) : null;
+   } catch (ODataException e) {
+     throw new EdmException(e);
+   }
+    return entityType;
+  }
   
   /**
    * 
@@ -363,7 +393,7 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
     return entityType;
   }
 
-  /**
+  /** Adds annotations to Entity type Properties derived from entity set
    * @param entitySet
    * @param entityContainerName
    * @param annotationGrp
@@ -405,7 +435,7 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
      }
   }
 
-  /**
+  /** Adds annotations to Entity type Navigation Properties derived from entity set
    * @param annotationGrp
    * @param entityType
    * @param navPropertyName
@@ -420,7 +450,7 @@ public class EdmEntityContainerImpl extends AbstractEdmNamed implements EdmEntit
      }
   }
 
-  /**
+  /** Adds annotations to Entity type Properties derived from entity set
    * @param annotationGrp
    * @param entityType
    * @param propertyName

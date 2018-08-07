@@ -347,24 +347,42 @@ public class EdmProviderImpl extends AbstractEdm {
       for (CsdlAnnotations annotationGrp : annotationGrps) {
         if (annotationGrp.getTarget().equalsIgnoreCase(
             actionName.getFullQualifiedNameAsString())) {
-          for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
-            if (!compareAnnotations(action.getAnnotations(), annotation)) {
-              action.getAnnotations().add(annotation);
-            }
-          }
+          addAnnotationsToActions(action, annotationGrp);
         } else {
-          final List<CsdlParameter> parameters = action.getParameters();
-          for (CsdlParameter parameter : parameters) {
-            if (annotationGrp.getTarget().equalsIgnoreCase(
-                actionName.getFullQualifiedNameAsString() + "/" + parameter.getName())) {
-              for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
-                if (!compareAnnotations(action.getParameter(parameter.getName()).getAnnotations(), annotation)) {
-                  action.getParameter(parameter.getName()).getAnnotations().add(annotation);
-                }
-              }
-            }
+          addAnnotationsToParamsOfActions(action, actionName, annotationGrp);
+        }
+      }
+    }
+  }
+
+  /** Adds annotations to actions
+   * @param action
+   * @param actionName
+   * @param annotationGrp
+   */
+  private void addAnnotationsToParamsOfActions(CsdlAction action, FullQualifiedName actionName,
+      CsdlAnnotations annotationGrp) {
+    final List<CsdlParameter> parameters = action.getParameters();
+    for (CsdlParameter parameter : parameters) {
+      if (annotationGrp.getTarget().equalsIgnoreCase(
+          actionName.getFullQualifiedNameAsString() + "/" + parameter.getName())) {
+        for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+          if (!compareAnnotations(action.getParameter(parameter.getName()).getAnnotations(), annotation)) {
+            action.getParameter(parameter.getName()).getAnnotations().add(annotation);
           }
         }
+      }
+    }
+  }
+
+  /** Adds annotations to parameters of action
+   * @param action
+   * @param annotationGrp
+   */
+  private void addAnnotationsToActions(CsdlAction action, CsdlAnnotations annotationGrp) {
+    for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+      if (!compareAnnotations(action.getAnnotations(), annotation)) {
+        action.getAnnotations().add(annotation);
       }
     }
   }
@@ -458,24 +476,42 @@ public class EdmProviderImpl extends AbstractEdm {
       for (CsdlAnnotations annotationGrp : annotationGrps) {
         if (annotationGrp.getTarget().equalsIgnoreCase(
             functionName.getFullQualifiedNameAsString())) {
-          for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
-            if (!compareAnnotations(function.getAnnotations(), annotation)) {
-              function.getAnnotations().add(annotation);
-            }
-          }
+          addAnnotationsToFunctions(function, annotationGrp);
         } else {
-          final List<CsdlParameter> parameters = function.getParameters();
-          for (CsdlParameter parameter : parameters) {
-            if (annotationGrp.getTarget().equalsIgnoreCase(
-                functionName.getFullQualifiedNameAsString() + "/" + parameter.getName())) {
-              for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
-                if (!compareAnnotations(function.getParameter(parameter.getName()).getAnnotations(), annotation)) {
-                  function.getParameter(parameter.getName()).getAnnotations().add(annotation);
-                }
-              }
-            }
+          addAnnotationsToParamsOFunctions(function, functionName, annotationGrp);
+        }
+      }
+    }
+  }
+
+  /** Adds annotations of function parameters
+   * @param function
+   * @param functionName
+   * @param annotationGrp
+   */
+  private void addAnnotationsToParamsOFunctions(CsdlFunction function, FullQualifiedName functionName,
+      CsdlAnnotations annotationGrp) {
+    final List<CsdlParameter> parameters = function.getParameters();
+    for (CsdlParameter parameter : parameters) {
+      if (annotationGrp.getTarget().equalsIgnoreCase(
+          functionName.getFullQualifiedNameAsString() + "/" + parameter.getName())) {
+        for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+          if (!compareAnnotations(function.getParameter(parameter.getName()).getAnnotations(), annotation)) {
+            function.getParameter(parameter.getName()).getAnnotations().add(annotation);
           }
         }
+      }
+    }
+  }
+
+  /**Add annotations to functions
+   * @param function
+   * @param annotationGrp
+   */
+  private void addAnnotationsToFunctions(CsdlFunction function, CsdlAnnotations annotationGrp) {
+    for (CsdlAnnotation annotation : annotationGrp.getAnnotations()) {
+      if (!compareAnnotations(function.getAnnotations(), annotation)) {
+        function.getAnnotations().add(annotation);
       }
     }
   }

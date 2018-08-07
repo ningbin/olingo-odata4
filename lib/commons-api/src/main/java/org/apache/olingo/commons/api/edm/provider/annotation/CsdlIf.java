@@ -107,11 +107,13 @@ public class CsdlIf extends CsdlDynamicExpression implements CsdlAnnotatable {
         && (this.getElse() == null ? csdlIf.getElse() == null :
           this.getElse().equals(csdlIf.getElse()))
         && (this.getAnnotations() == null ? csdlIf.getAnnotations() == null :
-          (csdlIf.getAnnotations() == null ? false : 
-            checkAnnotations(csdlIf.getAnnotations())));
+            checkAnnotations(csdlIf.getAnnotations()));
   }
   
   private boolean checkAnnotations(List<CsdlAnnotation> csdlIfAnnotations) {
+    if (csdlIfAnnotations == null) {
+      return false;
+    }
     if (this.getAnnotations().size() == csdlIfAnnotations.size()) {
       for (int i = 0; i < this.getAnnotations().size(); i++) {
         if (!this.getAnnotations().get(i).equals(csdlIfAnnotations.get(i))) {

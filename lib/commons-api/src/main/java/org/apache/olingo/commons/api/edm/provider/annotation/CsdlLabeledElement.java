@@ -84,11 +84,13 @@ public class CsdlLabeledElement extends CsdlDynamicExpression implements CsdlAnn
         && (this.getValue() == null ? csdlLabelledEle.getValue() == null :
           this.getValue().equals(csdlLabelledEle.getValue()))
         && (this.getAnnotations() == null ? csdlLabelledEle.getAnnotations() == null :
-          csdlLabelledEle.getAnnotations() == null ? false : 
             checkAnnotations(csdlLabelledEle.getAnnotations()));
   }
   
   private boolean checkAnnotations(List<CsdlAnnotation> csdlLabelledEleAnnotations) {
+    if (csdlLabelledEleAnnotations == null) {
+      return false;
+    }
     if (this.getAnnotations().size() == csdlLabelledEleAnnotations.size()) {
       for (int i = 0; i < this.getAnnotations().size() ; i++) {
         if (!this.getAnnotations().get(i).equals(

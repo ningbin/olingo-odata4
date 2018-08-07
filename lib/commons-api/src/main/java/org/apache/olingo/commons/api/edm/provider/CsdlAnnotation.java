@@ -120,10 +120,13 @@ public class CsdlAnnotation extends CsdlAbstractEdmItem implements CsdlAnnotatab
         && (this.getExpression() == null ? csdlAnnot.getExpression() == null :
           this.getExpression().equals(csdlAnnot.getExpression()))
         && (this.getAnnotations() == null ? csdlAnnot.getAnnotations() == null : 
-          (csdlAnnot.getAnnotations() == null ? false : checkAnnotations(csdlAnnot.getAnnotations())));
+          checkAnnotations(csdlAnnot.getAnnotations()));
   }
   
   private boolean checkAnnotations(List<CsdlAnnotation> csdlAnnots) {
+    if (csdlAnnots == null) {
+      return false;
+    }
     if (this.getAnnotations().size() == csdlAnnots.size()) {
       for (int i = 0; i < this.getAnnotations().size(); i++) {
         if (!this.getAnnotations().get(i).equals(csdlAnnots.get(i))) {

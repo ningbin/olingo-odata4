@@ -148,11 +148,13 @@ return this;
         && (this.getValue() == null ? csdlIsOf.getValue() == null :
           this.getValue().equals(csdlIsOf.getValue()))
         && (this.getAnnotations() == null ? csdlIsOf.getAnnotations() == null :
-          (csdlIsOf.getAnnotations() == null ? false : 
-            checkAnnotations(csdlIsOf.getAnnotations())));
+            checkAnnotations(csdlIsOf.getAnnotations()));
   }
   
   private boolean checkAnnotations(List<CsdlAnnotation> csdlIsOfannot) {
+    if (csdlIsOfannot == null) {
+      return false;
+    }
     if (this.getAnnotations().size() == csdlIsOfannot.size()) {
       for (int i = 0; i < this.getAnnotations().size(); i++) {
         if (!this.getAnnotations().get(i).equals(csdlIsOfannot.get(i))) {

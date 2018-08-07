@@ -86,14 +86,15 @@ public class CsdlApply extends CsdlDynamicExpression implements CsdlAnnotatable 
     return (this.getFunction() == null ? annotApply.getFunction() == null :
       this.getFunction().equals(annotApply.getFunction()))
       && (this.getParameters() == null ? annotApply.getParameters() == null :
-        (annotApply.getParameters() == null ? false : 
-          checkParamaters(annotApply.getParameters())))
+        checkParamaters(annotApply.getParameters()))
         && (this.getAnnotations() == null ? annotApply.getAnnotations() == null :
-          (annotApply.getAnnotations() == null ? false : 
-            checkAnnotations(annotApply.getAnnotations())));
+          checkAnnotations(annotApply.getAnnotations()));
   }
   
   private boolean checkAnnotations(List<CsdlAnnotation> annotApplyannotations) {
+    if (annotApplyannotations == null) {
+      return false;
+    }
     if (this.getAnnotations().size() == annotApplyannotations.size()) {
       for (int i = 0; i < this.getAnnotations().size(); i++) {
         if (!this.getAnnotations().get(i).equals(annotApplyannotations.get(i))) {
@@ -107,6 +108,9 @@ public class CsdlApply extends CsdlDynamicExpression implements CsdlAnnotatable 
   }
 
   private boolean checkParamaters(List<CsdlExpression> annotApplyParams) {
+    if (annotApplyParams == null) {
+      return false;
+    }
     if (this.getParameters().size() == annotApplyParams.size()) {
       for (int i = 0; i < this.getParameters().size(); i++) {
         if (!this.getParameters().get(i).equals(annotApplyParams.get(i))) {

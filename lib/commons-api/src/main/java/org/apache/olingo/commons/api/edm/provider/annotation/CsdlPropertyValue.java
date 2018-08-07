@@ -86,16 +86,18 @@ public class CsdlPropertyValue extends CsdlAbstractEdmItem implements CsdlAnnota
       this.getProperty().equalsIgnoreCase(csdlPropertyValue.getProperty()))
         && (this.getValue() == null ? csdlPropertyValue.getValue() == null :
           this.getValue().equals(csdlPropertyValue.getValue()))
-        && (this.getAnnotations() == null ? csdlPropertyValue.getAnnotations() == null : 
-          csdlPropertyValue.getAnnotations() == null ? false : 
+        && (this.getAnnotations() == null ? csdlPropertyValue.getAnnotations() == null :
             checkAnnotations(csdlPropertyValue.getAnnotations()));
   }
   
-  private boolean checkAnnotations(List<CsdlAnnotation> csdlPropertyValueAanot) {
-    if (this.getAnnotations().size() == csdlPropertyValueAanot.size()) {
+  private boolean checkAnnotations(List<CsdlAnnotation> csdlPropertyValueAnnot) {
+    if (csdlPropertyValueAnnot == null) {
+      return false;
+    }
+    if (this.getAnnotations().size() == csdlPropertyValueAnnot.size()) {
       for (int i = 0; i < this.getAnnotations().size() ; i++) {
         if (!this.getAnnotations().get(i).equals(
-            csdlPropertyValueAanot.get(i))) {
+            csdlPropertyValueAnnot.get(i))) {
           return false;
         }
       }
