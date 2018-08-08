@@ -120,7 +120,8 @@ public class EdmTypeInfo {
         enumType = edm.getEnumType(fullQualifiedName);
         if (enumType == null) {
           if (includeAnnotations) {
-            complexType = edm.getComplexTypeWithAnnotations(fullQualifiedName, true);
+            complexType = ((AbstractEdm)edm).
+                getComplexTypeWithAnnotations(fullQualifiedName, true);
           } else {
             complexType = edm.getComplexType(fullQualifiedName);
           }

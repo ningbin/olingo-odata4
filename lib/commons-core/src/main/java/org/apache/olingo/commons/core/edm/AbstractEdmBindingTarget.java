@@ -80,7 +80,8 @@ public abstract class AbstractEdmBindingTarget extends AbstractEdmNamed implemen
   
   @Override
   public EdmEntityType getEntityTypeWithAnnotations() {
-    final EdmEntityType entityType = edm.getEntityTypeWithAnnotations(target.getTypeFQN(), true);
+    final EdmEntityType entityType = ((AbstractEdm)edm).
+        getEntityTypeWithAnnotations(target.getTypeFQN(), true);
     if (entityType == null) {
       throw new EdmException("Can´t find entity type: " + target.getTypeFQN() + " for entity set or singleton: "
           + getName());

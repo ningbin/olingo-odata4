@@ -204,8 +204,7 @@ public abstract class AbstractEdm implements Edm {
     return entityType;
   }
   
-  @Override
-  public EdmEntityType getEntityTypeWithAnnotations(final FullQualifiedName namespaceOrAliasFQN, 
+  protected EdmEntityType getEntityTypeWithAnnotations(final FullQualifiedName namespaceOrAliasFQN, 
       boolean isEntityDerivedFromES) {
     this.isEntityDerivedFromES = isEntityDerivedFromES;
     final FullQualifiedName fqn = resolvePossibleAlias(namespaceOrAliasFQN);
@@ -223,8 +222,7 @@ public abstract class AbstractEdm implements Edm {
     return entityType;
   }
   
-  @Override
-  public EdmComplexType getComplexTypeWithAnnotations(final FullQualifiedName namespaceOrAliasFQN, 
+  protected EdmComplexType getComplexTypeWithAnnotations(final FullQualifiedName namespaceOrAliasFQN, 
       boolean isComplexDerivedFromES) {
     this.isComplexDerivedFromES = isComplexDerivedFromES;
     final FullQualifiedName fqn = resolvePossibleAlias(namespaceOrAliasFQN);

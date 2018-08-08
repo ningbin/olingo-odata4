@@ -332,7 +332,8 @@ public class EdmImplCallCreateTest {
   
   @Test
   public void callCreateComplexTypeWithAnnotationsDerivedFromES() {
-    EdmComplexType complexType = edm.getComplexTypeWithAnnotations(FQN, true);
+    EdmComplexType complexType = ((AbstractEdm)edm).
+        getComplexTypeWithAnnotations(FQN, true);
     assertNotNull(complexType);
     assertEquals(FQN.getNamespace(), complexType.getNamespace());
     assertEquals(FQN.getName(), complexType.getName());
@@ -352,7 +353,8 @@ public class EdmImplCallCreateTest {
   
   @Test
   public void callCreateEntityTypeWithAnnotationDerivedFromES() {
-    EdmEntityType entityType = edm.getEntityTypeWithAnnotations(FQN, true);
+    EdmEntityType entityType = ((AbstractEdm)edm).
+        getEntityTypeWithAnnotations(FQN, true);
     assertNotNull(entityType);
     assertEquals(FQN.getNamespace(), entityType.getNamespace());
     assertEquals(FQN.getName(), entityType.getName());
