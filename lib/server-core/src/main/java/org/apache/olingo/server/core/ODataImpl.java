@@ -28,6 +28,9 @@ import org.apache.olingo.commons.api.edm.provider.CsdlEdmProvider;
 import org.apache.olingo.commons.api.edmx.EdmxReference;
 import org.apache.olingo.commons.api.format.ContentType;
 import org.apache.olingo.commons.core.edm.primitivetype.EdmPrimitiveTypeFactory;
+import org.apache.olingo.commons.api.IConstants;
+import org.apache.olingo.commons.api.constants.Constantsv00;
+import org.apache.olingo.commons.api.constants.Constantsv01;
 import org.apache.olingo.server.api.OData;
 import org.apache.olingo.server.api.ODataHandler;
 import org.apache.olingo.server.api.ODataHttpHandler;
@@ -183,6 +186,37 @@ public class ODataImpl extends OData {
     }
   }
 
+
+  @Override
+  public ODataDeserializer createDeserializer(ContentType contentType, List<String> versions)
+      throws DeserializerException {
+    IConstants constants = new Constantsv00();
+    if(versions!=null && versions.size()>0 && getMaxVersion(versions)>4){
+      constants = new Constantsv01() ;
+    }
+    if (contentType.isCompatible(ContentType.JSON)) {
+      return new ODataJsonDeserializer(contentType, constants);
+    }else {
+      throw new DeserializerException("Unsupported format: " + contentType.toContentTypeString(),
+          DeserializerException.MessageKeys.UNSUPPORTED_FORMAT, contentType.toContentTypeString());
+    }
+  }
+
+  @Override
+  public ODataDeserializer createDeserializer(ContentType contentType, ServiceMetadata metadata, List<String> versions)
+      throws DeserializerException {
+    IConstants constants = new Constantsv00();
+    if(versions!=null && versions.size()>0 && getMaxVersion(versions)>4){
+      constants = new Constantsv01() ;
+    }
+    if (contentType.isCompatible(ContentType.JSON)) {
+      return new ODataJsonDeserializer(contentType, metadata, constants);
+    }else {
+      throw new DeserializerException("Unsupported format: " + contentType.toContentTypeString(),
+          DeserializerException.MessageKeys.UNSUPPORTED_FORMAT, contentType.toContentTypeString());
+    }
+  }
+  
   @Override
   public EdmPrimitiveType createPrimitiveTypeInstance(final EdmPrimitiveTypeKind kind) {
     return EdmPrimitiveTypeFactory.getInstance(kind);

@@ -159,4 +159,17 @@ public class ODataNettyImpl extends ODataNetty {
   public ODataSerializer createRxSerializer(ContentType contentType) throws SerializerException {
     return odata.createRxSerializer(contentType);
   }
+  
+
+  @Override
+  public ODataDeserializer createDeserializer(ContentType contentType, List<String> versions)
+      throws DeserializerException {
+    return odata.createDeserializer(contentType, versions);
+  }
+
+  @Override
+  public ODataDeserializer createDeserializer(ContentType contentType, ServiceMetadata metadata, List<String> versions)
+      throws DeserializerException {
+    return odata.createDeserializer(contentType, metadata, versions);
+  }
 }
