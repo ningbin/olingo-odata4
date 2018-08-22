@@ -61,6 +61,18 @@ public class BasicStreamITCase extends AbstractBaseTestITCase {
   }
 
   @Test
+  public void streamESWithStreamJson() throws Exception {
+    URL url = new URL(SERVICE_URI  + "ESWithStream?$expand=PropertyStream&$format=json");
+
+    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    connection.setRequestMethod(HttpMethod.GET.name());
+    connection.connect();
+
+    assertEquals(HttpStatusCode.OK.getStatusCode(), connection.getResponseCode());
+    assertEquals(ContentType.JSON, ContentType.create(connection.getHeaderField(HttpHeader.CONTENT_TYPE)));
+  }
+  
+  @Test
   @Ignore
   public void streamESStreamXml() throws Exception {
     URL url = new URL(SERVICE_URI + "ESStream?$format=xml");

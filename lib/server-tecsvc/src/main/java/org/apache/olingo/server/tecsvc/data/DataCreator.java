@@ -1503,6 +1503,9 @@ public class DataCreator {
       readLink.setRel(Constants.NS_MEDIA_READ_LINK_REL);
       readLink.setHref("readLink");
       
+      Entity entity = new Entity();
+          entity.addProperty(createPrimitive("PropertyStream", createImage("darkturquoise")));
+          readLink.setInlineEntity(entity);
       entityCollection.getEntities().add(new Entity()
           .addProperty(createPrimitive("PropertyInt16", Short.MAX_VALUE))
           .addProperty(new Property(null, "PropertyStream", ValueType.PRIMITIVE, readLink)));
@@ -1512,6 +1515,9 @@ public class DataCreator {
       editLink.setHref("http://mediaserver:1234/editLink");
       editLink.setMediaETag("eTag");
       editLink.setType("image/jpeg");
+      entity = new Entity();
+         entity.addProperty(createPrimitive("PropertyStream", createImage("royalblue")));
+         editLink.setInlineEntity(entity);
 
       entityCollection.getEntities().add(new Entity()
           .addProperty(createPrimitive("PropertyInt16", (short) 7))

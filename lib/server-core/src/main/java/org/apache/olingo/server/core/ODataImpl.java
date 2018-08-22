@@ -74,7 +74,36 @@ public class ODataImpl extends OData {
           || ContentType.VALUE_ODATA_METADATA_MINIMAL.equalsIgnoreCase(metadata)
           || ContentType.VALUE_ODATA_METADATA_NONE.equalsIgnoreCase(metadata)
           || ContentType.VALUE_ODATA_METADATA_FULL.equalsIgnoreCase(metadata)) {
-        serializer = new ODataJsonSerializer(contentType);
+        serializer = new ODataJsonSerializer(contentType, new Constantsv00());
+      }
+    } else if (contentType.isCompatible(ContentType.APPLICATION_XML)
+        || contentType.isCompatible(ContentType.APPLICATION_ATOM_XML)) {
+      serializer = new ODataXmlSerializer();
+    }
+
+    if (serializer == null) {
+      throw new SerializerException("Unsupported format: " + contentType.toContentTypeString(),
+          SerializerException.MessageKeys.UNSUPPORTED_FORMAT, contentType.toContentTypeString());
+    } else {
+      return serializer;
+    }
+  }
+  
+  @Override
+  public ODataSerializer createSerializer(final ContentType contentType, 
+      final List<String> versions) throws SerializerException {
+    ODataSerializer serializer = null;
+    IConstants constants = new Constantsv00();
+    if(versions!=null && versions.size()>0 && getMaxVersion(versions)>4){
+      constants = new Constantsv01() ;
+    }
+    if (contentType.isCompatible(ContentType.APPLICATION_JSON)) {
+      final String metadata = contentType.getParameter(ContentType.PARAMETER_ODATA_METADATA);
+      if (metadata == null
+          || ContentType.VALUE_ODATA_METADATA_MINIMAL.equalsIgnoreCase(metadata)
+          || ContentType.VALUE_ODATA_METADATA_NONE.equalsIgnoreCase(metadata)
+          || ContentType.VALUE_ODATA_METADATA_FULL.equalsIgnoreCase(metadata)) {
+        serializer = new ODataJsonSerializer(contentType, constants);
       }
     } else if (contentType.isCompatible(ContentType.APPLICATION_XML)
         || contentType.isCompatible(ContentType.APPLICATION_ATOM_XML)) {

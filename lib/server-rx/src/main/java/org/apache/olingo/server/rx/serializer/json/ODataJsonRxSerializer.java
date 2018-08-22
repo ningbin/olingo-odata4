@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.codec.DecoderException;
 import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.data.AbstractEntityCollectionObject;
 import org.apache.olingo.commons.api.data.Entity;
@@ -51,7 +52,7 @@ public class ODataJsonRxSerializer extends ODataJsonSerializer {
   protected void writeEntitySet(final ServiceMetadata metadata, final EdmEntityType entityType,
       final AbstractEntityCollectionObject entitySet, final ExpandOption expand, final Integer toDepth, 
       final SelectOption select, final boolean onlyReference, final Set<String> ancestors, 
-      final String name, final JsonGenerator json) throws IOException, SerializerException {
+      final String name, final JsonGenerator json) throws IOException, SerializerException, DecoderException {
     if (entitySet instanceof EntityObservable) {
       final List<SerializerException> ex = new ArrayList<SerializerException>();
       json.writeStartArray();
@@ -78,6 +79,9 @@ public class ODataJsonRxSerializer extends ODataJsonSerializer {
           } catch (SerializerException e) {
             ex.add(e);
           } catch (IOException e) {
+            ex.add(new SerializerException(e.getMessage(), e,
+                SerializerException.MessageKeys.IO_EXCEPTION));
+          } catch (DecoderException e) {
             ex.add(new SerializerException(e.getMessage(), e,
                 SerializerException.MessageKeys.IO_EXCEPTION));
           }

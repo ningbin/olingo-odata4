@@ -172,4 +172,9 @@ public class ODataNettyImpl extends ODataNetty {
       throws DeserializerException {
     return odata.createDeserializer(contentType, metadata, versions);
   }
+
+  @Override
+  public ODataSerializer createSerializer(ContentType contentType, List<String> versions) throws SerializerException {
+    return odata.createSerializer(contentType, versions);
+  }
 }

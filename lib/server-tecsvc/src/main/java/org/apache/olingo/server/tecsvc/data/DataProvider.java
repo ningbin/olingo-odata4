@@ -963,4 +963,15 @@ public class DataProvider {
       throw new DataProviderException("Wrong key!", HttpStatusCode.BAD_REQUEST, e);
     }
   }
+  
+  public byte[] readStreamProperty(Property property) {
+    Link link;
+    if(property!=null && property.getValue()!=null){
+      link = (Link)property.getValue();
+      if(link.getInlineEntity()!=null){
+        return (byte[]) link.getInlineEntity().getProperty(property.getName()).getValue();
+      }
+    }
+    return null;
+  }
 }

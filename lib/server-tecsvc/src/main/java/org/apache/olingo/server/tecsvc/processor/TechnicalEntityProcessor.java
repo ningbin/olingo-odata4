@@ -768,7 +768,8 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
       final ContentType requestedFormat, final ExpandOption expand, final SelectOption select,
       final CountOption countOption, String id, final boolean isContNav) throws ODataLibraryException {
 
-    return odata.createSerializer(requestedFormat).entityCollection(
+    return odata.createSerializer(requestedFormat, request.getHeaders(HttpHeader.ODATA_VERSION))
+        .entityCollection(
         serviceMetadata,
         edmEntityType,
         entityCollection,
@@ -897,7 +898,7 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
 
     ContextURL contextUrl = isODataMetadataNone(requestedFormat) ? null :
         getContextUrl(request.getRawODataPath(), edmEntitySet, edmEntityType, true, expand, select, isContNav);
-    return odata.createSerializer(requestedFormat).entity(
+    return odata.createSerializer(requestedFormat, request.getHeaders(HttpHeader.ODATA_VERSION)).entity(
         serviceMetadata,
         edmEntityType,
         entity,
