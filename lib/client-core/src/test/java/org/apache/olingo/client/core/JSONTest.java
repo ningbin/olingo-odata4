@@ -41,6 +41,7 @@ import org.apache.olingo.client.api.domain.ClientEnumValue;
 import org.apache.olingo.client.api.domain.ClientLink;
 import org.apache.olingo.client.api.domain.ClientOperation;
 import org.apache.olingo.client.api.domain.ClientPrimitiveValue;
+import org.apache.olingo.client.api.domain.ClientProperty;
 import org.apache.olingo.client.api.domain.ClientValue;
 import org.apache.olingo.client.core.domain.ClientAnnotationImpl;
 import org.apache.olingo.client.core.serialization.JsonDeserializer;
@@ -484,6 +485,21 @@ public class JSONTest extends AbstractTest {
     entityWithNoMetadata("entity.withcomplexnavigation", getODataMetadataNoneFormat());
     entityWithNoMetadataInServerMode("entity.withcomplexnavigation", getODataMetadataNoneFormat());
   }
+  
+  @Test
+  public void issueOLINGO1152() throws Exception {
+    InputStream inputStream = getClass().getResourceAsStream(
+        "olingo1152" + "." + getSuffix(ContentType.APPLICATION_JSON));
+    ClientEntity entity = client.getReader().readEntity(inputStream, ContentType.APPLICATION_JSON);
+    assertNotNull(entity);
+    ClientProperty prop = entity.getProperty("Gender");
+    assertNotNull(prop);
+    ClientValue value = prop.getValue();
+    assertNotNull(value);
+    assertTrue(value.asEnum() == null);
+
+  }
+
 
   protected void property(final String filename, final ContentType contentType) throws Exception {
     final StringWriter writer = new StringWriter();
