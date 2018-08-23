@@ -31,6 +31,7 @@
 
 	<build>
 		<finalName>DemoService</finalName>
+		<finalName>DemoService-Action</finalName>
 	</build>
 
 	<properties>
