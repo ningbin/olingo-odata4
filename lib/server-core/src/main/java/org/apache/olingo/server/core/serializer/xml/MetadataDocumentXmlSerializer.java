@@ -139,6 +139,7 @@ public class MetadataDocumentXmlSerializer {
   private static final String ABSTRACT = "Abstract";
 
   private static final String XML_ANNOTATIONS = "Annotations";
+  private static final String OPEN_TYPE = "OpenType";
 
   private static final String EDMX = "Edmx";
   private static final String PREFIX_EDMX = "edmx";
@@ -772,7 +773,9 @@ public class MetadataDocumentXmlSerializer {
       if (complexType.isAbstract()) {
         writer.writeAttribute(ABSTRACT, TRUE);
       }
-
+      if (complexType.isOpenType()) {
+        writer.writeAttribute(OPEN_TYPE, TRUE);
+      }
       appendProperties(writer, complexType);
 
       appendNavigationProperties(writer, complexType);
@@ -800,7 +803,11 @@ public class MetadataDocumentXmlSerializer {
       if (entityType.isAbstract()) {
         writer.writeAttribute(ABSTRACT, TRUE);
       }
-
+      
+      if (entityType.isOpenType()) {
+        writer.writeAttribute(OPEN_TYPE, TRUE);
+      }      
+ 
       appendKey(writer, entityType);
 
       appendProperties(writer, entityType);
