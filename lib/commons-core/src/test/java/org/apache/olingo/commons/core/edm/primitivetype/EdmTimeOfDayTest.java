@@ -54,9 +54,9 @@ public class EdmTimeOfDayTest extends PrimitiveTypeBaseTest {
     assertEquals("04:05:06", instance.valueToString(dateTime, null, null, null, null, null));
 
     dateTime.add(Calendar.MILLISECOND, 42);
+    assertEquals("04:05:06.042", instance.valueToString(dateTime, null, null, null, null, null));
     assertEquals("04:05:06.042", instance.valueToString(dateTime, null, null, 3, null, null));
     assertEquals("04:05:06.042", instance.valueToString(dateTime, null, null, 4, null, null));
-
     Calendar dateTime2 = Calendar.getInstance();
     dateTime2.clear();
     dateTime2.setTimeZone(TimeZone.getDefault());
@@ -67,8 +67,7 @@ public class EdmTimeOfDayTest extends PrimitiveTypeBaseTest {
     assertEquals("05:59:23", instance.valueToString(time, null, null, null, null, null));
 
     assertEquals("05:59:23", instance.valueToString(dateTime2.getTimeInMillis(), null, null, null, null, null));
-
-    expectFacetsErrorInValueToString(instance, dateTime, null, null, null, null, null);
+    
     expectFacetsErrorInValueToString(instance, dateTime, null, null, 2, null, null);
     Timestamp timestamp = new Timestamp(0);
     timestamp.setNanos(42);
