@@ -111,7 +111,12 @@ public abstract class AbstractODataRequest extends AbstractRequest implements OD
   public URI getURI() {
     return uri;
   }
-
+  
+  @Override
+  public HttpUriRequest getHttpRequest() {
+    return request;
+  }
+  
   @Override
   public void setURI(final URI uri) {
     this.uri = uri;
