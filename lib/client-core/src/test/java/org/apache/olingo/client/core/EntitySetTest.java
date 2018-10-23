@@ -142,7 +142,8 @@ private EdmEnabledODataClient getEdmEnabledClient1() {
   
   @Test
   public void testClientEntitySet() throws Exception {
-    final EdmEnabledODataClientImpl client = new EdmEnabledODataClientImpl(null, getEdmEnabledClient1().getCachedEdm(), null);
+    final EdmEnabledODataClientImpl client = new EdmEnabledODataClientImpl(null, 
+        getEdmEnabledClient1().getCachedEdm(), null);
     assertNotNull(client);
     assertNull(client.getServiceRoot());
     client.newURIBuilder();
