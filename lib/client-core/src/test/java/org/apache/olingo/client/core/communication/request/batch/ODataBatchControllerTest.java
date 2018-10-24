@@ -32,7 +32,7 @@ import org.junit.Test;
 public class ODataBatchControllerTest {
   
   @Test
-  public void testWrapper(){
+  public void testController(){
     final InputStream input = getClass().getResourceAsStream("batchResponse.batch");
     Reader reader = new InputStreamReader(input);
     ODataBatchLineIterator iterator = new ODataBatchLineIteratorImpl(new LineIterator(reader ));
@@ -48,7 +48,7 @@ public class ODataBatchControllerTest {
   }
   
   @Test(expected = UnsupportedOperationException.class)
-  public void testWrapperNeg(){
+  public void testControllerNeg(){
     final InputStream input = getClass().getResourceAsStream("batchResponse.batch");
     Reader reader = new InputStreamReader(input);
     ODataBatchLineIterator iterator = new ODataBatchLineIteratorImpl(new LineIterator(reader ));
