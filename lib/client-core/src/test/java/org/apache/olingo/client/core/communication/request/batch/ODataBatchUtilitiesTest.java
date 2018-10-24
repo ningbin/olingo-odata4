@@ -37,7 +37,6 @@ import org.apache.olingo.client.api.ODataClientBuilder;
 import org.apache.olingo.client.api.communication.request.ODataBatchableRequest;
 import org.apache.olingo.client.api.communication.request.batch.ODataBatchLineIterator;
 import org.apache.olingo.client.api.communication.request.batch.ODataBatchRequest;
-import org.apache.olingo.client.api.communication.response.ODataResponse;
 import org.apache.olingo.client.api.domain.ClientInvokeResult;
 import org.apache.olingo.client.core.communication.request.invoke.ODataInvokeRequestImpl;
 import org.apache.olingo.commons.api.http.HttpMethod;
@@ -113,15 +112,9 @@ public class ODataBatchUtilitiesTest {
   
   @Test
   public void testChangeSetResponse() throws URISyntaxException{
-    ODataClient client = ODataClientBuilder.createClient();
-    URI uri = new URI("test");
-    final InputStream input = getClass().getResourceAsStream("batchResponse.batch");
-    Reader reader = new InputStreamReader(input);
-    ODataBatchLineIterator iterator = new ODataBatchLineIteratorImpl(new LineIterator(reader ));
-    ODataBatchRequest req = new ODataBatchRequestImpl(client, uri);;
     ODataChangesetResponseItem expectedResItem = new ODataChangesetResponseItem(true);
     expectedResItem.setUnexpected();
-    ODataBatchRequestImpl reqBatch = new ODataBatchRequestImpl(client, uri);
-    assertNotNull(expectedResItem.next());
+    assertNotNull(expectedResItem);
+    expectedResItem.close();
   }
 }
