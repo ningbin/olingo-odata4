@@ -18,6 +18,7 @@
  */
 package org.apache.olingo.client.core.communication.request.batch;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.LineIterator;
+import org.apache.olingo.client.api.ODataBatchConstants;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.ODataClientBuilder;
 import org.apache.olingo.client.api.communication.request.ODataBatchableRequest;
@@ -52,6 +54,17 @@ public class ODataBatchUtilitiesTest {
     value.put("header:name", null);
     util.addHeaderLine("header:name", value );
   }
+  
+  @Test
+  public void testBatchConstants(){
+    assertEquals("boundary", ODataBatchConstants.BOUNDARY);
+    assertEquals("application/http", ODataBatchConstants.ITEM_CONTENT_TYPE );
+    assertEquals("Content-Type: application/http", ODataBatchConstants.ITEM_CONTENT_TYPE_LINE );
+    assertEquals("Content-Transfer-Encoding: binary", 
+        ODataBatchConstants.ITEM_TRANSFER_ENCODING_LINE );
+    assertEquals("Content-ID", ODataBatchConstants.CHANGESET_CONTENT_ID_NAME );
+  }
+  
  
   @Test
   public void testChangeSet() throws URISyntaxException{
