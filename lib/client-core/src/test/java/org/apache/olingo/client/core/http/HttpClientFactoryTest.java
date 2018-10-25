@@ -33,12 +33,27 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
+import org.apache.olingo.client.api.http.HttpClientFactory;
 import org.apache.olingo.commons.api.http.HttpMethod;
 import org.junit.Test;
 
 public class HttpClientFactoryTest {
+  
+  @Test
+  public void testAbstractOAuthHttpClient() {
+    AbstractOAuth2HttpClientFactory client = new AbstractOAuth2HttpClientFactoryImpl
+        (URI.create("uri1"), URI.create("uri2"));
+    assertNotNull(client);
+    assertNotNull(client.create(HttpMethod.GET, 
+        URI.create("http://host/service/$metadata")));
+    HttpClientFactory factory = client.getWrappedHttpClientFactory();
+    assertNotNull(factory );
+    client.accessToken(HttpClientBuilder.create() );
+  }
 
   @Test
   public void testBasicAuthHttpClient() {
@@ -145,6 +160,36 @@ public class HttpClientFactoryTest {
     protected CloseableHttpResponse doExecute(HttpHost target, HttpRequest request, HttpContext context)
         throws IOException, ClientProtocolException {
       return null;
+    }
+     
+   }
+   
+   class AbstractOAuth2HttpClientFactoryImpl extends AbstractOAuth2HttpClientFactory{
+
+   
+
+    public AbstractOAuth2HttpClientFactoryImpl(URI oauth2GrantServiceURI, URI oauth2TokenServiceURI) {
+      super(oauth2GrantServiceURI, oauth2TokenServiceURI);
+    }
+
+    @Override
+    protected boolean isInited() throws OAuth2Exception {
+      return false;
+    }
+
+    @Override
+    protected void init() throws OAuth2Exception {
+      
+    }
+
+    @Override
+    protected void accessToken(DefaultHttpClient client) throws OAuth2Exception {
+      
+    }
+
+    @Override
+    protected void refreshToken(DefaultHttpClient client) throws OAuth2Exception {
+      
     }
      
    }
