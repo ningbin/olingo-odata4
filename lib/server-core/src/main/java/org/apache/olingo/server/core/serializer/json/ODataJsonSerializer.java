@@ -1121,7 +1121,7 @@ public class ODataJsonSerializer implements ODataSerializer {
       writeContextURL(contextURL, json);
       writeMetadataETag(metadata, json);
       writeOperations(property.getOperations(), json);
-      if (property.isNull() && !options.isNullable()) {
+      if (property.isNull() && options!=null && options.isNullable() != null && !options.isNullable()) {
         throw new SerializerException("Property value can not be null.", SerializerException.MessageKeys.NULL_INPUT);
       } else {
         json.writeFieldName(Constants.VALUE);

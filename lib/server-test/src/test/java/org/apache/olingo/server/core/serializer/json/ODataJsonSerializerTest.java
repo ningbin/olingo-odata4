@@ -1697,17 +1697,22 @@ public class ODataJsonSerializerTest {
         resultString);
   } 
 
-  @Test(expected = SerializerException.class)
+  @Test
   public void primitivePropertyNull() throws Exception {
     final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESAllPrim");
     final EdmProperty edmProperty = (EdmProperty) edmEntitySet.getEntityType().getProperty("PropertyString");
     final Property property = new Property("Edm.String", edmProperty.getName(), ValueType.PRIMITIVE, null);
-    serializer.primitive(metadata, (EdmPrimitiveType) edmProperty.getType(), property,
+    final String resultString = IOUtils
+        .toString(serializer.primitive(metadata, (EdmPrimitiveType) edmProperty.getType(), property,
         PrimitiveSerializerOptions.with()
             .contextURL(ContextURL.with()
                 .entitySet(edmEntitySet).keyPath("4242").navOrPropertyPath(edmProperty.getName())
                 .build())
-            .build());
+            .build()).getContent());
+    Assert.assertEquals(
+        "{\"@odata.context\":\"../$metadata#ESAllPrim(4242)/PropertyString\","
+            +"\"@odata.metadataEtag\":\"W/\\\"metadataETag\\\"\",\"value\":null}",
+        resultString);
   }
 
   @Test
