@@ -1538,7 +1538,8 @@ public class ODataJsonSerializerv01Test {
                 .select(select)
                 .build()).getContent());
     Assert.assertEquals("{"
-        + "\"@context\":\"$metadata#ESAllPrim(PropertyInt16,PropertySByte)/$entity\","
+        + "\"@context\":\"$metadata#ESAllPrim(PropertyInt16,PropertySByte,"
+        + "NavPropertyETTwoPrimOne(),NavPropertyETTwoPrimMany())/$entity\","
         + "\"@metadataEtag\":\"W/\\\"metadataETag\\\"\","
         + "\"@id\":\"ESAllPrim(32767)\","
         + "\"PropertyInt16\":32767,\"PropertySByte\":127,"
@@ -1567,7 +1568,8 @@ public class ODataJsonSerializerv01Test {
                 .select(select)
                 .build()).getContent());
     Assert.assertEquals("{"
-        + "\"@context\":\"$metadata#ESAllPrim(PropertyInt16,PropertyTimeOfDay)/$entity\","
+        + "\"@context\":\"$metadata#ESAllPrim(PropertyInt16,PropertyTimeOfDay,"
+        + "NavPropertyETTwoPrimOne(),NavPropertyETTwoPrimMany())/$entity\","
         + "\"@metadataEtag\":\"W/\\\"metadataETag\\\"\","
         + "\"@id\":\"ESAllPrim(-32768)\","
         + "\"PropertyInt16\":-32768,\"PropertyTimeOfDay\":\"23:49:14\","
@@ -1600,7 +1602,8 @@ public class ODataJsonSerializerv01Test {
                 .build()).getContent());
     Assert.assertEquals("{"
         + "\"@context\":\"$metadata#ESTwoPrim(PropertyInt16,"
-        + "NavPropertyETAllPrimMany(PropertyInt16,PropertyInt32))/$entity\","
+        + "NavPropertyETAllPrimMany(PropertyInt16,PropertyInt32,"
+        + "NavPropertyETTwoPrimOne(),NavPropertyETTwoPrimMany()))/$entity\","
         + "\"@metadataEtag\":\"W/\\\"metadataETag\\\"\","
         + "\"PropertyInt16\":-365,\"PropertyString\":\"Test String2\","
         + "\"NavPropertyETAllPrimMany\":["
@@ -1638,7 +1641,8 @@ public class ODataJsonSerializerv01Test {
                     .suffix(Suffix.ENTITY).build())
                 .expand(expand)
                 .build()).getContent());
-    Assert.assertEquals("{\"@context\":\"$metadata#ESTwoPrim(PropertyInt16)/$entity\","
+    Assert.assertEquals("{\"@context\":\"$metadata#ESTwoPrim(PropertyInt16,"
+        + "NavPropertyETAllPrimOne(),NavPropertyETAllPrimMany())/$entity\","
         + "\"@metadataEtag\":\"W/\\\"metadataETag\\\"\","
         + "\"PropertyInt16\":-365,\"PropertyString\":\"Test String2\","
         + "\"NavPropertyETAllPrimOne\":null,"
