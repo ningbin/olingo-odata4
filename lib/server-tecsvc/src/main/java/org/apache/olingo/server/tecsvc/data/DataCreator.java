@@ -1707,6 +1707,8 @@ public class DataCreator {
     
     setLinks(entityCollection.getEntities().get(4), "NavPropertyETTwoKeyNavMany", etTwoKeyNav.get(0),
         etTwoKeyNav.get(2));
+    
+    setLinkForContNav(entityCollection.getEntities().get(4), "NavPropertyETTwoKeyNavOne", etTwoKeyNav.get(0));
   }
   
   private void linkESDelta(final Map<String, EntityCollection> data) {
