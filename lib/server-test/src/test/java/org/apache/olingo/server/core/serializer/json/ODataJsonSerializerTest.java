@@ -1552,6 +1552,70 @@ public class ODataJsonSerializerTest {
         + "\"NavPropertyETTwoPrimOne\":null,\"NavPropertyETTwoPrimMany\":[]}",
         resultString);
   }
+  
+  @Test
+  public void expandSelectNoData() throws Exception {
+    final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESAllPrim");
+    final EdmEntityType entityType = edmEntitySet.getEntityType();
+    final Entity entity = data.readAll(edmEntitySet).getEntities().get(1);
+    ExpandItem expandItemAll = Mockito.mock(ExpandItem.class);
+    Mockito.when(expandItemAll.isStar()).thenReturn(true);
+    SelectItem selectItemAll = Mockito.mock(SelectItem.class);
+    Mockito.when(selectItemAll.isStar()).thenReturn(true);
+    final ExpandOption expand = ExpandSelectMock.mockExpandOption(Collections.singletonList(expandItemAll));
+    final SelectOption select = ExpandSelectMock.mockSelectOption(Collections.singletonList(selectItemAll));
+    final String resultString = IOUtils.toString(serializer
+        .entity(metadata, entityType, entity,
+            EntitySerializerOptions.with()
+                .contextURL(ContextURL.with().entitySet(edmEntitySet)
+                    .selectList(helper.buildContextURLSelectList(entityType, expand, select))
+                    .suffix(Suffix.ENTITY).build())
+                .expand(expand)
+                .select(select)
+                .build()).getContent());
+    
+    Assert.assertEquals("{\"@odata.context\":\"$metadata#ESAllPrim(*,NavPropertyETTwoPrimOne(),"+
+    "NavPropertyETTwoPrimMany())/$entity\",\"@odata.metadataEtag\":\"W/\\\"metadataETag\\\"\","+
+    "\"PropertyInt16\":-32768,\"PropertyString\":\"Second Resource - negative values\","+
+    "\"PropertyBoolean\":false,\"PropertyByte\":0,\"PropertySByte\":-128,"+
+    "\"PropertyInt32\":-2147483648,\"PropertyInt64\":-9223372036854775808,"+
+    "\"PropertySingle\":-1.79E8,\"PropertyDouble\":-179000.0,\"PropertyDecimal\":-34,"+
+    "\"PropertyBinary\":\"ASNFZ4mrze8=\",\"PropertyDate\":\"2015-11-05\",\"PropertyDateTimeOffset\":"+
+    "\"2005-12-03T07:17:08Z\",\"PropertyDuration\":\"PT9S\",\"PropertyGuid\":\"76543201-23ab-cdef-0123-456789dddfff\""+
+    ",\"PropertyTimeOfDay\":\"23:49:14\",\"NavPropertyETTwoPrimOne\":null,\"NavPropertyETTwoPrimMany\":[]}",
+        resultString);
+  }
+  
+  @Test
+  public void expandNoSelectNoData() throws Exception {
+    final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESAllPrim");
+    final EdmEntityType entityType = edmEntitySet.getEntityType();
+    final Entity entity = data.readAll(edmEntitySet).getEntities().get(1);
+    ExpandItem expandItemAll = Mockito.mock(ExpandItem.class);
+    Mockito.when(expandItemAll.isStar()).thenReturn(true);
+    SelectItem selectItemAll = Mockito.mock(SelectItem.class);
+    Mockito.when(selectItemAll.isStar()).thenReturn(true);
+    final ExpandOption expand = ExpandSelectMock.mockExpandOption(Collections.singletonList(expandItemAll));
+    final String resultString = IOUtils.toString(serializer
+        .entity(metadata, entityType, entity,
+            EntitySerializerOptions.with()
+                .contextURL(ContextURL.with().entitySet(edmEntitySet)
+                    .suffix(Suffix.ENTITY).build())
+                .expand(expand)
+                .build()).getContent());
+    
+    Assert.assertEquals("{\"@odata.context\":\"$metadata#ESAllPrim/$entity\","+
+        "\"@odata.metadataEtag\":\"W/\\\"metadataETag\\\"\","+
+        "\"PropertyInt16\":-32768,\"PropertyString\":\"Second Resource - negative values\","+
+        "\"PropertyBoolean\":false,\"PropertyByte\":0,\"PropertySByte\":-128,"+
+        "\"PropertyInt32\":-2147483648,\"PropertyInt64\":-9223372036854775808,"+
+        "\"PropertySingle\":-1.79E8,\"PropertyDouble\":-179000.0,\"PropertyDecimal\":-34,"+
+        "\"PropertyBinary\":\"ASNFZ4mrze8=\",\"PropertyDate\":\"2015-11-05\",\"PropertyDateTimeOffset\":"+
+        "\"2005-12-03T07:17:08Z\",\"PropertyDuration\":\"PT9S\","+
+        "\"PropertyGuid\":\"76543201-23ab-cdef-0123-456789dddfff\""+
+        ",\"PropertyTimeOfDay\":\"23:49:14\",\"NavPropertyETTwoPrimOne\":null,\"NavPropertyETTwoPrimMany\":[]}",
+            resultString);
+  }
 
   @Test
   public void expandTwoLevels() throws Exception {
