@@ -19,6 +19,7 @@
 package org.apache.olingo.client.core.communication.request.retrieve;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
 import org.apache.http.HttpResponse;
@@ -65,8 +66,14 @@ public class ODataDeltaRequestImpl extends AbstractODataRetrieveRequest<ClientDe
     public ClientDelta getBody() {
       if (delta == null) {
         try {
+          InputStream content;
+          if(res == null){
+            content = payload;
+          }else{
+            content = res.getEntity().getContent();
+          }
           final ResWrap<Delta> resource = odataClient.getDeserializer(ContentType.parse(getContentType())).
-              toDelta(res.getEntity().getContent());
+              toDelta(content);
 
           delta = odataClient.getBinder().getODataDelta(resource);
         } catch (IOException e) {
