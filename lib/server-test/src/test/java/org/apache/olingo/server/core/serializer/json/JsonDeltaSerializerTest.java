@@ -144,9 +144,9 @@ public class JsonDeltaSerializerTest {
        final String expectedResult = "{"
            +"\"@odata.context\":\"$metadata#ESDelta/$delta\",\"value\":[{"
            + "\"@odata.context\":\"#ESDelta(100)/$deletedEntity\","
-           + "\"@odata.id\":\"ESDelta(100)\",\"reason\":\"deleted\"},{"
+           + "\"@id\":\"ESDelta(100)\",\"reason\":\"deleted\"},{"
            + "\"@odata.context\":\"#ESDelta(-32768)/$deletedEntity\","
-           + "\"@odata.id\":\"ESDelta(-32768)\",\"reason\":\"changed\"}]"
+           + "\"@id\":\"ESDelta(-32768)\",\"reason\":\"changed\"}]"
            + "}";
        Assert.assertNotNull(jsonString);
        Assert.assertEquals(expectedResult, jsonString);
