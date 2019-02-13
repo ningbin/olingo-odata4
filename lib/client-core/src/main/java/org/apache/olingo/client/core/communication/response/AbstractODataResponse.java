@@ -102,7 +102,7 @@ public abstract class AbstractODataResponse implements ODataResponse {
    */
   protected ODataBatchController batchInfo = null;
 
-  static private byte[] inputContent = null;
+  private byte[] inputContent = null;
 
   public AbstractODataResponse(
       final ODataClient odataClient, final HttpClient httpclient, final HttpResponse res) {
@@ -298,7 +298,6 @@ public abstract class AbstractODataResponse implements ODataResponse {
         throw new ODataRuntimeException(e);
       }
     }
-
     return payload;
   }
 }

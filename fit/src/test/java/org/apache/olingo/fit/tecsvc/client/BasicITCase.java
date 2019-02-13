@@ -446,7 +446,7 @@ public class BasicITCase extends AbstractParamTecSvcITCase {
 
     Edm edm = response.getBody();
     assertNotNull(edm);
-    
+  //  assertNotNull(response.getRawResponse());
     final EdmEntityContainer container = edm.getEntityContainer(
         new FullQualifiedName("olingo.odata.test1", "Container"));
     assertNotNull(container);
