@@ -70,14 +70,12 @@ public class ODataDeltaRequestImpl extends AbstractODataRetrieveRequest<ClientDe
           if(res == null){
             content = payload;
           }else{
-            content = res.getEntity().getContent();
+            content = getRawResponse();
           }
           final ResWrap<Delta> resource = odataClient.getDeserializer(ContentType.parse(getContentType())).
               toDelta(content);
 
           delta = odataClient.getBinder().getODataDelta(resource);
-        } catch (IOException e) {
-          throw new HttpClientException(e);
         } catch (final ODataDeserializerException e) {
           throw new IllegalArgumentException(e);
         } finally {

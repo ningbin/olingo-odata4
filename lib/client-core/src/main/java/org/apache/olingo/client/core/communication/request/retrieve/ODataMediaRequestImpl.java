@@ -82,11 +82,7 @@ public class ODataMediaRequestImpl extends AbstractODataRetrieveRequest<InputStr
     @Override
     public InputStream getBody() {
       if (input == null) {
-        try {
-          input = res.getEntity().getContent();
-        } catch (IOException e) {
-          throw new HttpClientException(e);
-        }
+        input = getRawResponse();
       }
       return input;
     }
