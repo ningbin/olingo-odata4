@@ -305,6 +305,7 @@ public class BasicITCase extends AbstractParamTecSvcITCase {
         getEntitySetRequest(uriBuilder.build());
 
     final ODataRetrieveResponse<ClientEntitySet> res = req.execute();
+    assertNotNull(res.getRawResponse());
     final ClientEntitySet feed = res.getBody();
 
     assertNotNull(feed);
@@ -366,7 +367,7 @@ public class BasicITCase extends AbstractParamTecSvcITCase {
     saveCookieHeader(response);
     assertEquals(HttpStatusCode.OK.getStatusCode(), response.getStatusCode());
     assertContentType(response.getContentType());
-
+    assertNotNull(response.getRawResponse());
     final ClientEntity entity = response.getBody();
     assertNotNull(entity);
     final ClientProperty property = entity.getProperty("CollPropertyInt16");
@@ -378,6 +379,31 @@ public class BasicITCase extends AbstractParamTecSvcITCase {
     assertShortOrInt(2000, iterator.next().asPrimitive().toValue());
     assertShortOrInt(30112, iterator.next().asPrimitive().toValue());
   }
+  
+  @Test
+  public void readEntityProperty() throws Exception {
+    ODataPropertyRequest<ClientProperty> request = getClient().getRetrieveRequestFactory()
+        .getPropertyRequest(getClient().newURIBuilder(SERVICE_URI)
+            .appendEntitySetSegment("ESCollAllPrim").appendKeySegment(1)
+            .appendPropertySegment("CollPropertyInt16").build());
+    assertNotNull(request);
+    setCookieHeader(request);
+
+    final ODataRetrieveResponse<ClientProperty> response = request.execute();
+    saveCookieHeader(response);
+    assertEquals(HttpStatusCode.OK.getStatusCode(), response.getStatusCode());
+    assertContentType(response.getContentType());
+    assertNotNull(response.getRawResponse());
+    final ClientProperty property = response.getBody();
+    assertNotNull(property);
+    assertNotNull(property.getCollectionValue());
+    assertEquals(3, property.getCollectionValue().size());
+    Iterator<ClientValue> iterator = property.getCollectionValue().iterator();
+    assertShortOrInt(1000, iterator.next().asPrimitive().toValue());
+    assertShortOrInt(2000, iterator.next().asPrimitive().toValue());
+    assertShortOrInt(30112, iterator.next().asPrimitive().toValue());
+  }
+
 
   @Test
   public void deleteEntity() throws Exception {

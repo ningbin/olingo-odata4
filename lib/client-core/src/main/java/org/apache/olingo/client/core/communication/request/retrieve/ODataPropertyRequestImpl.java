@@ -76,11 +76,9 @@ public class ODataPropertyRequestImpl<T extends ClientProperty>
       if (property == null) {
         try {
           final ResWrap<Property> resource = odataClient.getDeserializer(ContentType.parse(getContentType()))
-                  .toProperty(res.getEntity().getContent());
+                  .toProperty(getRawResponse());
 
           property = (T) odataClient.getBinder().getODataProperty(resource);
-        } catch (IOException e) {
-          throw new HttpClientException(e);
         } catch (final ODataDeserializerException e) {
           throw new IllegalArgumentException(e);
         } finally {
