@@ -197,7 +197,7 @@ public class EdmSchemaImpl extends AbstractEdmAnnotatable implements EdmSchema {
     if (providerEntityTypes != null) {
       for (CsdlEntityType entityType : providerEntityTypes) {
         FullQualifiedName entityTypeName = new FullQualifiedName(namespace, entityType.getName());
-        edm.addAnnotations(entityType, entityTypeName);
+        edm.addAnnotations(entityType, entityTypeName, schema.getEntityContainer());
         EdmEntityTypeImpl entityTypeImpl = new EdmEntityTypeImpl(edm, entityTypeName, entityType);
         edmEntityTypes.add(entityTypeImpl);
         edm.cacheEntityType(entityTypeName, entityTypeImpl);
@@ -212,7 +212,7 @@ public class EdmSchemaImpl extends AbstractEdmAnnotatable implements EdmSchema {
     if (providerComplexTypes != null) {
       for (CsdlComplexType complexType : providerComplexTypes) {
         FullQualifiedName comlexTypeName = new FullQualifiedName(namespace, complexType.getName());
-        edm.addAnnotations(complexType, comlexTypeName);
+        edm.addAnnotations(complexType, comlexTypeName, schema.getEntityContainer());
         EdmComplexTypeImpl complexTypeImpl = new EdmComplexTypeImpl(edm, comlexTypeName, complexType);
         edmComplexTypes.add(complexTypeImpl);
         edm.cacheComplexType(comlexTypeName, complexTypeImpl);

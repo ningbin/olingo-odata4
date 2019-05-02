@@ -18,7 +18,6 @@
  */
 package org.apache.olingo.client.core.communication.request.retrieve;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
@@ -27,7 +26,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.request.retrieve.ODataMediaRequest;
 import org.apache.olingo.client.api.communication.response.ODataRetrieveResponse;
-import org.apache.olingo.client.api.http.HttpClientException;
 import org.apache.olingo.commons.api.format.ContentType;
 
 /**
