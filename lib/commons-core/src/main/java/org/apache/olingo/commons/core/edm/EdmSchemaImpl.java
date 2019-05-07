@@ -152,7 +152,7 @@ public class EdmSchemaImpl extends AbstractEdmAnnotatable implements EdmSchema {
   protected EdmEntityContainer createEntityContainer() {
     if (schema.getEntityContainer() != null) {
       FullQualifiedName containerFQN = new FullQualifiedName(namespace, schema.getEntityContainer().getName());
-      edm.addAnnotations(schema.getEntityContainer(), containerFQN);
+      edm.addEntityContainerAnnotations(schema.getEntityContainer(), containerFQN);
       EdmEntityContainer impl = new EdmEntityContainerImpl(edm, provider, containerFQN, schema.getEntityContainer());
       edm.cacheEntityContainer(containerFQN, impl);
       edm.cacheEntityContainer(null, impl);
@@ -167,7 +167,7 @@ public class EdmSchemaImpl extends AbstractEdmAnnotatable implements EdmSchema {
     if (providerTypeDefinitions != null) {
       for (CsdlTypeDefinition def : providerTypeDefinitions) {
         FullQualifiedName typeDefName = new FullQualifiedName(namespace, def.getName());
-        edm.addAnnotations(def, typeDefName);
+        edm.addTypeDefnAnnotations(def, typeDefName);
         EdmTypeDefinitionImpl typeDefImpl = new EdmTypeDefinitionImpl(edm, typeDefName, def);
         typeDefns.add(typeDefImpl);
         edm.cacheTypeDefinition(typeDefName, typeDefImpl);
@@ -182,7 +182,7 @@ public class EdmSchemaImpl extends AbstractEdmAnnotatable implements EdmSchema {
     if (providerEnumTypes != null) {
       for (CsdlEnumType enumType : providerEnumTypes) {
         FullQualifiedName enumName = new FullQualifiedName(namespace, enumType.getName());
-        edm.addAnnotations(enumType, enumName);
+        edm.addEnumTypeAnnotations(enumType, enumName);
         EdmEnumType enumTypeImpl = new EdmEnumTypeImpl(edm, enumName, enumType);
         enumTyps.add(enumTypeImpl);
         edm.cacheEnumType(enumName, enumTypeImpl);
@@ -197,7 +197,7 @@ public class EdmSchemaImpl extends AbstractEdmAnnotatable implements EdmSchema {
     if (providerEntityTypes != null) {
       for (CsdlEntityType entityType : providerEntityTypes) {
         FullQualifiedName entityTypeName = new FullQualifiedName(namespace, entityType.getName());
-        edm.addAnnotations(entityType, entityTypeName, schema.getEntityContainer());
+        edm.addStructuralTypeAnnotations(entityType, entityTypeName, schema.getEntityContainer());
         EdmEntityTypeImpl entityTypeImpl = new EdmEntityTypeImpl(edm, entityTypeName, entityType);
         edmEntityTypes.add(entityTypeImpl);
         edm.cacheEntityType(entityTypeName, entityTypeImpl);
@@ -212,7 +212,7 @@ public class EdmSchemaImpl extends AbstractEdmAnnotatable implements EdmSchema {
     if (providerComplexTypes != null) {
       for (CsdlComplexType complexType : providerComplexTypes) {
         FullQualifiedName comlexTypeName = new FullQualifiedName(namespace, complexType.getName());
-        edm.addAnnotations(complexType, comlexTypeName, schema.getEntityContainer());
+        edm.addStructuralTypeAnnotations(complexType, comlexTypeName, schema.getEntityContainer());
         EdmComplexTypeImpl complexTypeImpl = new EdmComplexTypeImpl(edm, comlexTypeName, complexType);
         edmComplexTypes.add(complexTypeImpl);
         edm.cacheComplexType(comlexTypeName, complexTypeImpl);
@@ -227,7 +227,7 @@ public class EdmSchemaImpl extends AbstractEdmAnnotatable implements EdmSchema {
     if (providerActions != null) {
       for (CsdlAction action : providerActions) {
         FullQualifiedName actionName = new FullQualifiedName(namespace, action.getName());
-        edm.addAnnotations(action, actionName);
+        edm.addOperationsAnnotations(action, actionName);
         EdmActionImpl edmActionImpl = new EdmActionImpl(edm, actionName, action);
         edmActions.add(edmActionImpl);
         edm.cacheAction(actionName, edmActionImpl);
@@ -242,7 +242,7 @@ public class EdmSchemaImpl extends AbstractEdmAnnotatable implements EdmSchema {
     if (providerFunctions != null) {
       for (CsdlFunction function : providerFunctions) {
         FullQualifiedName functionName = new FullQualifiedName(namespace, function.getName());
-        edm.addAnnotations(function, functionName);
+        edm.addOperationsAnnotations(function, functionName);
         EdmFunctionImpl functionImpl = new EdmFunctionImpl(edm, functionName, function);
         edmFunctions.add(functionImpl);
         edm.cacheFunction(functionName, functionImpl);
