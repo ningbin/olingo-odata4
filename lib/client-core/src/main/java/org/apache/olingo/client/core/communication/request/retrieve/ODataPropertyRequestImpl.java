@@ -18,7 +18,6 @@
  */
 package org.apache.olingo.client.core.communication.request.retrieve;
 
-import java.io.IOException;
 import java.net.URI;
 
 import org.apache.http.HttpResponse;
@@ -28,7 +27,6 @@ import org.apache.olingo.client.api.communication.request.retrieve.ODataProperty
 import org.apache.olingo.client.api.communication.response.ODataRetrieveResponse;
 import org.apache.olingo.client.api.data.ResWrap;
 import org.apache.olingo.client.api.domain.ClientProperty;
-import org.apache.olingo.client.api.http.HttpClientException;
 import org.apache.olingo.client.api.serialization.ODataDeserializerException;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.format.ContentType;
