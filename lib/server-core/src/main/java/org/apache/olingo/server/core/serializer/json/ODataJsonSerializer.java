@@ -63,6 +63,7 @@ import org.apache.olingo.commons.api.edm.geo.MultiPoint;
 import org.apache.olingo.commons.api.edm.geo.MultiPolygon;
 import org.apache.olingo.commons.api.edm.geo.Point;
 import org.apache.olingo.commons.api.edm.geo.Polygon;
+import org.apache.olingo.commons.api.edm.geo.SRID;
 import org.apache.olingo.commons.api.format.ContentType;
 import org.apache.olingo.commons.core.edm.primitivetype.EdmPrimitiveTypeFactory;
 import org.apache.olingo.server.api.ODataServerError;
@@ -926,7 +927,7 @@ public class ODataJsonSerializer implements ODataSerializer {
       writePrimitiveValue(property.getName(), type, property.asPrimitive(),
           isNullable, maxLength, precision, scale, isUnicode, json);
     } else if (property.isGeospatial()) {
-      writeGeoValue(property.getName(), type, property.asGeospatial(), isNullable, json);
+      writeGeoValue(property.getName(), type, property.asGeospatial(), isNullable, json, null);
     } else if (property.isEnum()) {
       writePrimitiveValue(property.getName(), type, property.asEnum(),
           isNullable, maxLength, precision, scale, isUnicode, json);
@@ -982,7 +983,7 @@ public class ODataJsonSerializer implements ODataSerializer {
 
   /** Writes a geospatial value following the GeoJSON specification defined in RFC 7946. */
   protected void writeGeoValue(final String name, final EdmPrimitiveType type, final Geospatial geoValue,
-      final Boolean isNullable, JsonGenerator json)
+      final Boolean isNullable, JsonGenerator json, SRID parentSrid)
       throws EdmPrimitiveTypeException, IOException, SerializerException {
     if (geoValue == null) {
       if (isNullable == null || isNullable) {
@@ -993,10 +994,6 @@ public class ODataJsonSerializer implements ODataSerializer {
     } else {
       if (!type.getDefaultType().isAssignableFrom(geoValue.getClass())) {
         throw new EdmPrimitiveTypeException("The value type " + geoValue.getClass() + " is not supported.");
-      }
-      if (geoValue.getSrid() != null && geoValue.getSrid().isNotDefault()) {
-        throw new SerializerException("Non-standard SRID not supported!",
-            SerializerException.MessageKeys.WRONG_PROPERTY_VALUE, name, geoValue.toString());
       }
       json.writeStartObject();
       json.writeStringField(Constants.ATTR_TYPE, geoValueTypeToJsonName.get(geoValue.getGeoType()));
@@ -1034,13 +1031,27 @@ public class ODataJsonSerializer implements ODataSerializer {
       case GEOSPATIALCOLLECTION:
         for (final Geospatial element : (GeospatialCollection) geoValue) {
           writeGeoValue(name, EdmPrimitiveTypeFactory.getInstance(element.getEdmPrimitiveTypeKind()),
-              element, isNullable, json);
+              element, isNullable, json, geoValue.getSrid());
         }
         break;
       }
       json.writeEndArray();
+      
+      if (geoValue.getSrid() != null && geoValue.getSrid().isNotDefault() 
+    		  && (parentSrid == null || !parentSrid.equals(geoValue.getSrid()))) {
+    	  srid(json, geoValue.getSrid());
+      }
       json.writeEndObject();
     }
+  }
+  
+  private void srid(final JsonGenerator jgen, final SRID srid) throws IOException {
+    jgen.writeObjectFieldStart(Constants.JSON_CRS);
+	jgen.writeStringField(Constants.ATTR_TYPE, Constants.JSON_NAME);
+	jgen.writeObjectFieldStart(Constants.PROPERTIES);
+	jgen.writeStringField(Constants.JSON_NAME, "EPSG:" + srid.toString());
+	jgen.writeEndObject();
+	jgen.writeEndObject();
   }
 
   private void writeGeoPoint(JsonGenerator json, final Point point) throws IOException {
