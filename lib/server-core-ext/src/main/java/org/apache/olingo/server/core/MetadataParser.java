@@ -168,6 +168,14 @@ public class MetadataParser {
         this.useLocalCoreVocabularies, true, null);
   }
   
+  public SchemaBasedEdmProvider addToEdmProvider(SchemaBasedEdmProvider existing, Reader csdl)
+      throws XMLStreamException {
+    XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+    XMLEventReader reader = xmlInputFactory.createXMLEventReader(csdl);
+    return addToEdmProvider(existing, reader, this.referenceResolver, this.implicitlyLoadCoreVocabularies,
+           this.useLocalCoreVocabularies, true, null);
+  }
+  
   protected SchemaBasedEdmProvider buildEdmProvider(Reader csdl, ReferenceResolver resolver,
       boolean loadCore, boolean useLocal,
       boolean loadReferenceSchemas, String namespace)
@@ -177,6 +185,12 @@ public class MetadataParser {
     return buildEdmProvider(reader, resolver, loadCore, useLocal, loadReferenceSchemas, namespace);
   }
     
+  protected SchemaBasedEdmProvider buildEdmProvider(XMLEventReader reader, ReferenceResolver resolver, boolean loadCore,
+      boolean useLocal, boolean loadReferenceSchemas, String namespace) throws XMLStreamException {
+      SchemaBasedEdmProvider provider = new SchemaBasedEdmProvider();
+      return addToEdmProvider(provider, reader, resolver, loadCore, useLocal, loadReferenceSchemas, namespace);
+   }
+  
   protected SchemaBasedEdmProvider buildEdmProvider(InputStream csdl, ReferenceResolver resolver,
       boolean loadCore, boolean useLocal,
       boolean loadReferenceSchemas, String namespace)
@@ -186,10 +200,9 @@ public class MetadataParser {
     return buildEdmProvider(reader, resolver, loadCore, useLocal, loadReferenceSchemas, namespace);
   } 
   
-  protected SchemaBasedEdmProvider buildEdmProvider(XMLEventReader reader,
+  protected SchemaBasedEdmProvider addToEdmProvider(SchemaBasedEdmProvider provider, XMLEventReader reader,
       ReferenceResolver resolver, boolean loadCore, boolean useLocal, boolean loadReferenceSchemas, String namespace)
       throws XMLStreamException {
-    SchemaBasedEdmProvider provider = new SchemaBasedEdmProvider();
     
     final StringBuilder xmlBase = new StringBuilder();
     
