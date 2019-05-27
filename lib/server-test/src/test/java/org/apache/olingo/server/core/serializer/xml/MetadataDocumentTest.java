@@ -76,6 +76,7 @@ public class MetadataDocumentTest {
             + "<Property Name=\"AdditionalPropertyString_5\" Type=\"Edm.String\"/>"
             + "</EntityType>"));
 
+      System.out.println(metadata);
       assertThat(metadata, containsString("<EntitySet Name=\"ESAllPrim\" EntityType=\"Namespace1_Alias.ETAllPrim\">"
         + "<NavigationPropertyBinding Path=\"NavPropertyETTwoPrimOne\" Target=\"ESTwoPrim\"/>"
         + "<NavigationPropertyBinding Path=\"NavPropertyETTwoPrimMany\" Target=\"ESTwoPrim\"/>"
@@ -108,7 +109,8 @@ public class MetadataDocumentTest {
             + "EntitySetPath=\"BindingParam/NavPropertyETTwoKeyNavMany\" IsBound=\"true\" IsComposable=\"true\">"
             + "<Parameter Name=\"BindingParam\" Type=\"Collection(Namespace1_Alias.ETTwoKeyNav)\" "
             + "Nullable=\"false\"/>"
-            + "<ReturnType Type=\"Collection(Namespace1_Alias.ETTwoKeyNav)\" Nullable=\"false\"/></Function>"));
+            + "<ReturnType Type=\"Collection(Namespace1_Alias.ETTwoKeyNav)\" Nullable=\"false\"/>"
+            + "</Function>"));
 
     assertThat(metadata, containsString("<EntityContainer Name=\"Container\">"));
 

@@ -617,6 +617,7 @@
 								<exclude>**/.jobinfo/**</exclude>
 								<exclude>**/.xmake/**</exclude>
 								<exclude>**/.repository/**</exclude>
+								<exclude>**/.settings/**</exclude>
 							</excludes>
 						</configuration>
 					</execution>
