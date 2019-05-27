@@ -68,6 +68,7 @@
 		<cxf.version>3.2.1</cxf.version>
 		<cxf.version.security>3.0.0</cxf.version.security>
 		<spring.version>4.1.8.RELEASE</spring.version>
+		<netty.version>4.1.35.Final</netty.version>
 
 		<velocity.version>1.7</velocity.version>
 		<maven.plugin.api.version>3.2.2</maven.plugin.api.version>
@@ -103,6 +104,11 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+		       <groupId>io.netty</groupId>
+		 		<artifactId>netty-codec-http</artifactId>
+		 		<version>${netty.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
