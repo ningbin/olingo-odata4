@@ -122,7 +122,7 @@ public class ODataJsonRxSerializerTest {
     while ((index = resultString.indexOf("PropertyInt16\":", ++index)) > 0) {
       count++;
     }
-    Assert.assertEquals(3, count);
+    Assert.assertEquals(4, count);
   }
   
   @Test
@@ -164,7 +164,8 @@ public class ODataJsonRxSerializerTest {
 
     Assert.assertThat(resultString, CoreMatchers.startsWith("{\"@odata.context\":\"$metadata#ESAllPrim\","
         + "\"@odata.metadataEtag\":\"W/\\\"metadataETag\\\"\",\"value\":[{\"@odata.id\":\"ESAllPrim(32767)\"},"
-        + "{\"@odata.id\":\"ESAllPrim(-32768)\"},{\"@odata.id\":\"ESAllPrim(0)\"}]}"));
+        + "{\"@odata.id\":\"ESAllPrim(-32768)\"},{\"@odata.id\":\"ESAllPrim(0)\"},"
+        + "{\"@odata.id\":\"ESAllPrim(10)\"}]}"));
   }
   
   @Test
@@ -214,7 +215,7 @@ public class ODataJsonRxSerializerTest {
     while ((index = resultString.indexOf("PropertyInt16\":", ++index)) > 0) {
       count++;
     }
-    Assert.assertEquals(3, count);
+    Assert.assertEquals(4, count);
   }
   
   @Test
@@ -259,14 +260,14 @@ public class ODataJsonRxSerializerTest {
         + "\"@odata.metadataEtag\":\"W/\\\"metadataETag\\\"\","
         + "\"value\":[{\"@odata.type\":\"#olingo.odata.test1.ETAllPrim\""));
     Assert.assertThat(resultString, CoreMatchers.endsWith(
-        "\"target\":\"ESAllPrim(0)/olingo.odata.test1.BAETAllPrimRT\"}}]}"));
+        "\"target\":\"ESAllPrim(10)/olingo.odata.test1.BAETAllPrimRT\"}}]}"));
 
     int count = 0;
     int index = -1;
     while ((index = resultString.indexOf("PropertyInt16\":", ++index)) > 0) {
       count++;
     }
-    Assert.assertEquals(3, count);
+    Assert.assertEquals(4, count);
   }
   
 
@@ -371,7 +372,7 @@ public class ODataJsonRxSerializerTest {
     while ((index = resultString.indexOf("PropertyInt16\":", ++index)) > 0) {
       count++;
     }
-    Assert.assertEquals(3, count);
+    Assert.assertEquals(4, count);
   }
   
   @Test
@@ -459,7 +460,13 @@ public class ODataJsonRxSerializerTest {
         "\"PropertyTimeOfDay\":\"00:01:01\",\"NavPropertyETTwoPrimMany\":"+
         "[{\"PropertyInt16\":32766,\"PropertyString\":\"Test String1\"},"+
         "{\"PropertyInt16\":-32766,\"PropertyString\":null},"+
-        "{\"PropertyInt16\":32767,\"PropertyString\":\"Test String4\"}]}]}"
+        "{\"PropertyInt16\":32767,\"PropertyString\":\"Test String4\"}]},{\"PropertyInt16\":10,"
+        + "\"PropertyString\":\"Employee1@company.example\",\"PropertyBoolean\":false,\"PropertyByte\":0,"
+        + "\"PropertySByte\":0,\"PropertyInt32\":0,\"PropertyInt64\":0,\"PropertySingle\":0.0,"
+        + "\"PropertyDouble\":0.0,\"PropertyDecimal\":0,\"PropertyBinary\":\"\","
+        + "\"PropertyDate\":\"1970-01-01\",\"PropertyDateTimeOffset\":\"2005-12-03T00:00:00Z\","
+        + "\"PropertyDuration\":\"PT0S\",\"PropertyGuid\":\"76543201-23ab-cdef-0123-456789cccddd\","
+        + "\"PropertyTimeOfDay\":\"00:01:01\",\"NavPropertyETTwoPrimMany\":[]}]}"
         ,resultString);
   }
   @Test

@@ -479,7 +479,7 @@ public class ODataJsonSerializerTest {
     while ((index = resultString.indexOf("PropertyInt16\":", ++index)) > 0) {
       count++;
     }
-    Assert.assertEquals(3, count);
+    Assert.assertEquals(4, count);
   }
 
   @Test
@@ -1984,7 +1984,7 @@ public class ODataJsonSerializerTest {
     Assert.assertEquals("{\"@odata.context\":\"../$metadata#Collection($ref)\","
         + "\"value\":[{\"@odata.id\":\"ESAllPrim(32767)\"},"
         + "{\"@odata.id\":\"ESAllPrim(-32768)\"},"
-        + "{\"@odata.id\":\"ESAllPrim(0)\"}]}",
+        + "{\"@odata.id\":\"ESAllPrim(0)\"},{\"@odata.id\":\"ESAllPrim(10)\"}]}",
         resultString);
   }
 
@@ -2175,7 +2175,7 @@ public class ODataJsonSerializerTest {
     Assert.assertThat(resultString, CoreMatchers.startsWith("{"
         + "\"@odata.context\":\"$metadata#ESAllPrim\","
         + "\"@odata.metadataEtag\":\"W/\\\"metadataETag\\\"\","
-        + "\"@odata.count\":\"3\",\"value\":["));
+        + "\"@odata.count\":\"4\",\"value\":["));
     Assert.assertThat(resultString, CoreMatchers.endsWith("],"
         + "\"@odata.nextLink\":\"/next\"}"));
 
@@ -2184,7 +2184,7 @@ public class ODataJsonSerializerTest {
     while ((index = resultString.indexOf("PropertyInt16\":", ++index)) > 0) {
       count++;
     }
-    Assert.assertEquals(3, count);
+    Assert.assertEquals(4, count);
   }
 
   @Test
@@ -2204,7 +2204,7 @@ public class ODataJsonSerializerTest {
 
     Assert.assertThat(resultString, CoreMatchers.startsWith("{"
         + "\"@odata.context\":\"../$metadata#Collection($ref)\","
-        + "\"@odata.count\":\"3\",\"value\":["));
+        + "\"@odata.count\":\"4\",\"value\":["));
     Assert.assertThat(resultString, CoreMatchers.endsWith("],"
         + "\"@odata.nextLink\":\"/next\"}"));
 
@@ -2213,7 +2213,7 @@ public class ODataJsonSerializerTest {
     while ((index = resultString.indexOf("ESAllPrim(", ++index)) > 0) {
       count++;
     }
-    Assert.assertEquals(3, count);
+    Assert.assertEquals(4, count);
   }
 
   @Test
