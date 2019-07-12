@@ -25,9 +25,11 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
@@ -125,5 +127,38 @@ public class ErrorTest extends AbstractTest {
     ODataRuntimeException exp = ODataErrorResponseChecker.
         checkResponse(odataClient, statusLine, null, "Json");
     assertTrue(exp.getMessage().startsWith("Internal Server Error"));
+  }
+  
+  @Test
+  public void testExpTextMsg403() throws Exception {
+    ODataClient odataClient = ODataClientFactory.getClient();
+    InputStream entity = new ByteArrayInputStream("CSRF Validation Exception".getBytes()); 
+    StatusLine statusLine = mock(StatusLine.class);
+    when(statusLine.getStatusCode()).thenReturn(403);
+    when(statusLine.toString()).thenReturn("Validation Exception");
+    when(statusLine.getReasonPhrase()).thenReturn("Forbidden");
+    
+    ODataClientErrorException exp = (ODataClientErrorException) ODataErrorResponseChecker.
+        checkResponse(odataClient, statusLine, entity, "text/plain");
+    assertEquals(exp.getStatusLine().getStatusCode(), 403);
+    ODataError error = exp.getODataError();
+    assertTrue(error.getMessage().equals("CSRF Validation Exception"));
+    assertEquals(error.getCode(), "403");
+    assertEquals(error.getTarget(), "Forbidden");
+    assertTrue(exp.getHeaderInfo().isEmpty());
+  }
+  
+  @Test
+  public void testExpTextMsg500() throws Exception {
+    ODataClient odataClient = ODataClientFactory.getClient();
+    InputStream entity = new ByteArrayInputStream("Internal Server Exception".getBytes()); 
+    StatusLine statusLine = mock(StatusLine.class);
+    when(statusLine.getStatusCode()).thenReturn(500);
+    when(statusLine.toString()).thenReturn("Exception");
+    when(statusLine.getReasonPhrase()).thenReturn("Server Error");
+    
+    ODataServerErrorException exp = (ODataServerErrorException) ODataErrorResponseChecker.
+        checkResponse(odataClient, statusLine, entity, "text/plain");
+    assertEquals(exp.getMessage(), "Exception");
   }
 }

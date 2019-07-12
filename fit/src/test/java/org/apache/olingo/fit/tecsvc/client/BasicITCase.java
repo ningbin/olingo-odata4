@@ -352,6 +352,7 @@ public class BasicITCase extends AbstractParamTecSvcITCase {
       assertEquals(HttpStatusCode.BAD_REQUEST.getStatusCode(), e.getStatusLine().getStatusCode());
       final ODataError error = e.getODataError();
       assertThat(error.getMessage(), containsString("key"));
+      assertEquals(e.getHeaderInfo().get("Content-Type"), "application/json; odata.metadata=minimal");
     }    
   }
  
@@ -1803,5 +1804,23 @@ public class BasicITCase extends AbstractParamTecSvcITCase {
     final ClientProperty property = entity.getProperty("CollPropertyComp");
     assertNotNull(property);
     assertEquals(3, property.getCollectionValue().size());
+  }
+  
+  @Test
+  public void readHeaderInfoFromClientException() throws Exception {
+    ODataEntityRequest<ClientEntity> request = getClient().getRetrieveRequestFactory()
+        .getEntityRequest(getClient().newURIBuilder(SERVICE_URI)
+            .appendEntitySetSegment(ES_MIX_PRIM_COLL_COMP).appendKeySegment("42").build());
+    assertNotNull(request);
+    setCookieHeader(request);
+    request.setAccept("text/plain");
+    try {
+      request.execute();
+      fail("Expected Exception not thrown!");
+    } catch (final ODataClientErrorException e) {
+      assertEquals(HttpStatusCode.BAD_REQUEST.getStatusCode(), e.getStatusLine().getStatusCode());
+      final ODataError error = e.getODataError();
+      assertThat(error.getMessage(), containsString("key"));
+    }    
   }
 }
