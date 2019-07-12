@@ -18,9 +18,6 @@
  */
 package org.apache.olingo.client.api.communication;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.http.Header;
 import org.apache.http.StatusLine;
 import org.apache.olingo.commons.api.ex.ODataError;
@@ -39,7 +36,7 @@ public class ODataClientErrorException extends ODataRuntimeException {
 
   private final ODataError error;
   
-  private Map<String, Object> headerInfo;
+  private Header[] headerInfo;
 
   /**
    * Constructor.
@@ -51,7 +48,6 @@ public class ODataClientErrorException extends ODataRuntimeException {
 
     this.statusLine = statusLine;
     this.error = null;
-    this.headerInfo = new HashMap<String, Object>();
   }
 
   /**
@@ -68,7 +64,6 @@ public class ODataClientErrorException extends ODataRuntimeException {
 
     this.statusLine = statusLine;
     this.error = error;
-    this.headerInfo = new HashMap<String, Object>();
   }
 
   /**
@@ -90,12 +85,10 @@ public class ODataClientErrorException extends ODataRuntimeException {
   }
   
   public void setHeaderInfo(Header[] headerInfo) {
-    for (Header header : headerInfo) {
-      this.headerInfo.put(header.getName(), header.getValue());
-    }
+    this.headerInfo = headerInfo;
   }
   
-  public Map<String, Object> getHeaderInfo() {
+  public Header[] getHeaderInfo() {
     return headerInfo;
   }
 }

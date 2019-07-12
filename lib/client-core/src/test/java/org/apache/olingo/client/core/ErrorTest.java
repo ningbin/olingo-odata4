@@ -144,7 +144,7 @@ public class ErrorTest extends AbstractTest {
     assertTrue(error.getMessage().equals("CSRF Validation Exception"));
     assertEquals(error.getCode(), "403");
     assertEquals(error.getTarget(), "Forbidden");
-    assertTrue(exp.getHeaderInfo().isEmpty());
+    assertNull(exp.getHeaderInfo());
   }
   
   @Test
