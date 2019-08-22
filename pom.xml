@@ -68,7 +68,7 @@
 		<cxf.version>3.2.1</cxf.version>
 		<cxf.version.security>3.0.0</cxf.version.security>
 		<spring.version>4.1.8.RELEASE</spring.version>
-		<netty.version>4.1.35.Final</netty.version>
+		<netty.version>4.1.39.Final</netty.version>
 
 		<velocity.version>1.7</velocity.version>
 		<maven.plugin.api.version>3.2.2</maven.plugin.api.version>
@@ -77,6 +77,7 @@
 		<hc.client.version>4.5.8</hc.client.version>
 		<hc.core.version>4.4.11</hc.core.version>
 		<jackson.version>2.9.8</jackson.version>
+    	<jackson-databind.version>2.9.9.3</jackson-databind.version>
 		<aalto-xml.version>0.9.10</aalto-xml.version>
 
 		<android.platform.version>4.1.1.4</android.platform.version>
@@ -95,7 +96,7 @@
 
 		<!-- Project build settings -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.build.source>1.6</project.build.source>
+		<project.build.source>1.8</project.build.source>
 		<olingo.deploy.skip>true</olingo.deploy.skip>
 
 		<!-- Setting needed for Java 8 release builds -->
@@ -150,7 +151,7 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
-				<version>${jackson.version}</version>
+				<version>${jackson-databind.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
@@ -320,7 +321,7 @@
 							<![CDATA[http://sonarci.wdf.sap.corp:8080/sonar/api/qualityprofiles/export?format=pmd&language=java]]>
 							</ruleset>
 						</rulesets>
-						<targetJdk>1.7</targetJdk>
+						<targetJdk>1.8</targetJdk>
 						<failurePriority>2</failurePriority>
 						<aggregate>true</aggregate>
 						<linkXRef>false</linkXRef>
@@ -363,12 +364,12 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>2.12.1</version>
+					<version>3.1.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
+					<version>3.8.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -547,13 +548,15 @@
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
+				<configuration combine.self="override">
 					<outputFileFormat>xml</outputFileFormat>
 					<consoleOutput>true</consoleOutput>
 					<enableRSS>false</enableRSS>
 					<linkXRef>false</linkXRef>
 					<configLocation>src/checkstyle/config.xml</configLocation>
-					<sourceDirectory>${basedir}/src</sourceDirectory>
+					<sourceDirectories>
+						<sourceDirectory>${basedir}/src</sourceDirectory>
+					</sourceDirectories>
 					<encoding>${project.build.sourceEncoding}</encoding>
 					<failOnViolation>true</failOnViolation>
 					<violationSeverity>warning</violationSeverity>

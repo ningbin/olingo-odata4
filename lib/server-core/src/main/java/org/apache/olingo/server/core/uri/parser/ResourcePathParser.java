@@ -675,8 +675,7 @@ public class ResourcePathParser {
 	return keys;
   }
   
-  private boolean navigationCheck(final UriResource previous) throws UriParserException, UriValidationException
-  {
+  private boolean navigationCheck(final UriResource previous) throws UriParserException, UriValidationException {
 	  final String name = tokenizer.getText();
 
 	    UriResourcePartTyped previousTyped = null;
