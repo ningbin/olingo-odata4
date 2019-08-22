@@ -1094,4 +1094,47 @@ public class JsonDeltaSerializerWithNavigationsTest {
        Assert.assertEquals(expectedResult, jsonString);
      } 
   
+  @Test
+  public void emptynavigationToManyInDeltaEntityInFullRepresentation() throws Exception {
+    final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESDelta");
+    Delta delta = new Delta();
+    final Entity entity = data.readAll(edmEntitySet).getEntities().get(2);
+    final ExpandOption expand = ExpandSelectMock.mockExpandOption(Collections.singletonList(
+        ExpandSelectMock.mockExpandItem(edmEntitySet, "NavPropertyETAllPrimMany")));
+    List<Entity> addedEntity = new ArrayList<Entity>();
+    addedEntity.add(entity);
+    delta.getEntities().addAll(addedEntity);
+     InputStream stream = ser.entityCollection(metadata, edmEntitySet.getEntityType(), delta ,
+        EntityCollectionSerializerOptions.with()
+        .contextURL(ContextURL.with().entitySet(edmEntitySet).build()).expand(expand)
+        .isFullRepresentation(true).build()).getContent();
+       String jsonString = IOUtils.toString(stream);
+       final String expectedResult = "{\"@context\":\"$metadata#ESDelta/$delta\","
+           + "\"value\":[{\"@id\":\"ESDelta(0)\",\"PropertyInt16\":0,"
+           + "\"PropertyString\":\"Number:0\",\"NavPropertyETAllPrimMany\":[]}]}";
+       Assert.assertNotNull(jsonString);
+       Assert.assertEquals(expectedResult, jsonString);
+     }
+  
+  @Test
+  public void emptynavigationToOneInDeltaEntityInFullRepresentation() throws Exception {
+    final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESDelta");
+    Delta delta = new Delta();
+    final Entity entity = data.readAll(edmEntitySet).getEntities().get(1);
+    final ExpandOption expand = ExpandSelectMock.mockExpandOption(Collections.singletonList(
+        ExpandSelectMock.mockExpandItem(edmEntitySet, "NavPropertyETAllPrimOne")));
+    List<Entity> addedEntity = new ArrayList<Entity>();
+    addedEntity.add(entity);
+    delta.getEntities().addAll(addedEntity);
+     InputStream stream = ser.entityCollection(metadata, edmEntitySet.getEntityType(), delta ,
+        EntityCollectionSerializerOptions.with()
+        .contextURL(ContextURL.with().entitySet(edmEntitySet).build()).expand(expand)
+        .isFullRepresentation(true).build()).getContent();
+       String jsonString = IOUtils.toString(stream);
+       final String expectedResult = "{\"@context\":\"$metadata#ESDelta/$delta\","
+           + "\"value\":[{\"@id\":\"ESDelta(-32768)\",\"PropertyInt16\":-32768,"
+           + "\"PropertyString\":\"Number:-32768\",\"NavPropertyETAllPrimOne\":null}]}";
+       Assert.assertNotNull(jsonString);
+       Assert.assertEquals(expectedResult, jsonString);
+     }
 }

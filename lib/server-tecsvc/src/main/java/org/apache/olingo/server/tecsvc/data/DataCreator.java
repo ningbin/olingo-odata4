@@ -1737,6 +1737,8 @@ public class DataCreator {
     setLinks(entityCollection.getEntities().get(0), "NavPropertyETAllPrimMany", targetEntities.get(1),
         targetEntities.get(2));
     setLink(entityCollection.getEntities().get(3), "NavPropertyETAllPrimOne", targetEntities.get(0));
+    setLinkForDelta(entityCollection.getEntities().get(1), "NavPropertyETAllPrimOne");
+    setLinksForDelta(entityCollection.getEntities().get(2), "NavPropertyETAllPrimMany");
   }
 
   private void linkESAllPrim(final Map<String, EntityCollection> data) {
@@ -1974,6 +1976,19 @@ public class DataCreator {
     return link;
   }
 
+  protected static void setLinkForDelta(final Entity entity, final String navigationPropertyName) {
+    Link link = entity.getNavigationLink(navigationPropertyName);
+    if (link == null) {
+      link = new Link();
+      link.setRel(Constants.NS_NAVIGATION_LINK_REL + navigationPropertyName);
+      link.setType(Constants.ENTITY_NAVIGATION_LINK_TYPE);
+      link.setTitle(navigationPropertyName);
+      link.setHref(null);
+      entity.getNavigationLinks().add(link);
+    }
+    link.setInlineEntity(null);
+  }
+  
   protected static void setLink(final Entity entity, final String navigationPropertyName, final Entity target) {
     Link link = entity.getNavigationLink(navigationPropertyName);
     if (link == null) {
@@ -1981,7 +1996,7 @@ public class DataCreator {
       link.setRel(Constants.NS_NAVIGATION_LINK_REL + navigationPropertyName);
       link.setType(Constants.ENTITY_NAVIGATION_LINK_TYPE);
       link.setTitle(navigationPropertyName);
-      link.setHref(target.getId().toASCIIString());
+      link.setHref(target.getId() != null ? target.getId().toASCIIString() : null);
       entity.getNavigationLinks().add(link);
     }
     link.setInlineEntity(target);
@@ -2016,6 +2031,21 @@ public class DataCreator {
       entity.getNavigationLinks().add(link);
     } else {
       link.getInlineEntitySet().getEntities().addAll(Arrays.asList(targets));
+    }
+  }
+  
+  protected static void setLinksForDelta(final Entity entity, final String navigationPropertyName) {
+    Link link = entity.getNavigationLink(navigationPropertyName);
+    if (link == null) {
+      link = new Link();
+      link.setRel(Constants.NS_NAVIGATION_LINK_REL + navigationPropertyName);
+      link.setType(Constants.ENTITY_SET_NAVIGATION_LINK_TYPE);
+      link.setTitle(navigationPropertyName);
+      link.setInlineEntitySet(null);
+      link.setHref(entity.getId().toASCIIString() + "/" + navigationPropertyName);
+      entity.getNavigationLinks().add(link);
+    } else {
+      link.getInlineEntitySet().getEntities().addAll(null);
     }
   }
 
