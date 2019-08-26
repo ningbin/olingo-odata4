@@ -542,8 +542,7 @@ public class JsonDeltaSerializerWithNavigationsTest {
          + "\"PropertyDuration\":\"PT0S\",\"PropertyGuid\":"
          + "\"76543201-23ab-cdef-0123-456789cccddd\","
          + "\"PropertyTimeOfDay\":\"00:01:01\"}]},{\"@id\":\"ESDelta(-32768)\","
-         + "\"PropertyString\":\"Number:-32768\"}]"
-           + "}";
+         + "\"PropertyString\":\"Number:-32768\",\"NavPropertyETAllPrimMany\":[]}]}";
        Assert.assertNotNull(jsonString);
        Assert.assertEquals(expectedResult, jsonString);
      } 
@@ -588,8 +587,7 @@ public class JsonDeltaSerializerWithNavigationsTest {
          + "\"PropertyDuration\":\"PT0S\",\"PropertyGuid\":"
          + "\"76543201-23ab-cdef-0123-456789cccddd\","
          + "\"PropertyTimeOfDay\":\"00:01:01\"}]},{\"@id\":\"ESDelta(-32768)\","
-         + "\"PropertyString\":\"Number:-32768\"}]"
-           + "}";
+         + "\"PropertyString\":\"Number:-32768\",\"NavPropertyETAllPrimMany\":[]}]}";
        Assert.assertNotNull(jsonString);
        Assert.assertEquals(expectedResult, jsonString);
      } 
@@ -886,7 +884,8 @@ public class JsonDeltaSerializerWithNavigationsTest {
        String jsonString = IOUtils.toString(stream);
        final String expectedResult = "{"
            + "\"@context\":\"$metadata#ESDelta/$delta\",\"value\":[{\"@id\":\"ESDelta(32767)\","
-           + "\"PropertyInt16\":32767,\"PropertyString\":\"Number:32767\"},{\"@id\":\"ESDelta(100)\","
+           + "\"PropertyInt16\":32767,\"PropertyString\":\"Number:32767\","
+           + "\"NavPropertyETAllPrimOne\":null},{\"@id\":\"ESDelta(100)\","
            + "\"PropertyInt16\":100,\"PropertyString\":\"Number:100\","
            + "\"NavPropertyETAllPrimOne@delta\":"
            + "{\"@id\":\"ESAllPrim(32767)\",\"PropertyInt16\":32767,\"PropertyString\":"
@@ -924,7 +923,8 @@ public class JsonDeltaSerializerWithNavigationsTest {
        String jsonString = IOUtils.toString(stream);
        final String expectedResult = "{"
            + "\"@context\":\"$metadata#ESDelta/$delta\",\"value\":[{\"@id\":\"ESDelta(32767)\","
-           + "\"PropertyInt16\":32767,\"PropertyString\":\"Number:32767\"},{\"@id\":\"ESDelta(100)\","
+           + "\"PropertyInt16\":32767,\"PropertyString\":\"Number:32767\","
+           + "\"NavPropertyETAllPrimOne\":null},{\"@id\":\"ESDelta(100)\","
            + "\"PropertyInt16\":100,\"PropertyString\":\"Number:100\","
            + "\"NavPropertyETAllPrimOne\":"
            + "{\"@id\":\"ESAllPrim(32767)\",\"PropertyInt16\":32767,\"PropertyString\":"
