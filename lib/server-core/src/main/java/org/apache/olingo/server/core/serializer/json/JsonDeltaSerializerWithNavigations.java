@@ -566,7 +566,7 @@ public class JsonDeltaSerializerWithNavigations implements EdmDeltaSerializer {
         json.writeFieldName(property.getName());
         json.writeStartArray();
         json.writeEndArray();
-      } else if (navigationLink != null && navigationLink.getInlineEntitySet() != null) {
+      } else if (navigationLink.getInlineEntitySet() != null) {
         if (isFullRepresentation) {
           json.writeFieldName(property.getName());
         } else {
@@ -584,7 +584,7 @@ public class JsonDeltaSerializerWithNavigations implements EdmDeltaSerializer {
       }
       if (navigationLink == null || navigationLink.getInlineEntity() == null) {
         json.writeNull();
-      } else if (navigationLink != null && navigationLink.getInlineEntity() != null) {
+      } else if (navigationLink.getInlineEntity() != null) {
         if (navigationLink.getInlineEntity() instanceof DeletedEntity) {
           writeDeletedEntity(navigationLink.getInlineEntity(), json);
         } else {

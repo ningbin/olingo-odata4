@@ -208,5 +208,17 @@ public class EdmDecimalTest extends PrimitiveTypeBaseTest {
     assertFalse(EdmPrimitiveTypeFactory.getInstance(EdmPrimitiveTypeKind.Decimal).
         validateDecimals("1e97", null, null, 7, "floating", null));
     
+    assertTrue(EdmPrimitiveTypeFactory.getInstance(EdmPrimitiveTypeKind.Decimal).
+        validateDecimals("-1.23456", null, null, 7, "5", null));
+    assertFalse(EdmPrimitiveTypeFactory.getInstance(EdmPrimitiveTypeKind.Decimal).
+        validateDecimals("-123.23456", null, null, 7, "5", null));
+    assertFalse(EdmPrimitiveTypeFactory.getInstance(EdmPrimitiveTypeKind.Decimal).
+        validateDecimals("-123.23456", null, null, 7, "abc", null));
+    assertTrue(EdmPrimitiveTypeFactory.getInstance(EdmPrimitiveTypeKind.Decimal).
+        validateDecimals(null, true, null, 3, "variable", null));
+    assertTrue(EdmPrimitiveTypeFactory.getInstance(EdmPrimitiveTypeKind.Decimal).
+        validateDecimals("12", null, null, 3, null, null));
+    assertTrue(EdmPrimitiveTypeFactory.getInstance(EdmPrimitiveTypeKind.Decimal).
+        validateDecimals("12", null, null, null, null, null));
   }
 }

@@ -129,16 +129,13 @@ public final class EdmDecimal extends SingletonPrimitiveType {
         int exponents = 0;
         if (matcher1.group(3) != null) {
           exponents = Integer.parseInt(matcher1.group(3).substring(1));
-          if (exponents < -95 || exponents > 96) {
-            if (String.valueOf(exponents).startsWith("-")) {
-              significantIntegerDigits += Integer.parseInt(String.valueOf(exponents + 95).substring(1));
-              exponents = -95;
-            }
+          if ((exponents < -95 || exponents > 96) && 
+              (String.valueOf(exponents).startsWith("-"))) {
+            significantIntegerDigits += Integer.parseInt(String.valueOf(exponents + 95).substring(1));
+            exponents = -95;
           }
            return (significantIntegerDigits + decimals) <= 7 && (exponents >= -95 && exponents <= 96);
         }
-      } else {
-        return false;
       }
     }
     return false;
