@@ -513,6 +513,14 @@ public class JsonDeltaSerializerWithNavigations implements EdmDeltaSerializer {
                 innerOptions == null ? false : innerOptions.hasCountPath(),
                 innerOptions == null ? false : innerOptions.isRef(),
                 name, json, isFullRepresentation);
+          } else {
+            json.writeFieldName(property.getName());
+            if (property.isCollection()) {
+              json.writeStartArray();
+              json.writeEndArray();
+            } else {
+              json.writeNull();
+            }
           }
         }
       }
