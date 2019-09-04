@@ -508,11 +508,10 @@ public class EntityTypeProvider {
       return new CsdlEntityType()
           .setName("ETDelta")
           .setBaseType(nameETTwoPrim)
-          .setProperties(Arrays.asList(
-              PropertyProvider.propertyInt16_NotNullable, PropertyProvider.propertyString))
           .setNavigationProperties(
-              Arrays.asList(PropertyProvider.navPropertyETAllPrimOne_ETAllPrim,
-                  PropertyProvider.collectionNavPropertyETAllPrimMany_ETAllPrim));
+              Arrays.asList(
+                  PropertyProvider.navPropertyETBaseCont_ETTwoCont,
+                  PropertyProvider.collectionNavPropertyETBaseContMany_ETTwoCont));
     } else if (entityTypeName.equals(nameETPeople)) {
         return new CsdlEntityType()
           .setName(nameETPeople.getName())

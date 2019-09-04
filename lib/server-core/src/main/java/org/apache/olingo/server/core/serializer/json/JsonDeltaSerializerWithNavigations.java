@@ -233,9 +233,10 @@ public class JsonDeltaSerializerWithNavigations implements EdmDeltaSerializer {
         }
       }
     }
-    json.writeStringField(Constants.AT + Constants.ATOM_ATTR_ID, getEntityId(entity, entityType, name));
+    String id = getEntityId(entity, entityType, name);
+    json.writeStringField(Constants.AT + Constants.ATOM_ATTR_ID, id);
     writeProperties(metadata, entityType, entity.getProperties(), select, json);
-    writeNavigationProperties(metadata, entityType, entity, expand, name, json, isFullRepresentation);
+    writeNavigationProperties(metadata, entityType, entity, expand, id, json, isFullRepresentation);
     json.writeEndObject();
 
   }
@@ -516,7 +517,8 @@ public class JsonDeltaSerializerWithNavigations implements EdmDeltaSerializer {
                 innerOptions == null ? null : innerOptions.getCountOption(),
                 innerOptions == null ? false : innerOptions.hasCountPath(),
                 innerOptions == null ? false : innerOptions.isRef(),
-                    navEntitySetName != null ? navEntitySetName : name, json, isFullRepresentation);
+                    navEntitySetName != null ? navEntitySetName : name + "/" + property.getName(), 
+                        json, isFullRepresentation);
           } else {
             json.writeFieldName(property.getName());
             if (property.isCollection()) {
