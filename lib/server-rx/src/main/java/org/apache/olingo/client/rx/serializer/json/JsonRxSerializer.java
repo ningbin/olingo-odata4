@@ -48,7 +48,7 @@ public class JsonRxSerializer extends JsonEntitySerializer {
 
   @Override
   public <T> void write(final Writer writer, final T entityCollection) throws ODataSerializerException {
-    final List<ODataSerializerException> ex = new ArrayList<ODataSerializerException>();
+    final List<ODataSerializerException> ex = new ArrayList<>();
     final List<JsonGenerator> json = getJsonGenerator(writer, ex);
     if (entityCollection instanceof EntityObservable) {
       try {
@@ -57,9 +57,7 @@ public class JsonRxSerializer extends JsonEntitySerializer {
             new ResWrap<EntityObservable>(null, null, (EntityObservable) entityCollection), 
             json.get(0), (EntityObservable) entityCollection);
         json.get(0).writeArrayFieldStart(Constants.VALUE);
-        } catch (EdmPrimitiveTypeException e) {
-          ex.add(new ODataSerializerException(e));
-        } catch (IOException e) {
+        } catch (EdmPrimitiveTypeException | IOException e) {
           ex.add(new ODataSerializerException(e));
         }
       serializeEntity(entityCollection, ex, json);
@@ -88,9 +86,7 @@ public class JsonRxSerializer extends JsonEntitySerializer {
         public void onNext(Entity entity) {
           try {
             doSerialize(entity, json.get(0));
-          } catch (IOException e) {
-            ex.add(new ODataSerializerException(e));
-          } catch (final EdmPrimitiveTypeException e) {
+          } catch (IOException | EdmPrimitiveTypeException e) {
             ex.add(new ODataSerializerException(e));
           }
          } 
@@ -126,7 +122,7 @@ public class JsonRxSerializer extends JsonEntitySerializer {
    * @return
    */
   private List<JsonGenerator> getJsonGenerator(final Writer writer, final List<ODataSerializerException> ex) {
-    final List<JsonGenerator> json = new ArrayList<JsonGenerator>();
+    final List<JsonGenerator> json = new ArrayList<>();
     try {
       json.add(new JsonFactory().createGenerator(writer));
     } catch (IOException e) {
@@ -138,7 +134,7 @@ public class JsonRxSerializer extends JsonEntitySerializer {
   @SuppressWarnings("unchecked")
   @Override
   public <T> void write(final Writer writer, final ResWrap<T> container) throws ODataSerializerException {
-    final List<ODataSerializerException> ex = new ArrayList<ODataSerializerException>();
+    final List<ODataSerializerException> ex = new ArrayList<>();
     final List<JsonGenerator> json = getJsonGenerator(writer, ex);
     T entityCollection = container.getPayload();
     if (entityCollection instanceof EntityObservable) {
@@ -147,9 +143,7 @@ public class JsonRxSerializer extends JsonEntitySerializer {
         doSerializeAdditionalContent((ResWrap<EntityObservable>) container, 
             json.get(0), (EntityObservable) entityCollection);
         json.get(0).writeArrayFieldStart(Constants.VALUE);
-        } catch (EdmPrimitiveTypeException e) {
-          ex.add(new ODataSerializerException(e));
-        } catch (IOException e) {
+        } catch (EdmPrimitiveTypeException | IOException e) {
           ex.add(new ODataSerializerException(e));
         }
       

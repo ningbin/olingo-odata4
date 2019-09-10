@@ -213,7 +213,7 @@ public class AtomSerializer implements ODataSerializer {
   
   private void writeNavigationLinks(final XMLStreamWriter writer, final List<Link> links)
       throws XMLStreamException, EdmPrimitiveTypeException {
-    final Map<String, List<String>> entitySetLinks = new HashMap<String, List<String>>();
+    final Map<String, List<String>> entitySetLinks = new HashMap<>();
 
     for (Link link : links) {
     
@@ -264,7 +264,7 @@ public class AtomSerializer implements ODataSerializer {
           if (entitySetLinks.containsKey(link.getTitle())) {
             uris = entitySetLinks.get(link.getTitle());
           } else {
-            uris = new ArrayList<String>();
+            uris = new ArrayList<>();
             entitySetLinks.put(link.getTitle(), uris);
           }
           if (link.getHref() != null) {

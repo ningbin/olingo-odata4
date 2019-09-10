@@ -204,7 +204,7 @@ public class AtomDeserializer implements ODataDeserializer {
   private void fromCollection(final Valuable valuable, final XMLEventReader reader, final StartElement start,
       final EdmTypeInfo typeInfo) throws XMLStreamException, EdmPrimitiveTypeException {
 
-    List<Object> values = new ArrayList<Object>();
+    List<Object> values = new ArrayList<>();
     ValueType valueType = ValueType.COLLECTION_PRIMITIVE;
 
     final EdmTypeInfo type = typeInfo == null ? null :
@@ -555,7 +555,7 @@ public class AtomDeserializer implements ODataDeserializer {
   private void properties(final XMLEventReader reader, final StartElement start, final Entity entity)
       throws XMLStreamException, EdmPrimitiveTypeException {
 
-    final Map<String, List<Annotation>> annotations = new HashMap<String, List<Annotation>>();
+    final Map<String, List<Annotation>> annotations = new HashMap<>();
 
     boolean foundEndProperties = false;
     while (reader.hasNext() && !foundEndProperties) {
@@ -925,7 +925,7 @@ public class AtomDeserializer implements ODataDeserializer {
     final Attribute context = start.getAttributeByName(contextQName);
     final Attribute metadataETag = start.getAttributeByName(metadataEtagQName);
 
-    return new ResWrap<T>(
+    return new ResWrap<>(
         context == null ? null : URI.create(context.getValue()),
             metadataETag == null ? null : metadataETag.getValue(),
                 object);

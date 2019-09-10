@@ -89,10 +89,9 @@ public class JsonDeltaSerializerWithNavigations implements EdmDeltaSerializer {
     OutputStream outputStream = null;
     SerializerException cachedException = null;
     boolean pagination = false;
-    try {
-      CircleStreamBuffer buffer = new CircleStreamBuffer();
-      outputStream = buffer.getOutputStream();
-      JsonGenerator json = new JsonFactory().createGenerator(outputStream);
+    CircleStreamBuffer buffer = new CircleStreamBuffer();
+    outputStream = buffer.getOutputStream();
+    try (JsonGenerator json = new JsonFactory().createGenerator(outputStream)) {
       json.writeStartObject();
 
       final ContextURL contextURL = checkContextURL(options == null ? null : options.getContextURL());
@@ -106,15 +105,13 @@ public class JsonDeltaSerializerWithNavigations implements EdmDeltaSerializer {
 
       pagination = writeNextLink(delta, json);
       writeDeltaLink(delta, json, pagination);
-
       json.close();
-      outputStream.close();
       return SerializerResultImpl.with().content(buffer.getInputStream()).build();
-    } catch (final IOException e) {
-      cachedException =
-          new SerializerException(OutputStreamHelper.IO_EXCEPTION_TEXT, e,
-              SerializerException.MessageKeys.IO_EXCEPTION);
-      throw cachedException;
+      } catch (final IOException e) {
+        cachedException =
+            new SerializerException(OutputStreamHelper.IO_EXCEPTION_TEXT, e,
+                SerializerException.MessageKeys.IO_EXCEPTION);
+        throw cachedException;
     } finally {
       OutputStreamHelper.closeCircleStreamBufferOutput(outputStream, cachedException);
     }

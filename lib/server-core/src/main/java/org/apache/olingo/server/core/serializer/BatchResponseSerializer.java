@@ -258,12 +258,14 @@ public class BatchResponseSerializer {
             res.write(Channels.newChannel(output));
             }
         } else {
-          WritableByteChannel oc = Channels.newChannel(output);
-          ReadableByteChannel ic = Channels.newChannel(response.getContent());
-          while (ic.read(inBuffer) > 0) {
-            inBuffer.flip();
-            oc.write(inBuffer);
-            inBuffer.rewind();
+          try (WritableByteChannel oc = Channels.newChannel(output)) {
+            try (ReadableByteChannel ic = Channels.newChannel(response.getContent())) {
+              while (ic.read(inBuffer) > 0) {
+                inBuffer.flip();
+                oc.write(inBuffer);
+                inBuffer.rewind();
+              }
+            }
           }
         }
         return output.toByteArray();

@@ -106,7 +106,7 @@ public abstract class AbstractOAuth2HttpClientFactory
   }
 
   /**
-   * deprecated
+   * @deprecated
    * Use the method accessToken(HttpClientBuilder client)
    * @param client
    * @throws OAuth2Exception
@@ -115,7 +115,7 @@ public abstract class AbstractOAuth2HttpClientFactory
   protected abstract void accessToken(DefaultHttpClient client) throws OAuth2Exception;
   
   /**
-   * deprecated
+   * @deprecated
    * Use the method refreshToken(HttpClientBuilder client)
    * @param client
    * @throws OAuth2Exception
