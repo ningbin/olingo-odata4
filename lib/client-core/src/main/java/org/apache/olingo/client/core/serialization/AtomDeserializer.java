@@ -372,9 +372,7 @@ public class AtomDeserializer implements ODataDeserializer {
       final XMLEventReader reader = getReader(input);
       final StartElement start = skipBeforeFirstStartElement(reader);
       return getContainer(start, property(reader, start));
-    } catch (XMLStreamException e) {
-      throw new ODataDeserializerException(e);
-    } catch (final EdmPrimitiveTypeException e) {
+    } catch (XMLStreamException | EdmPrimitiveTypeException e) {
       throw new ODataDeserializerException(e);
     }
   }
@@ -741,9 +739,7 @@ public class AtomDeserializer implements ODataDeserializer {
       } else {
         return getContainer(start, entity);
       }
-    } catch (XMLStreamException e) {
-      throw new ODataDeserializerException(e);
-    } catch (final EdmPrimitiveTypeException e) {
+    } catch (XMLStreamException | EdmPrimitiveTypeException e) {
       throw new ODataDeserializerException(e);
     }
   }
@@ -829,9 +825,7 @@ public class AtomDeserializer implements ODataDeserializer {
       final XMLEventReader reader = getReader(input);
       final StartElement start = skipBeforeFirstStartElement(reader);
       return getContainer(start, entitySet(reader, start));
-    } catch (XMLStreamException e) {
-      throw new ODataDeserializerException(e);
-    } catch (final EdmPrimitiveTypeException e) {
+    } catch (XMLStreamException | EdmPrimitiveTypeException e) {
       throw new ODataDeserializerException(e);
     }
   }

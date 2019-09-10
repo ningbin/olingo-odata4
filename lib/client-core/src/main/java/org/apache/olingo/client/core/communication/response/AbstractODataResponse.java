@@ -154,11 +154,7 @@ public abstract class AbstractODataResponse implements ODataResponse {
     try {
       this.payload = res.getEntity() == null ? null : res.getEntity().getContent();
       this.inputContent = null;
-    } catch (final IllegalStateException e) {
-      HttpClientUtils.closeQuietly(res);
-      LOG.error("Error retrieving payload", e);
-      throw new ODataRuntimeException(e);
-    } catch (final IOException e) {
+    } catch (final IllegalStateException | IOException e) {
       HttpClientUtils.closeQuietly(res);
       LOG.error("Error retrieving payload", e);
       throw new ODataRuntimeException(e);

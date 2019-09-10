@@ -637,9 +637,7 @@ public class AtomSerializer implements ODataSerializer {
       } else if (obj instanceof Link) {
         link(writer, (Link) obj);
       }
-    } catch (final XMLStreamException e) {
-      throw new ODataSerializerException(e);
-    } catch (final EdmPrimitiveTypeException e) {
+    } catch (final XMLStreamException | EdmPrimitiveTypeException e) {
       throw new ODataSerializerException(e);
     }
   }
@@ -676,9 +674,7 @@ public class AtomSerializer implements ODataSerializer {
       } else if (obj instanceof URI) {
         reference(writer, (ResWrap<URI>) container);
       }
-    } catch (final XMLStreamException e) {
-      throw new ODataSerializerException(e);
-    } catch (final EdmPrimitiveTypeException e) {
+    } catch (final XMLStreamException | EdmPrimitiveTypeException e) {
       throw new ODataSerializerException(e);
     }
   }
