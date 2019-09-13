@@ -28,7 +28,7 @@ import org.apache.olingo.server.api.uri.queryoption.SystemQueryOptionKind;
 
 public class ApplyOptionImpl extends SystemQueryOptionImpl implements ApplyOption {
 
-  private List<ApplyItem> transformations = new ArrayList<ApplyItem>();
+  private List<ApplyItem> transformations = new ArrayList<>();
 
   public ApplyOptionImpl() {
     setKind(SystemQueryOptionKind.APPLY);

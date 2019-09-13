@@ -152,7 +152,7 @@ public class ResourcePathParser {
     ParserHelper.requireNext(tokenizer, TokenKind.CROSSJOIN);
     ParserHelper.requireNext(tokenizer, TokenKind.OPEN);
     // At least one entity-set name is mandatory. Try to fetch all.
-    List<String> entitySetNames = new ArrayList<String>();
+    List<String> entitySetNames = new ArrayList<>();
     do {
       ParserHelper.requireNext(tokenizer, TokenKind.ODataIdentifier);
       final String name = tokenizer.getText();
@@ -496,7 +496,7 @@ public class ResourcePathParser {
 		                Integer.toString(keyPropertyRefs.size()), Integer.toString(keyPropertyRefs.size() + 1));
 		    }
 			
-			List<Boolean> keysValidaterList = new ArrayList<Boolean>();
+			List<Boolean> keysValidaterList = new ArrayList<>();
 			
 			for (String pathSegmentvalue : pathSegmentSplit) {
 				for (EdmKeyPropertyRef keyPropertyRef : keyPropertyRefs) {
@@ -511,7 +511,7 @@ public class ResourcePathParser {
 		    }
 		    
 		    if (propertyAfterCollection) {
-				List<UriParameter> keys = new ArrayList<UriParameter>();
+				List<UriParameter> keys = new ArrayList<>();
 				keys.addAll(ParserHelper.compoundKey(tokenizer, edmEntityType, edm, null, 
 							aliases,this.protocolType));
 				((UriResourceWithKeysImpl) entitySet).setKeyPredicates(keys);
@@ -549,7 +549,7 @@ public class ResourcePathParser {
   		   UriParserSemanticException.MessageKeys.PROPERTY_NOT_IN_TYPE,
   		   structType.getFullQualifiedName().getFullQualifiedNameAsString(), name);
   		}
-	    List<UriParameter> keyPredicates =  new ArrayList<UriParameter>();
+	    List<UriParameter> keyPredicates =  new ArrayList<>();
 	    if (navigationProperty.isCollection()) {
 		   final List<EdmKeyPropertyRef> keyPropertyRefs = 
   		    		navigationProperty.getType().getKeyPropertyRefs();
@@ -652,7 +652,7 @@ public class ResourcePathParser {
   private List<UriParameter> KeyPredicate(EdmProperty edmProperty, List<EdmKeyPropertyRef> keyPropertyRefs,
 		  String pathSegment, Edm edm, final Map<String, AliasQueryOption> aliases) 
 		      throws UriParserException, UriValidationException{
-	  List<UriParameter> keys = new ArrayList<UriParameter>();
+	  List<UriParameter> keys = new ArrayList<>();
 	  UriParameter simpleKey = null;
 	  if(ParserHelper.nextPrimitiveTypeValue(tokenizer, (EdmPrimitiveType) edmProperty.getType(), 
 			  edmProperty.isNullable(),null)) {

@@ -473,7 +473,7 @@ public class JsonDeltaSerializerWithNavigations implements EdmDeltaSerializer {
       final SelectOption select, final JsonGenerator json)
       throws IOException, SerializerException {
     final boolean all = ExpandSelectHelper.isAll(select);
-    final Set<String> selected = all ? new HashSet<String>() : ExpandSelectHelper.getSelectedPropertyNames(select
+    final Set<String> selected = all ? new HashSet<>() : ExpandSelectHelper.getSelectedPropertyNames(select
         .getSelectItems());
     for (final String propertyName : type.getPropertyNames()) {
       if ((all || selected.contains(propertyName)) && !properties.isEmpty()) {
@@ -492,7 +492,7 @@ public class JsonDeltaSerializerWithNavigations implements EdmDeltaSerializer {
       boolean isFullRepresentation) throws SerializerException, IOException {
     if (ExpandSelectHelper.hasExpand(expand)) {
       final boolean expandAll = ExpandSelectHelper.isExpandAll(expand);
-      final Set<String> expanded = expandAll ? new HashSet<String>() : ExpandSelectHelper.getExpandedPropertyNames(
+      final Set<String> expanded = expandAll ? new HashSet<>() : ExpandSelectHelper.getExpandedPropertyNames(
           expand.getExpandItems());
       for (final String propertyName : type.getNavigationPropertyNames()) {
         if (expandAll || expanded.contains(propertyName)) {

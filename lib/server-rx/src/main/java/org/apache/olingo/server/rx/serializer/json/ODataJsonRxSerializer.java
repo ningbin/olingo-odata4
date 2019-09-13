@@ -54,7 +54,7 @@ public class ODataJsonRxSerializer extends ODataJsonSerializer {
       final SelectOption select, final boolean onlyReference, final Set<String> ancestors, 
       final String name, final JsonGenerator json) throws IOException, SerializerException, DecoderException {
     if (entitySet instanceof EntityObservable) {
-      final List<SerializerException> ex = new ArrayList<SerializerException>();
+      final List<SerializerException> ex = new ArrayList<>();
       json.writeStartArray();
       ((EntityObservable) entitySet).getObservable().subscribe(new Observer<Entity>() {
 
@@ -78,10 +78,7 @@ public class ODataJsonRxSerializer extends ODataJsonSerializer {
             }
           } catch (SerializerException e) {
             ex.add(e);
-          } catch (IOException e) {
-            ex.add(new SerializerException(e.getMessage(), e,
-                SerializerException.MessageKeys.IO_EXCEPTION));
-          } catch (DecoderException e) {
+          } catch (IOException | DecoderException e) {
             ex.add(new SerializerException(e.getMessage(), e,
                 SerializerException.MessageKeys.IO_EXCEPTION));
           }

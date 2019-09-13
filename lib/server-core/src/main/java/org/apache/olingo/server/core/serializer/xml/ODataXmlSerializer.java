@@ -78,12 +78,7 @@ public class ODataXmlSerializer implements ODataSerializer {
       outputStream.close();
 
       return SerializerResultImpl.with().content(buffer.getInputStream()).build();
-    } catch (final XMLStreamException e) {
-      cachedException =
-          new SerializerException(OutputStreamHelper.IO_EXCEPTION_TEXT, e,
-              SerializerException.MessageKeys.IO_EXCEPTION);
-      throw cachedException;
-    } catch (IOException e) {
+    } catch (final XMLStreamException | IOException e) {
       cachedException =
           new SerializerException(OutputStreamHelper.IO_EXCEPTION_TEXT, e,
               SerializerException.MessageKeys.IO_EXCEPTION);

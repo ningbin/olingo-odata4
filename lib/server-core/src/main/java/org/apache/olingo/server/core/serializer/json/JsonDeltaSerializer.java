@@ -134,7 +134,7 @@ public class JsonDeltaSerializer implements EdmDeltaSerializer {
               .getEntitySetOrSingletonOrType(), json);
     }
     for (final DeletedEntity deletedEntity : entitySet.getDeletedEntities()) {
-      writeDeletedEntity(deletedEntity, options, json);
+      writeDeletedEntity(deletedEntity, json);
     }
     for (final DeltaLink addedLink : entitySet.getAddedLinks()) {
       writeLink(addedLink, options, json, true);
@@ -181,8 +181,8 @@ public class JsonDeltaSerializer implements EdmDeltaSerializer {
     }
   }
 
-  private void writeDeletedEntity(DeletedEntity deletedEntity,
-      EntityCollectionSerializerOptions options, JsonGenerator json) throws IOException, SerializerException {
+  private void writeDeletedEntity(DeletedEntity deletedEntity, 
+      JsonGenerator json) throws IOException, SerializerException {
     if (deletedEntity.getId() == null) {
       throw new SerializerException("Entity id is null.", SerializerException.MessageKeys.MISSING_ID);
     }
@@ -455,7 +455,7 @@ public class JsonDeltaSerializer implements EdmDeltaSerializer {
       final SelectOption select, final JsonGenerator json)
       throws IOException, SerializerException {
     final boolean all = ExpandSelectHelper.isAll(select);
-    final Set<String> selected = all ? new HashSet<String>() : ExpandSelectHelper.getSelectedPropertyNames(select
+    final Set<String> selected = all ? new HashSet<>() : ExpandSelectHelper.getSelectedPropertyNames(select
         .getSelectItems());
     for (final String propertyName : type.getPropertyNames()) {
       if (all || selected.contains(propertyName)) {

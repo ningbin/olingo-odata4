@@ -96,7 +96,7 @@ public class ODataImpl extends OData {
       final List<String> versions) throws SerializerException {
     ODataSerializer serializer = null;
     IConstants constants = new Constantsv00();
-    if(versions!=null && versions.size()>0 && getMaxVersion(versions)>4){
+    if(versions!=null && !versions.isEmpty() && getMaxVersion(versions) > 4){
       constants = new Constantsv01() ;
     }
     if (contentType != null && contentType.isCompatible(ContentType.APPLICATION_JSON)) {
@@ -232,7 +232,7 @@ public class ODataImpl extends OData {
   public ODataDeserializer createDeserializer(ContentType contentType, List<String> versions)
       throws DeserializerException {
     IConstants constants = new Constantsv00();
-    if(versions!=null && versions.size()>0 && getMaxVersion(versions)>4){
+    if(versions!=null && !versions.isEmpty() && getMaxVersion(versions)>4){
       constants = new Constantsv01() ;
     }
     if (contentType != null && contentType.isCompatible(ContentType.JSON)) {
@@ -249,7 +249,7 @@ public class ODataImpl extends OData {
   public ODataDeserializer createDeserializer(ContentType contentType, ServiceMetadata metadata, List<String> versions)
       throws DeserializerException {
     IConstants constants = new Constantsv00();
-    if(versions!=null && versions.size()>0 && getMaxVersion(versions)>4){
+    if(versions!=null && !versions.isEmpty() && getMaxVersion(versions)>4){
       constants = new Constantsv01() ;
     }
     if (contentType != null && contentType.isCompatible(ContentType.JSON)) {
