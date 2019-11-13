@@ -184,19 +184,6 @@ public class MetadataParser {
     XMLEventReader reader = xmlInputFactory.createXMLEventReader(csdl);  
     return buildEdmProvider(reader, resolver, loadCore, useLocal, loadReferenceSchemas, namespace);
   }
-    
-  private XMLInputFactory createXmlInputFactory() {
-     XMLInputFactory factory = XMLInputFactory.newInstance();
-     factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-     factory.setProperty("javax.xml.stream.isSupportingExternalEntities", false);
-     return factory;
-   }
-  
-  protected SchemaBasedEdmProvider buildEdmProvider(XMLEventReader reader, ReferenceResolver resolver, boolean loadCore,
-      boolean useLocal, boolean loadReferenceSchemas, String namespace) throws XMLStreamException {
-      SchemaBasedEdmProvider provider = new SchemaBasedEdmProvider();
-      return addToEdmProvider(provider, reader, resolver, loadCore, useLocal, loadReferenceSchemas, namespace);
-   }
   
   protected SchemaBasedEdmProvider buildEdmProvider(InputStream csdl, ReferenceResolver resolver,
       boolean loadCore, boolean useLocal,
@@ -206,6 +193,12 @@ public class MetadataParser {
     XMLEventReader reader = xmlInputFactory.createXMLEventReader(csdl);
     return buildEdmProvider(reader, resolver, loadCore, useLocal, loadReferenceSchemas, namespace);
   } 
+  
+  protected SchemaBasedEdmProvider buildEdmProvider(XMLEventReader reader, ReferenceResolver resolver, boolean loadCore,
+      boolean useLocal, boolean loadReferenceSchemas, String namespace) throws XMLStreamException {
+      SchemaBasedEdmProvider provider = new SchemaBasedEdmProvider();
+      return addToEdmProvider(provider, reader, resolver, loadCore, useLocal, loadReferenceSchemas, namespace);
+   }
   
   protected SchemaBasedEdmProvider addToEdmProvider(SchemaBasedEdmProvider provider, XMLEventReader reader,
       ReferenceResolver resolver, boolean loadCore, boolean useLocal, boolean loadReferenceSchemas, String namespace)
@@ -256,7 +249,14 @@ public class MetadataParser {
     }
     return provider;
   }  
-  
+
+  private XMLInputFactory createXmlInputFactory() {
+    XMLInputFactory factory = XMLInputFactory.newInstance();
+    factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+    factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+    return factory;
+  }
+
   private void loadReferencesSchemas(SchemaBasedEdmProvider provider,
       String xmlBase, ReferenceResolver resolver, boolean loadCore,
       boolean useLocal) {    
