@@ -455,7 +455,7 @@ public class ODataJsonRxSerializerTest {
         "\"NavPropertyETTwoPrimMany\":[]},{\"PropertyInt16\":0,\"PropertyString\":\"\","+
         "\"PropertyBoolean\":false,\"PropertyByte\":0,\"PropertySByte\":0,\"PropertyInt32\":0,"+
         "\"PropertyInt64\":0,\"PropertySingle\":0.0,\"PropertyDouble\":0.0,\"PropertyDecimal\":0,"+
-        "\"PropertyBinary\":\"\",\"PropertyDate\":\"1970-01-01\",\"PropertyDateTimeOffset\":\"2005-12-03T00:00:00Z\","+
+        "\"PropertyBinary\":\"\",\"PropertyDate\":\"1970-01-01\",\"PropertyDateTimeOffset\":\"2005-12-03T00:00Z\","+
         "\"PropertyDuration\":\"PT0S\",\"PropertyGuid\":\"76543201-23ab-cdef-0123-456789cccddd\","+
         "\"PropertyTimeOfDay\":\"00:01:01\",\"NavPropertyETTwoPrimMany\":"+
         "[{\"PropertyInt16\":32766,\"PropertyString\":\"Test String1\"},"+
@@ -464,7 +464,7 @@ public class ODataJsonRxSerializerTest {
         + "\"PropertyString\":\"Employee1@company.example\",\"PropertyBoolean\":false,\"PropertyByte\":0,"
         + "\"PropertySByte\":0,\"PropertyInt32\":0,\"PropertyInt64\":0,\"PropertySingle\":0.0,"
         + "\"PropertyDouble\":0.0,\"PropertyDecimal\":0,\"PropertyBinary\":\"\","
-        + "\"PropertyDate\":\"1970-01-01\",\"PropertyDateTimeOffset\":\"2005-12-03T00:00:00Z\","
+        + "\"PropertyDate\":\"1970-01-01\",\"PropertyDateTimeOffset\":\"2005-12-03T00:00Z\","
         + "\"PropertyDuration\":\"PT0S\",\"PropertyGuid\":\"76543201-23ab-cdef-0123-456789cccddd\","
         + "\"PropertyTimeOfDay\":\"00:01:01\",\"NavPropertyETTwoPrimMany\":[]}]}"
         ,resultString);

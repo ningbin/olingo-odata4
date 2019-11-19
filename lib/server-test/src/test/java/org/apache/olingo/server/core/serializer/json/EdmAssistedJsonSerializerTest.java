@@ -117,7 +117,7 @@ public class EdmAssistedJsonSerializerTest {
             + "\"Property0\":null,"
             + "\"Property1@odata.type\":\"#Int32\",\"Property1\":1,"
             + "\"Property2@odata.type\":\"#Date\",\"Property2\":\"2000-02-29\","
-            + "\"Property3@odata.type\":\"#DateTimeOffset\",\"Property3\":\"2000-02-29T00:00:00Z\","
+            + "\"Property3@odata.type\":\"#DateTimeOffset\",\"Property3\":\"2000-02-29T00:00Z\","
             + "\"Property4@odata.type\":\"#Collection(Boolean)\",\"Property4\":[true,false,null]}],"
             + "\"@odata.nextLink\":\"nextLink\"}",
         serialize(serializer, metadata, null, entityCollection, null));
@@ -426,7 +426,7 @@ public class EdmAssistedJsonSerializerTest {
              + "\"Property0\":null,"
              + "\"Property1\":1,"
              + "\"Property2\":\"2000-02-29\","
-             + "\"Property3\":\"2000-02-29T00:00:00Z\","
+             + "\"Property3\":\"2000-02-29T00:00Z\","
              + "\"Property4\":[true,false,null]}],"
              + "\"@odata.nextLink\":\"nextLink\"}",
         serialize(serializerMin, metadata, null, entityCollection, null));
@@ -456,7 +456,7 @@ public class EdmAssistedJsonSerializerTest {
              + "\"Property0\":null,"
              + "\"Property1\":1,"
              + "\"Property2\":\"2000-02-29\","
-             + "\"Property3\":\"2000-02-29T00:00:00Z\","
+             + "\"Property3\":\"2000-02-29T00:00Z\","
              + "\"Property4\":[true,false,null]}],"
              + "\"@odata.nextLink\":\"nextLink\"}",
         serialize(serializerNone, metadata, null, entityCollection, null));

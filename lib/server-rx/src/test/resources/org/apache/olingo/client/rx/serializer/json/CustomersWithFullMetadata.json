@@ -36,7 +36,7 @@
       "City@odata.type": "String",
       "City": "London",
       "Birthday@odata.type": "DateTimeOffset",
-      "Birthday": "1957-04-03T00:00:00Z",
+      "Birthday": "1957-04-03T00:00Z",
       "TimeBetweenLastTwoOrders@odata.type": "Duration",
       "TimeBetweenLastTwoOrders": "PT0.0000001S"
     }, {
@@ -68,7 +68,7 @@
       "City@odata.type": "String",
       "City": "Sydney",
       "Birthday@odata.type": "DateTimeOffset",
-      "Birthday": "1983-01-15T00:00:00Z",
+      "Birthday": "1983-01-15T00:00Z",
       "TimeBetweenLastTwoOrders@odata.type": "Duration",
       "TimeBetweenLastTwoOrders": "PT0.0000002S"
     }]

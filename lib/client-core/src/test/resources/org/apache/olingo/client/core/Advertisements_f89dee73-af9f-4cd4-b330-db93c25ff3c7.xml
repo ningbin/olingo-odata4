@@ -41,6 +41,6 @@
   <m:properties>
     <d:ID m:type="Guid">f89dee73-af9f-4cd4-b330-db93c25ff3c7</d:ID>
     <d:Name>Old School Lemonade Store, Retro Style</d:Name>
-    <d:AirDate m:type="DateTimeOffset">2012-11-07T00:00:00Z</d:AirDate>
+    <d:AirDate m:type="DateTimeOffset">2012-11-07T00:00Z</d:AirDate>
   </m:properties>
 </entry>

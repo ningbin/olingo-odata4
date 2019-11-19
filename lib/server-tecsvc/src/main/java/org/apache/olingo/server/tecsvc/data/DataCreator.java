@@ -22,9 +22,15 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1969,11 +1975,13 @@ public class DataCreator {
   private static Calendar getDateTime(final int year, final int month, final int day,
       final int hour, final int minute, final int second) {
     // Date/Time values are serialized with a timezone offset, so we choose a predictable timezone.
-    Calendar dateTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    ZonedDateTime zdt = ZonedDateTime.of(year, month, day, hour, minute, second, 0, ZoneId.of("Z"));
+    return GregorianCalendar.from(zdt);
+    /*Calendar dateTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
     dateTime.clear();
     dateTime.set(year, month - 1, day, hour, minute, second);
     dateTime.set(Calendar.MILLISECOND, 0);
-    return dateTime;
+    return dateTime;*/
   }
 
   private static int getDuration(final int days, final int hours, final int minutes, final int seconds) {
@@ -1985,20 +1993,27 @@ public class DataCreator {
 
   private static Calendar getDate(final int year, final int month, final int day) {
     // Date values are always in the local timezone.
-    Calendar date = Calendar.getInstance();
+    LocalDate date = LocalDate.of(year, month, day);
+   /* Calendar date = Calendar.getInstance();
     date.clear();
     date.set(year, month - 1, day, 0, 0, 0);
-    date.set(Calendar.MILLISECOND, 0);
-    return date;
+    date.set(Calendar.MILLISECOND, 0);*/
+    ZonedDateTime zdt = LocalDateTime.of(date, LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault());
+    return GregorianCalendar.from(zdt);
   }
 
   private static Calendar getTime(final int hour, final int minute, final int second) {
     // Time values are always in the local timezone.
-    Calendar time = Calendar.getInstance();
+    LocalTime time = LocalTime.of(hour, minute, second);
+    LocalDate EPOCH = LocalDate.ofEpochDay(0l);
+    ZonedDateTime zdt = LocalDateTime.of(EPOCH, time).atZone(ZoneId.systemDefault());
+    return GregorianCalendar.from(zdt);
+    
+    /*Calendar time = Calendar.getInstance();
     time.clear();
     time.set(1970, Calendar.JANUARY, 1, hour, minute, second);
     time.set(Calendar.MILLISECOND, 0);
-    return time;
+    return time;*/
   }
 
   private static Timestamp getTimestamp(final int year, final int month, final int day,
