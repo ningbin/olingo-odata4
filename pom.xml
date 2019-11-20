@@ -68,7 +68,7 @@
 		<cxf.version>3.2.1</cxf.version>
 		<cxf.version.security>3.0.0</cxf.version.security>
 		<spring.version>4.1.8.RELEASE</spring.version>
-		<netty.version>4.1.39.Final</netty.version>
+		<netty.version>4.1.42.Final</netty.version>
 
 		<velocity.version>1.7</velocity.version>
 		<maven.plugin.api.version>3.2.2</maven.plugin.api.version>
@@ -77,7 +77,7 @@
 		<hc.client.version>4.5.8</hc.client.version>
 		<hc.core.version>4.4.11</hc.core.version>
 		<jackson.version>2.9.8</jackson.version>
-    	<jackson-databind.version>2.9.9.3</jackson-databind.version>
+    	<jackson-databind.version>2.9.10</jackson-databind.version>
 		<aalto-xml.version>0.9.10</aalto-xml.version>
 
 		<android.platform.version>4.1.1.4</android.platform.version>
@@ -302,7 +302,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>findbugs-maven-plugin</artifactId>
-					<version>3.0.5</version>
+					<version>3.0.16</version>
 					<configuration>
 						<includeFilterFile>http://sonarci.wdf.sap.corp:8080/sonar/profiles/export?format=findbugs&amp;language=java</includeFilterFile>
 						<findbugsXmlOutput>true</findbugsXmlOutput>
