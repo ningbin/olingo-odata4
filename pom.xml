@@ -77,12 +77,12 @@
 		<hc.client.version>4.5.8</hc.client.version>
 		<hc.core.version>4.4.11</hc.core.version>
 		<jackson.version>2.9.8</jackson.version>
-    	<jackson-databind.version>2.9.10</jackson-databind.version>
-		<aalto-xml.version>0.9.10</aalto-xml.version>
+		<jackson-databind.version>2.9.10.1</jackson-databind.version>
+		<aalto-xml.version>1.2.1</aalto-xml.version>
 
 		<android.platform.version>4.1.1.4</android.platform.version>
 		<stax.api.version>1.0-2</stax.api.version>
-		<woodstox.stax2-api.version>3.1.4</woodstox.stax2-api.version>
+		<woodstox.stax2-api.version>4.2</woodstox.stax2-api.version>
 
 		<sl4j.version>1.7.7</sl4j.version>
 
@@ -106,9 +106,9 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-		       <groupId>io.netty</groupId>
-		 		<artifactId>netty-codec-http</artifactId>
-		 		<version>${netty.version}</version>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-codec-http</artifactId>
+				<version>${netty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-codec</groupId>
