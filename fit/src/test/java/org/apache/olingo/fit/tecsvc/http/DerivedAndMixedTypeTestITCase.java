@@ -336,7 +336,7 @@ public class DerivedAndMixedTypeTestITCase extends AbstractBaseTestITCase {
         + "\"PropertyDecimal\":0,"
         + "\"PropertyBinary\":\"\","
         + "\"PropertyDate\":\"1970-01-01\","
-        + "\"PropertyDateTimeOffset\":\"2005-12-03T00:00Z\","
+        + "\"PropertyDateTimeOffset\":\"2005-12-03T00:00:00Z\","
         + "\"PropertyDuration\":\"PT0S\","
         + "\"PropertyGuid\":\"76543201-23ab-cdef-0123-456789cccddd\","
         + "\"PropertyTimeOfDay\":\"00:01:01\",\"NavPropertyETTwoPrimOne\":{"

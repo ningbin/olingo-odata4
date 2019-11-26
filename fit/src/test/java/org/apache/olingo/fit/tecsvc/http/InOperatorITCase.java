@@ -85,7 +85,7 @@ public class InOperatorITCase extends AbstractBaseTestITCase {
         + "\"PropertyInt32\":0,\"PropertyInt64\":0,\"PropertySingle\":0.0,"
         + "\"PropertyDouble\":0.0,\"PropertyDecimal\":0,\"PropertyBinary\":\"\","
         + "\"PropertyDate\":\"1970-01-01\","
-        + "\"PropertyDateTimeOffset\":\"2005-12-03T00:00Z\","
+        + "\"PropertyDateTimeOffset\":\"2005-12-03T00:00:00Z\","
         + "\"PropertyDuration\":\"PT0S\","
         + "\"PropertyGuid\":\"76543201-23ab-cdef-0123-456789cccddd\","
         + "\"PropertyTimeOfDay\":\"00:01:01\"}]"));

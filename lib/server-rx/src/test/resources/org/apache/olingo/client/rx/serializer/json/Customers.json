@@ -51,7 +51,7 @@
       "Numbers": [],
       "Emails": [],
       "City": "Sydney",
-      "Birthday": "1983-01-15T00:00Z",
+      "Birthday": "1983-01-15T00:00:00Z",
       "TimeBetweenLastTwoOrders": "PT0.0000002S"
     }]
 }

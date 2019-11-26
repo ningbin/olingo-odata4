@@ -10,7 +10,7 @@
   "ID": "f89dee73-af9f-4cd4-b330-db93c25ff3c7",
   "Name": "Old School Lemonade Store, Retro Style",
   "AirDate@odata.type": "#DateTimeOffset",
-  "AirDate": "2012-11-07T00:00Z",
+  "AirDate": "2012-11-07T00:00:00Z",
   "FeaturedProduct@odata.associationLink": "Advertisements(f89dee73-af9f-4cd4-b330-db93c25ff3c7)/FeaturedProduct/$ref",
   "FeaturedProduct@odata.navigationLink": "Advertisements(f89dee73-af9f-4cd4-b330-db93c25ff3c7)/FeaturedProduct"
 }

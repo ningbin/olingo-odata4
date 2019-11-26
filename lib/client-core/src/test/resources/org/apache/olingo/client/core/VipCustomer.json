@@ -30,7 +30,7 @@
   "Emails": ["abc@abc.com"],
   "City": "London",
   "Birthday@odata.type": "#DateTimeOffset",
-  "Birthday": "1957-04-03T00:00Z",
+  "Birthday": "1957-04-03T00:00:00Z",
   "TimeBetweenLastTwoOrders@odata.type": "#Duration",
   "TimeBetweenLastTwoOrders": "PT0.0000001S",
   "Parent@odata.associationLink": "http://odatae2etest.azurewebsites.net/javatest/DefaultService/VipCustomer/Parent/$ref",

@@ -68,7 +68,7 @@
           <m:element>abc@abc.com</m:element>
         </d:Emails>
         <d:City>London</d:City>
-        <d:Birthday m:type="DateTimeOffset">1957-04-03T00:00Z</d:Birthday>
+        <d:Birthday m:type="DateTimeOffset">1957-04-03T00:00:00Z</d:Birthday>
         <d:TimeBetweenLastTwoOrders m:type="Duration">PT0.0000001S</d:TimeBetweenLastTwoOrders>
       </m:properties>
     </content>
@@ -103,7 +103,7 @@
         <d:Numbers m:type="#Collection(String)"/>
         <d:Emails m:type="#Collection(String)"/>
         <d:City>Sydney</d:City>
-        <d:Birthday m:type="DateTimeOffset">1983-01-15T00:00Z</d:Birthday>
+        <d:Birthday m:type="DateTimeOffset">1983-01-15T00:00:00Z</d:Birthday>
         <d:TimeBetweenLastTwoOrders m:type="Duration">PT0.0000002S</d:TimeBetweenLastTwoOrders>
       </m:properties>
     </content>
