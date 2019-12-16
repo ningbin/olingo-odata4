@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.olingo</groupId>
     <artifactId>odata-dist</artifactId>
-    <version>4.6.0-sap-07</version>
+    <version>4.6.0-sap-08-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
