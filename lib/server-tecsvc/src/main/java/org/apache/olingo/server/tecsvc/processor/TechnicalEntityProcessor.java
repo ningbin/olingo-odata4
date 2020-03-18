@@ -36,6 +36,7 @@ import org.apache.olingo.commons.api.data.DeltaLink;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
 import org.apache.olingo.commons.api.data.EntityIterator;
+import org.apache.olingo.commons.api.data.EntityMediaObject;
 import org.apache.olingo.commons.api.data.Operation;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
@@ -157,8 +158,15 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
       final ContentType responseFormat) throws ODataApplicationException, ODataLibraryException {
     getEdmEntitySet(uriInfo); // including checks
     final Entity entity = readEntity(uriInfo);
-
-    response.setContent(odata.createFixedFormatSerializer().binary(dataProvider.readMedia(entity)));
+    final EdmEntitySet edmEntitySet = getEdmEntitySet(uriInfo.asUriInfoResource());
+    if (isMediaStreaming(edmEntitySet)) {
+		EntityMediaObject mediaEntity = new EntityMediaObject();
+		mediaEntity.setBytes(dataProvider.readMedia(entity));
+	    response.setODataContent(odata.createFixedFormatSerializer()
+	    		.mediaEntityStreamed(mediaEntity).getODataContent());
+    } else {
+    	response.setContent(odata.createFixedFormatSerializer().binary(dataProvider.readMedia(entity)));
+    }
     response.setStatusCode(HttpStatusCode.OK.getStatusCode());
     response.setHeader(HttpHeader.CONTENT_TYPE, entity.getMediaContentType());
     if (entity.getMediaETag() != null) {
@@ -762,6 +770,10 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
     return (ContainerProvider.ES_STREAM.equalsIgnoreCase(edmEntitySet.getName())||
         ContainerProvider.ES_STREAM_SERVER_PAGINATION.equalsIgnoreCase(edmEntitySet.getName()));
   }
+  
+  private boolean isMediaStreaming(EdmEntitySet edmEntitySet) {
+	    return (ContainerProvider.ES_MEDIA_STREAM.equalsIgnoreCase(edmEntitySet.getName()));
+	  }
 
   private SerializerResult serializeEntityCollection(final ODataRequest request, final EntityCollection
       entityCollection, final EdmEntitySet edmEntitySet, final EdmEntityType edmEntityType,
@@ -788,7 +800,7 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
       final EdmEntityType edmEntityType,
       final ContentType requestedFormat, final ExpandOption expand, final SelectOption select,
       final CountOption countOption, final String id) throws ODataLibraryException {
-
+	    
     EntityIterator streamCollection = new EntityIterator() {
       Iterator<Entity> entityIterator = entityCollection.iterator();
 
