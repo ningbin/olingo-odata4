@@ -80,6 +80,6 @@ public class MediaDeserializerTest {
 			assertNotNull(ex.get(0));
 	      }
 		assertEquals("This is a test".getBytes().length, byteList.get(0).length);
-		assertEquals("This is a test", new String(byteList.get(0), "UTF-8").trim());
+		assertEquals("This is a test", new String(byteList.get(0), "UTF-8"));
 	}
 }

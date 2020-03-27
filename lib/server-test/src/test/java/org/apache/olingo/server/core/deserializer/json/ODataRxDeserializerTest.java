@@ -99,6 +99,7 @@ public class ODataRxDeserializerTest extends AbstractODataDeserializerTest {
 			assertNotNull(ex.get(0));
 	      }
 		data.setMedia(entity, byteList.get(0), ContentType.IMAGE_JPEG.toString());
-		Assert.assertEquals(IOUtils.toByteArray(getFileAsStream("Image.jpg")).length, data.readMedia(entity).length);
+		Assert.assertEquals(IOUtils.toByteArray(getFileAsStream("Image.jpg")).length, 
+				data.readMedia(entity).length);
 	}
 }
