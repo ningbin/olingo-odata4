@@ -321,8 +321,15 @@ public class TechnicalEntityProcessor extends TechnicalProcessor
         request.getHeaders(HttpHeader.IF_MATCH),
         request.getHeaders(HttpHeader.IF_NONE_MATCH));
     checkRequestFormat(requestFormat);
-    dataProvider.setMedia(entity, odata.createFixedFormatDeserializer().binary(request.getBody()),
-        requestFormat.toContentTypeString());
+	  
+    if (isMediaStreaming(edmEntitySet)) {
+	    EntityMediaObject entityMedia = odata.createFixedFormatDeserializer().binaryIntoStream(request.getBody());
+	    dataProvider.setMedia(entity, entityMedia.getBytes(), 
+	    		requestFormat.toContentTypeString());
+    } else {
+    	dataProvider.setMedia(entity, odata.createFixedFormatDeserializer().binary(request.getBody()), 
+    			requestFormat.toContentTypeString());
+    }
 
     final Return returnPreference = odata.createPreferences(request.getHeaders(HttpHeader.PREFER)).getReturn();
     if (returnPreference == null || returnPreference == Return.REPRESENTATION) {

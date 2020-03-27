@@ -21,6 +21,7 @@ package org.apache.olingo.server.api.deserializer;
 import java.io.InputStream;
 import java.util.List;
 
+import org.apache.olingo.commons.api.data.EntityMediaObject;
 import org.apache.olingo.commons.api.data.Parameter;
 import org.apache.olingo.commons.api.edm.EdmParameter;
 import org.apache.olingo.commons.api.edm.EdmProperty;
@@ -37,6 +38,13 @@ public interface FixedFormatDeserializer {
    */
   public byte[] binary(InputStream content) throws DeserializerException;
 
+  /**
+   * Reads binary data from an InputStream.
+   * @param content contains the InputStream
+   * @return the EntityMediaObject
+   * @throws DeserializerException
+   */
+  public EntityMediaObject binaryIntoStream(InputStream content) throws DeserializerException;
   /**
    * Reads primitive-type data from an InputStream.
    * @param content the textual value as input stream

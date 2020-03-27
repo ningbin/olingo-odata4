@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.List;
 
+import org.apache.olingo.commons.api.data.EntityMediaObject;
 import org.apache.olingo.commons.api.data.Parameter;
 import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmParameter;
@@ -63,6 +64,13 @@ public class FixedFormatDeserializerImpl implements FixedFormatDeserializer {
     return result.toByteArray();
   }
 
+  @Override
+  public EntityMediaObject binaryIntoStream(final InputStream content) throws DeserializerException {
+	  EntityMediaObject mediaEntity = new EntityMediaObject();
+	  mediaEntity.setBytes(binary(content));
+	  return mediaEntity;
+  }
+  
   @Override
   public Object primitiveValue(final InputStream content, final EdmProperty property) throws DeserializerException {
     if (property == null || !property.isPrimitive()) {

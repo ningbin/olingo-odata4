@@ -43,6 +43,7 @@ import org.apache.olingo.server.api.ODataContentWriteErrorContext;
 import org.apache.olingo.server.api.ServiceMetadata;
 import org.apache.olingo.server.api.serializer.EntityCollectionSerializerOptions;
 import org.apache.olingo.server.api.serializer.ODataSerializer;
+import org.apache.olingo.server.api.serializer.SerializerException;
 import org.apache.olingo.server.api.uri.UriHelper;
 import org.apache.olingo.server.api.uri.queryoption.CountOption;
 import org.apache.olingo.server.api.uri.queryoption.ExpandItem;
@@ -50,9 +51,12 @@ import org.apache.olingo.server.api.uri.queryoption.ExpandOption;
 import org.apache.olingo.server.api.uri.queryoption.SelectOption;
 import org.apache.olingo.server.core.serializer.ExpandSelectMock;
 import org.apache.olingo.server.rx.api.EntityObservable;
+import org.apache.olingo.server.rx.api.MediaEntityObservable;
 import org.apache.olingo.server.rx.serializer.json.ODataJsonRxSerializer;
+import org.apache.olingo.server.rx.serializer.json.ODataRxMediaSerializer;
 import org.apache.olingo.server.tecsvc.MetadataETagSupport;
 import org.apache.olingo.server.tecsvc.data.DataProvider;
+import org.apache.olingo.server.tecsvc.data.DataProvider.DataProviderException;
 import org.apache.olingo.server.tecsvc.provider.EdmTechProvider;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -504,5 +508,22 @@ public class ODataJsonRxSerializerTest {
         "\"NavPropertyETAllPrimOne\":{\"@odata.id\":\"ESAllPrim(32767)\","+
         "\"PropertyInt16\":32767,\"PropertyDate\":\"2012-12-03\"}}]}"
         , resultString);
+  }
+  
+  @Test
+  public void binaryContentStreamed() throws DataProviderException, SerializerException {
+	  final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESMediaStream");
+	  final Entity entity = data.readAll(edmEntitySet).getEntities().get(0);
+	  MediaEntityObservable observable = new MediaEntityObservable() {
+			Observable<byte[]> observable = Observable.fromArray(data.readMedia(entity));
+			@Override
+			public Observable<byte[]> getObservable() {
+				return observable;
+			}
+		};
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		ODataContent result = new ODataRxMediaSerializer().mediaEntityStreamed(observable).getODataContent();
+		result.write(bout);
+		Assert.assertEquals(data.readMedia(entity).length, bout.toByteArray().length);
   }
 }

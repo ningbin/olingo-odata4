@@ -211,6 +211,7 @@ public class ExpandSystemQueryOptionHandler {
     newEntity.setETag(entity.getETag());
     newEntity.setMediaContentSource(entity.getMediaContentSource());
     newEntity.setMediaContentType(entity.getMediaContentType());
+    newEntity.getMediaEditLinks().addAll(entity.getMediaEditLinks());
     newEntity.setMediaETag(entity.getMediaETag());
     newEntity.setSelfLink(entity.getSelfLink());
     newEntity.setEditLink(entity.getEditLink());
