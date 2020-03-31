@@ -39,7 +39,7 @@ import org.apache.olingo.server.api.ServiceMetadata;
 import org.apache.olingo.server.api.deserializer.DeserializerException;
 import org.apache.olingo.server.core.deserializer.AbstractODataDeserializerTest;
 import org.apache.olingo.server.rx.api.MediaEntityObservable;
-import org.apache.olingo.server.rx.deserializer.json.ODataJsonRxDeserializer;
+import org.apache.olingo.server.rx.deserializer.json.ODataRxMediaDeserializer;
 import org.apache.olingo.server.tecsvc.MetadataETagSupport;
 import org.apache.olingo.server.tecsvc.data.DataProvider;
 import org.apache.olingo.server.tecsvc.data.DataProvider.DataProviderException;
@@ -64,7 +64,7 @@ public class ODataRxDeserializerTest extends AbstractODataDeserializerTest {
 		final EdmEntitySet edmEntitySet = entityContainer.getEntitySet("ESMediaStream");
 		  final Entity entity = data.readAll(edmEntitySet).getEntities().get(0);
 		  InputStream in = getFileAsStream("Image.jpg");
-		EntityMediaObject entityMedia = new ODataJsonRxDeserializer().binaryIntoStream(in);
+		EntityMediaObject entityMedia = new ODataRxMediaDeserializer().binaryIntoStream(in);
 		final List<DeserializerException> ex = new ArrayList<>();
 		List<byte[]> byteList = new ArrayList<>();
 		((MediaEntityObservable)entityMedia).getObservable().subscribe(new Observer<byte[]>() {

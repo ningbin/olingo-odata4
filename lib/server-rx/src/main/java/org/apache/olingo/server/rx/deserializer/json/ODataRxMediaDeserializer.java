@@ -29,7 +29,7 @@ import org.apache.olingo.server.rx.api.MediaEntityObservable;
 
 import io.reactivex.Observable;
 
-public class ODataJsonRxDeserializer extends FixedFormatDeserializerImpl {
+public class ODataRxMediaDeserializer extends FixedFormatDeserializerImpl {
 	
 	private static final int DEFAULT_BUFFER_SIZE = 128;
 	

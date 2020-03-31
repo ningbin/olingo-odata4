@@ -31,7 +31,7 @@ import java.util.List;
 import org.apache.olingo.commons.api.data.EntityMediaObject;
 import org.apache.olingo.server.api.deserializer.DeserializerException;
 import org.apache.olingo.server.rx.api.MediaEntityObservable;
-import org.apache.olingo.server.rx.deserializer.json.ODataJsonRxDeserializer;
+import org.apache.olingo.server.rx.deserializer.json.ODataRxMediaDeserializer;
 import org.junit.Test;
 
 import io.reactivex.Observer;
@@ -43,7 +43,7 @@ public class MediaDeserializerTest {
 	@Test
 	public void binaryIntoStream() throws DeserializerException, IOException {
 		InputStream in = new ByteArrayInputStream("This is a test".getBytes());
-		EntityMediaObject entityMedia = new ODataJsonRxDeserializer().binaryIntoStream(in);
+		EntityMediaObject entityMedia = new ODataRxMediaDeserializer().binaryIntoStream(in);
 		final List<DeserializerException> ex = new ArrayList<>();
 		List<byte[]> byteList = new ArrayList<>();
 		
