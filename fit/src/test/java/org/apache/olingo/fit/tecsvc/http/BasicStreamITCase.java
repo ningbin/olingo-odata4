@@ -19,9 +19,11 @@
 package org.apache.olingo.fit.tecsvc.http;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedOutputStream;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -170,6 +172,33 @@ public class BasicStreamITCase extends AbstractBaseTestITCase {
     assertTrue(content.contains("\"@odata.nextLink\""));
     assertTrue(content.contains("ESStreamServerSidePaging?$count=false&$format=json&%24skiptoken=1%2A10"));
     assertFalse(content.contains("\"@odata.count\":504"));
+  }
+  
+  @Test
+  public void putRequestOnStreamProperty() throws Exception {
+    URL url = new URL(SERVICE_URI  + "ESWithStream(7)/PropertyStream");
+
+    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    connection.setRequestMethod(HttpMethod.PUT.name());
+    connection.setRequestProperty(HttpHeader.CONTENT_TYPE, "image/jpeg");
+    connection.setRequestProperty(HttpHeader.IF_MATCH, "*");
+    connection.setRequestProperty(HttpHeader.ACCEPT, "application/json");
+    InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.png");
+    byte[] bytes = IOUtils.toByteArray(in);
+    connection.setDoOutput(true);
+    BufferedOutputStream out = new BufferedOutputStream(connection.getOutputStream());
+    try {
+        out.write(bytes, 0, bytes.length);
+        out.flush();
+      } finally {
+        out.close();
+      }
+    connection.connect();
+
+    assertEquals(HttpStatusCode.OK.getStatusCode(), connection.getResponseCode());
+    assertEquals(ContentType.parse("image/jpeg"), 
+    		ContentType.create(connection.getHeaderField(HttpHeader.CONTENT_TYPE)));
+    assertEquals(bytes.length, IOUtils.toByteArray(connection.getInputStream()).length);
   }
 
   @Override
