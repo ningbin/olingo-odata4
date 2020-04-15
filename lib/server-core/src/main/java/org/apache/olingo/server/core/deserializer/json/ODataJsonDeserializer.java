@@ -307,13 +307,17 @@ public class ODataJsonDeserializer implements ODataDeserializer {
   public DeserializerResult actionParameters(final InputStream stream, final EdmAction edmAction)
       throws DeserializerException {
     try {
-      ObjectNode tree = parseJsonTree(stream);
-      Map<String, Parameter> parameters = consumeParameters(edmAction, tree);
-
-      if (tree.isObject()) {
-        removeAnnotations(tree);
-      }
-      assertJsonNodeIsEmpty(tree);
+    	Map<String, Parameter> parameters = new HashMap<>();
+    	
+        if (stream.available() > 0) {
+  	      ObjectNode tree = parseJsonTree(stream);
+  	      parameters = consumeParameters(edmAction, tree);
+  	
+  	      if (tree.isObject()) {
+  	        removeAnnotations(tree);
+  	      }
+  	      assertJsonNodeIsEmpty(tree);
+        }
       return DeserializerResultImpl.with().actionParameters(parameters).build();
 
     } catch (final IOException e) {
