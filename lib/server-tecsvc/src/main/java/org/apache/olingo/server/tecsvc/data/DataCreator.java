@@ -94,6 +94,7 @@ public class DataCreator {
     data.put("ESMixEnumDefCollComp", createESMixEnumDefCollComp(edm, odata));
     data.put("ESStream", createESStream(edm, odata));
     data.put("ESWithStream", createESWithStream(edm, odata));
+    data.put("ESMediaStreamProp", createESWithStreamProp(edm, odata));
     data.put("ESDelta", createESDelta(edm, odata)); 
     data.put("ESPeople", createESPeople(edm, odata));
     data.put("SINav", createSINav(edm, odata));
@@ -1553,6 +1554,39 @@ public class DataCreator {
       createOperations("ESWithStream", entityCollection, EntityTypeProvider.nameETStream);
       return entityCollection;
     }  
+  
+  private EntityCollection createESWithStreamProp(final Edm edm, final OData odata) {
+      EntityCollection entityCollection = new EntityCollection();
+
+      Link readLink = new Link();
+      readLink.setRel(Constants.NS_MEDIA_READ_LINK_REL);
+      readLink.setHref("readLink");
+      
+      Entity entity = new Entity();
+          entity.addProperty(createPrimitive("PropertyStream", createImage("darkturquoise")));
+          readLink.setInlineEntity(entity);
+      entityCollection.getEntities().add(new Entity()
+          .addProperty(createPrimitive("PropertyInt16", Short.MAX_VALUE))
+          .addProperty(new Property(null, "PropertyStream", ValueType.PRIMITIVE, readLink)));
+
+      Link editLink = new Link();
+      editLink.setRel(Constants.NS_MEDIA_EDIT_LINK_REL);
+      editLink.setHref("http://mediaserver:1234/editLink");
+      editLink.setMediaETag("eTag");
+      editLink.setType("image/jpeg");
+      entity = new Entity();
+         entity.addProperty(createPrimitive("PropertyStream", createImage("royalblue")));
+         editLink.setInlineEntity(entity);
+
+      entityCollection.getEntities().add(new Entity()
+          .addProperty(createPrimitive("PropertyInt16", (short) 7))
+          .addProperty(new Property(null, "PropertyStream", ValueType.PRIMITIVE, editLink)));
+
+      setEntityType(entityCollection, edm.getEntityType(EntityTypeProvider.nameETStream));
+      createEntityId(edm, odata, "ESMediaStreamProp", entityCollection);
+      createOperations("ESMediaStreamProp", entityCollection, EntityTypeProvider.nameETStream);
+      return entityCollection;
+    }
   
   private Property createCollPropertyComp() {
     return createComplexDerievedCollection("CollPropertyComp",

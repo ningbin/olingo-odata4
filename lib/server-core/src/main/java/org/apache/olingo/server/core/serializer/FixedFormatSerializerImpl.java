@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
 import java.util.List;
 
 import org.apache.olingo.commons.api.data.EntityMediaObject;
@@ -38,6 +40,8 @@ import org.apache.olingo.server.api.serializer.SerializerStreamResult;
 import org.apache.olingo.server.core.ODataWritableContent;
 
 public class FixedFormatSerializerImpl implements FixedFormatSerializer {
+	
+	public static final int COPY_BUFFER_SIZE = 8192;
 
   @Override
   public InputStream binary(final byte[] binary) throws SerializerException {
@@ -53,14 +57,39 @@ public class FixedFormatSerializerImpl implements FixedFormatSerializer {
 	}
   }
   
+  protected void binary(final InputStream inputStream, 
+		  OutputStream outputStream) throws SerializerException {
+	  byte[] buffer = new byte[COPY_BUFFER_SIZE];
+	  int count;
+	  try {
+		  while ((count = inputStream.read(buffer)) > -1) {
+			  outputStream.write(buffer, 0, count);
+		  }
+		  outputStream.flush();
+		} catch (IOException e) {
+			throw new SerializerException("IO Exception occured ", e, 
+					SerializerException.MessageKeys.IO_EXCEPTION);
+		}
+  }
+  
   public void binaryIntoStreamed(final EntityMediaObject mediaEntity, 
 		  final OutputStream outputStream) throws SerializerException {
 	binary(mediaEntity, outputStream);
   }
   
+  public void binaryIntoStreamed(final InputStream inputStream, 
+		  final OutputStream outputStream) throws SerializerException {
+	binary(inputStream, outputStream);
+  }
+  
   @Override
   public SerializerStreamResult mediaEntityStreamed(EntityMediaObject mediaEntity) throws SerializerException {
 	  return ODataWritableContent.with(mediaEntity, this).build();
+  }
+  
+  @Override
+  public SerializerStreamResult mediaEntityStreamed(InputStream inputStream) throws SerializerException {
+	  return ODataWritableContent.with(inputStream, this).build();
   }
 
   @Override

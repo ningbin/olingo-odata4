@@ -36,12 +36,20 @@ public interface FixedFormatSerializer {
   InputStream binary(byte[] binary) throws SerializerException;
   
   /**
-   * Writes bytes to an Input stream
+   * Writes bytes to an Output stream
    * @param mediaEntity bytes
    * @return
    * @throws SerializerException
    */
   SerializerStreamResult mediaEntityStreamed(EntityMediaObject mediaEntity) throws SerializerException;
+  
+  /**
+   * Writes Input stream to an output stream
+   * @param inputStream inputStream
+   * @return
+   * @throws SerializerException
+   */
+  SerializerStreamResult mediaEntityStreamed(InputStream inputStream) throws SerializerException;
   
   /**
    * Writes a count into an InputStream as plain text.

@@ -56,6 +56,7 @@ public class ContainerProvider {
   public static final String ES_STREAM_SERVER_PAGINATION = "ESStreamServerSidePaging";
   public static final String ES_MEDIA = "ESMedia";
   public static final String ES_MEDIA_STREAM = "ESMediaStream";
+  public static final String ES_MEDIA_STREAM_PROP= "ESMediaStreamProp";
 
   private final CsdlEdmProvider prov;
 
@@ -93,6 +94,7 @@ public class ContainerProvider {
     entitySets.add(prov.getEntitySet(ContainerProvider.nameContainer, "ESCompCollComp"));
     entitySets.add(prov.getEntitySet(ContainerProvider.nameContainer, ES_MEDIA));
     entitySets.add(prov.getEntitySet(ContainerProvider.nameContainer, ES_MEDIA_STREAM));
+    entitySets.add(prov.getEntitySet(ContainerProvider.nameContainer, ES_MEDIA_STREAM_PROP));
     entitySets.add(prov.getEntitySet(ContainerProvider.nameContainer, "ESInvisible"));
     entitySets.add(prov.getEntitySet(ContainerProvider.nameContainer, "ESServerSidePaging"));
     entitySets.add(prov.getEntitySet(ContainerProvider.nameContainer, ES_STREAM_SERVER_PAGINATION));
@@ -361,7 +363,19 @@ public class ContainerProvider {
               new CsdlAnnotation().setTerm(TermProvider.TERM_DATA.getFullQualifiedNameAsString()).setExpression(
                   new CsdlConstantExpression(CsdlConstantExpression.ConstantExpressionType.Bool, "true"))));
 
-       } else if (name.equals("ESInvisible")) {
+       } else if (name.equals("ESMediaStreamProp")) {
+           return new CsdlEntitySet()
+	      .setName("ESMediaStreamProp")
+	      .setType(EntityTypeProvider.nameETStream)
+	      .setIncludeInServiceDocument(true)
+	      .setAnnotations(Arrays.asList(
+	          new CsdlAnnotation().setTerm("Core.Description")
+	              .setExpression(new CsdlConstantExpression(CsdlConstantExpression.ConstantExpressionType.String)
+	                  .setValue("Contains media entities")),
+	          new CsdlAnnotation().setTerm(TermProvider.TERM_DATA.getFullQualifiedNameAsString()).setExpression(
+	              new CsdlConstantExpression(CsdlConstantExpression.ConstantExpressionType.Bool, "true"))));
+
+        } else if (name.equals("ESInvisible")) {
         return new CsdlEntitySet()
             .setName("ESInvisible")
             .setIncludeInServiceDocument(false)

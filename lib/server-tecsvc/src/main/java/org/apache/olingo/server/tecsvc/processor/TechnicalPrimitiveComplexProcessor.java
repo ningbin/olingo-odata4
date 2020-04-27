@@ -18,6 +18,8 @@
  */
 package org.apache.olingo.server.tecsvc.processor;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -87,6 +89,7 @@ public class TechnicalPrimitiveComplexProcessor extends TechnicalProcessor
     ComplexProcessor, ComplexCollectionProcessor, CountComplexCollectionProcessor {
 
   private static final String EDMSTREAM = "Edm.Stream";
+  public static final String ES_MEDIA_STREAM_PROP= "ESMediaStreamProp";
   
   public TechnicalPrimitiveComplexProcessor(final DataProvider dataProvider,
       final ServiceMetadata serviceMetadata) {
@@ -278,7 +281,21 @@ public class TechnicalPrimitiveComplexProcessor extends TechnicalProcessor
             response.setContent(serializePrimitiveValue(property, edmProperty, (EdmPrimitiveType) type, returnType));
           }else if(representationType == RepresentationType.PRIMITIVE && type.getFullQualifiedName()
               .getFullQualifiedNameAsString().equals(EDMSTREAM)){
-            response.setContent(odata.createFixedFormatSerializer().binary(dataProvider.readStreamProperty(property)));
+        	  if (edmEntitySet.getName().equalsIgnoreCase(ES_MEDIA_STREAM_PROP)) {
+        		InputStream in = null;
+				try {
+					in = getFileAsStream("Image.jpg");
+				} catch (IOException e) {
+					throw new ODataApplicationException("IO Exception occured.", 
+							HttpStatusCode.INTERNAL_SERVER_ERROR.getStatusCode(), 
+							Locale.ROOT, e.getCause());
+				}
+                  response.setODataContent(
+                		  odata.createFixedFormatSerializer().mediaEntityStreamed(in).getODataContent());
+        	  } else {
+        		  response.setContent(odata.createFixedFormatSerializer().
+        				  binary(dataProvider.readStreamProperty(property)));
+        	  }
             response.setStatusCode(HttpStatusCode.OK.getStatusCode());
             response.setHeader(HttpHeader.CONTENT_TYPE, ((Link)property.getValue()).getType());
             if (entity.getMediaETag() != null) {
@@ -292,13 +309,23 @@ public class TechnicalPrimitiveComplexProcessor extends TechnicalProcessor
             response.setContent(result.getContent());
           }
         }
-        response.setHeader(HttpHeader.CONTENT_TYPE, contentType.toContentTypeString());
+        if (response.getHeader(HttpHeader.CONTENT_TYPE) == null) {
+        	response.setHeader(HttpHeader.CONTENT_TYPE, contentType.toContentTypeString());
+        }
       }
       if (entity != null && entity.getETag() != null) {
         response.setHeader(HttpHeader.ETAG, entity.getETag());
       }
     }
   }
+  
+  private InputStream getFileAsStream(final String filename) throws IOException {
+	    InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
+	    if (in == null) {
+	      throw new IOException("Requested file '" + filename + "' was not found.");
+	    }
+	    return in;
+	  }
   
   private Property getData(Entity entity, List<String> path, List<UriResource> resourceParts, UriInfoResource resource) 
       throws DataProviderException {

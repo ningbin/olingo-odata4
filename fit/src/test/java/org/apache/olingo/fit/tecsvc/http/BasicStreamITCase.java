@@ -23,6 +23,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -200,6 +201,34 @@ public class BasicStreamITCase extends AbstractBaseTestITCase {
     		ContentType.create(connection.getHeaderField(HttpHeader.CONTENT_TYPE)));
     assertEquals(bytes.length, IOUtils.toByteArray(connection.getInputStream()).length);
   }
+  
+  @Test
+  public void streamESStreamProp() throws Exception {
+    URL url = new URL(SERVICE_URI + "ESMediaStreamProp(7)/PropertyStream");
+
+    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    connection.setRequestMethod(HttpMethod.GET.name());
+    connection.setRequestProperty(HttpHeader.CONTENT_TYPE, "image/jpeg");
+    connection.setRequestProperty(HttpHeader.ACCEPT, "*/*");
+    connection.connect();
+
+    assertEquals(HttpStatusCode.OK.getStatusCode(), connection.getResponseCode());
+    assertEquals(ContentType.parse("image/jpeg"), 
+    		ContentType.create(connection.getHeaderField(HttpHeader.CONTENT_TYPE)));
+
+    InputStream in = getFileAsStream("Image.jpg");
+    
+    assertEquals(IOUtils.toByteArray(in).length, 
+    		IOUtils.toByteArray(connection.getInputStream()).length);
+  }
+  
+  private InputStream getFileAsStream(final String filename) throws IOException {
+	    InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
+	    if (in == null) {
+	      throw new IOException("Requested file '" + filename + "' was not found.");
+	    }
+	    return in;
+	  }
 
   @Override
   protected ODataClient getClient() {

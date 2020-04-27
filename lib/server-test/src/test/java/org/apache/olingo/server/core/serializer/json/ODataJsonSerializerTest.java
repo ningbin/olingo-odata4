@@ -20,6 +20,7 @@ package org.apache.olingo.server.core.serializer.json;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -2872,4 +2873,26 @@ public class ODataJsonSerializerTest {
         + "\"ESTwoKeyNav(PropertyInt16=1,PropertyString='2')\","
         + "\"NavPropertyETMediaOne@odata.navigationLink\":\"ESMedia(2)\"}",resultString);
   }
+  
+  @Test
+  public void mediaStreamed() throws IOException, SerializerException {
+	  InputStream in = getFileAsStream("Image.jpg");
+	  ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+	  byte[] inputContent = null;
+	  IOUtils.copy(in, byteArrayOutputStream);
+	  inputContent = byteArrayOutputStream.toByteArray();
+	  InputStream inputStream1 = new ByteArrayInputStream(inputContent);
+	  ByteArrayOutputStream bout = new ByteArrayOutputStream();
+	  ODataContent result = odata.createFixedFormatSerializer().mediaEntityStreamed(inputStream1).getODataContent();
+	  result.write(bout);
+	  Assert.assertEquals(inputContent.length, bout.toByteArray().length);
+  }
+  
+  private InputStream getFileAsStream(final String filename) throws IOException {
+	    InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
+	    if (in == null) {
+	      throw new IOException("Requested file '" + filename + "' was not found.");
+	    }
+	    return in;
+	  }
 }
