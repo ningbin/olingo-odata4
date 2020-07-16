@@ -242,7 +242,7 @@ public class EdmTypeInfo {
       return EdmPrimitiveTypeKind.Single;
     } else if (value instanceof Calendar || value instanceof Date || value instanceof java.sql.Timestamp) {
       return EdmPrimitiveTypeKind.DateTimeOffset;
-    } else if (value instanceof java.sql.Date) {
+    } else if (value instanceof java.sql.Date || value instanceof java.time.LocalDate) {
       return EdmPrimitiveTypeKind.Date;
     } else if (value instanceof java.sql.Time) {
       return EdmPrimitiveTypeKind.TimeOfDay;
