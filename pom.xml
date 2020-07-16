@@ -15,7 +15,7 @@
 
 	<groupId>org.apache.olingo</groupId>
 	<artifactId>odata-parent</artifactId>
-	<version>4.7.1-sap-08</version>
+	<version>4.7.1-sap-09-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Olingo-OData</name>
