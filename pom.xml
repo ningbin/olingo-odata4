@@ -68,7 +68,7 @@
 		<cxf.version>3.2.1</cxf.version>
 		<cxf.version.security>3.0.0</cxf.version.security>
 		<spring.version>4.1.8.RELEASE</spring.version>
-		<netty.version>4.1.45.Final</netty.version>
+		<netty.version>4.1.46.Final</netty.version>
 
 		<velocity.version>1.7</velocity.version>
 		<maven-plugin-plugin.version>3.6.0</maven-plugin-plugin.version>
