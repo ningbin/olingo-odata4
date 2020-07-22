@@ -30,7 +30,7 @@ under the License.
   <parent>
     <groupId>org.apache.olingo</groupId>
     <artifactId>odata-samples</artifactId>
-    <version>4.7.1-sap-10-SNAPSHOT</version>
+    <version>4.7.1-sap-10</version>
     <relativePath>../..</relativePath>
   </parent>
 
