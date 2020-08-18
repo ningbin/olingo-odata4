@@ -49,6 +49,8 @@ public class CsdlProperty extends CsdlAbstractEdmItem implements CsdlNamed, Csdl
   private Integer precision;
 
   private Integer scale;
+  
+  private String scaleAsString;
 
   private boolean unicode = true;
 
@@ -232,6 +234,26 @@ public class CsdlProperty extends CsdlAbstractEdmItem implements CsdlNamed, Csdl
     return this;
   }
 
+  /**
+   * Gets scaleAsString.
+   *
+   * @return the scaleAsString
+   */
+  public String getScaleAsString() {
+    return scaleAsString;
+  }
+
+  /**
+   * Sets scaleAsString.
+   *
+   * @param scaleAsString the scaleAsString
+   * @return the scaleAsString
+   */
+  public CsdlProperty setScaleAsString(final String scaleAsString) {
+    this.scaleAsString = scaleAsString;
+    return this;
+  }
+  
   /**
    * Is unicode.
    *

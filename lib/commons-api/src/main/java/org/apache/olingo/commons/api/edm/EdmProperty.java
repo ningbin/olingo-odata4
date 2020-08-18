@@ -55,6 +55,11 @@ public interface EdmProperty extends EdmElement, EdmMappable, EdmAnnotatable {
    * @return the precision as an Integer or null if not specified
    */
   Integer getPrecision();
+  
+  /**
+   * @return the scale as an String or null if not specified
+   */
+  String getScaleAsString();
 
   /**
    * @return the scale as an Integer or null if not specified
