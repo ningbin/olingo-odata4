@@ -22,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 
@@ -32,6 +33,8 @@ import org.apache.olingo.server.api.OData;
 import org.apache.olingo.server.api.ServiceMetadata;
 import org.apache.olingo.server.api.etag.ServiceMetadataETagSupport;
 import org.apache.olingo.server.api.serializer.ODataSerializer;
+import org.apache.olingo.server.api.serializer.SerializerException;
+import org.apache.olingo.server.api.serializer.SerializerResult;
 import org.apache.olingo.server.tecsvc.provider.EdmTechProvider;
 import org.junit.Test;
 
@@ -95,4 +98,40 @@ public class ServiceDocumentTest {
     assertFalse(result.contains("odata.metadata"));
     assertTrue(result.contains("ESAllPrim"));
   }
+  
+  @SuppressWarnings("deprecation")
+@Test
+  public void testCustomEdm() throws SerializerException, IOException {
+	  ODataEdmProvider edm = new ODataEdmProvider(getFileAsStream("SampleMetadata.xml"));
+	  ServiceMetadata serviceMetadata = OData.newInstance().createServiceMetadata(edm, 
+			  edm.getAllEDMXReference(), new ServiceMetadataETagSupport() {
+	        @Override
+	        public String getServiceDocumentETag() {
+	          return "W/\"serviceDocumentETag\"";
+	        }
+	        @Override
+	        public String getMetadataETag() {
+	          return "W/\"metadataETag\"";
+	        }
+	      });
+		SerializerResult result = OData.newInstance().createSerializer(
+				ContentType.APPLICATION_JSON).metadataDocument(serviceMetadata);
+		String res = IOUtils.toString(result.getContent());
+		assertTrue(res.contains("\"@UI.LineItem\":["
+				+ "{\"$Type\":\"UI.DataField\",\"Value\":{\"$Path\":\"contentType\"}},"
+				+ "{\"$Type\":\"UI.DataField\",\"Value\":{\"$Path\":\"contentId\"}},"
+				+ "{\"$Type\":\"UI.DataField\",\"Value\":{\"$Path\":\"destinationName\"},"
+				+ "\"NonInsertableProperties\":["
+				+ "{\"$PropertyPath\":\"personId\"},{\"$PropertyPath\":\"personName\"}]}]"));
+	  
+  }
+  
+  protected InputStream getFileAsStream(final String filename) throws IOException {
+	    InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
+	    if (in == null) {
+	      throw new IOException("Requested file '" + filename + "' was not found.");
+	    }
+	    return in;
+	  }
+
 }
