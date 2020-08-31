@@ -675,6 +675,7 @@ public class EdmAssistedJsonSerializerTest {
     entityCollection.getEntities().add(new Entity()
         .addProperty(new Property(null, "Property1", ValueType.PRIMITIVE, b)));
     Assert.assertTrue(
-        serialize(serializerMin, metadata, null, entityCollection, null).contains("1.6666666666666667406815349750104360282421112060546875"));
+        serialize(serializerMin, metadata, null, entityCollection, null)
+        .contains("1.6666666666666667406815349750104360282421112060546875"));
   }
 }
