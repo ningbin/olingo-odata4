@@ -25,6 +25,8 @@ import java.net.URI;
 import java.util.List;
 
 import org.apache.olingo.commons.api.Constants;
+import org.apache.olingo.commons.api.IConstants;
+import org.apache.olingo.commons.api.constants.Constantsv00;
 import org.apache.olingo.commons.api.data.AbstractEntityCollection;
 import org.apache.olingo.commons.api.data.AbstractODataObject;
 import org.apache.olingo.commons.api.data.Annotatable;
@@ -67,11 +69,20 @@ public class EdmAssistedJsonSerializer implements EdmAssistedSerializer {
   protected final boolean isIEEE754Compatible;
   protected final boolean isODataMetadataNone;
   protected final boolean isODataMetadataFull;
+  private IConstants constants;
 
   public EdmAssistedJsonSerializer(final ContentType contentType) {
     this.isIEEE754Compatible = ContentTypeHelper.isODataIEEE754Compatible(contentType);
     this.isODataMetadataNone = ContentTypeHelper.isODataMetadataNone(contentType);
     this.isODataMetadataFull = ContentTypeHelper.isODataMetadataFull(contentType);
+    this.constants = new Constantsv00();
+  }
+  
+  public EdmAssistedJsonSerializer(final ContentType contentType, final IConstants constants) {
+    this.isIEEE754Compatible = ContentTypeHelper.isODataIEEE754Compatible(contentType);
+    this.isODataMetadataNone = ContentTypeHelper.isODataMetadataNone(contentType);
+    this.isODataMetadataFull = ContentTypeHelper.isODataMetadataFull(contentType);
+    this.constants = constants;
   }
 
   @Override
@@ -127,13 +138,13 @@ public class EdmAssistedJsonSerializer implements EdmAssistedSerializer {
 
     if (entityCollection.getCount() != null) {
       if (isIEEE754Compatible) {
-        json.writeStringField(Constants.JSON_COUNT, Integer.toString(entityCollection.getCount()));
+        json.writeStringField(constants.getCount(), Integer.toString(entityCollection.getCount()));
       } else {
-        json.writeNumberField(Constants.JSON_COUNT, entityCollection.getCount());
+        json.writeNumberField(constants.getCount(), entityCollection.getCount());
       }
     }
     if (entityCollection.getDeltaLink() != null) {
-      json.writeStringField(Constants.JSON_DELTA_LINK, entityCollection.getDeltaLink().toASCIIString());
+      json.writeStringField(constants.getDeltaLink(), entityCollection.getDeltaLink().toASCIIString());
     }
 
     for (final Annotation annotation : entityCollection.getAnnotations()) {
@@ -150,7 +161,7 @@ public class EdmAssistedJsonSerializer implements EdmAssistedSerializer {
     json.writeEndArray();
 
     if (entityCollection.getNext() != null) {
-      json.writeStringField(Constants.JSON_NEXT_LINK, entityCollection.getNext().toASCIIString());
+      json.writeStringField(constants.getNextLink(), entityCollection.getNext().toASCIIString());
     }
 
     json.writeEndObject();
@@ -179,10 +190,10 @@ public class EdmAssistedJsonSerializer implements EdmAssistedSerializer {
 
     if (!isODataMetadataNone &&
         entity.getEditLink() != null && entity.getEditLink().getHref() != null) {
-      json.writeStringField(Constants.JSON_EDIT_LINK, entity.getEditLink().getHref());
+      json.writeStringField(constants.getEditLink(), entity.getEditLink().getHref());
 
       if (entity.isMediaEntity()) {
-        json.writeStringField(Constants.JSON_MEDIA_READ_LINK, entity.getEditLink().getHref() + "/$value");
+        json.writeStringField(constants.getMediaReadLink(), entity.getEditLink().getHref() + "/$value");
       }
     }
 
@@ -196,24 +207,24 @@ public class EdmAssistedJsonSerializer implements EdmAssistedSerializer {
       throws IOException, SerializerException {
     if (!isODataMetadataNone) {
       if (contextURLString != null) {
-        json.writeStringField(Constants.JSON_CONTEXT, contextURLString);
+        json.writeStringField(constants.getContext(), contextURLString);
       }
       if (metadataETag != null) {
-        json.writeStringField(Constants.JSON_METADATA_ETAG, metadataETag);
+        json.writeStringField(constants.getMetadataEtag(), metadataETag);
       }
       if (eTag != null) {
-        json.writeStringField(Constants.JSON_ETAG, eTag);
+        json.writeStringField(constants.getEtag(), eTag);
       }
       if(isODataMetadataFull){
         if (type != null) {
-          json.writeStringField(Constants.JSON_TYPE, type);
+          json.writeStringField(constants.getType(), type);
         }
         if (id == null) {
           if (writeNullId) {
-            json.writeNullField(Constants.JSON_ID);
+            json.writeNullField(constants.getId());
           }
         } else {
-          json.writeStringField(Constants.JSON_ID, id.toASCIIString());
+          json.writeStringField(constants.getId(), id.toASCIIString());
         }
       }
     }
@@ -332,7 +343,7 @@ public class EdmAssistedJsonSerializer implements EdmAssistedSerializer {
     json.writeStartObject();
 
     if (typeName != null && isODataMetadataFull) {
-      json.writeStringField(Constants.JSON_TYPE, typeName);
+      json.writeStringField(constants.getType(), typeName);
     }
 
     for (final Property property : value.getValue()) {
@@ -388,7 +399,7 @@ public class EdmAssistedJsonSerializer implements EdmAssistedSerializer {
       }
       
       if (typeName != null) {
-        json.writeStringField(name + Constants.JSON_TYPE, constructTypeExpression(typeName));
+        json.writeStringField(name + constants.getType(), constructTypeExpression(typeName));
       }
     }
 
