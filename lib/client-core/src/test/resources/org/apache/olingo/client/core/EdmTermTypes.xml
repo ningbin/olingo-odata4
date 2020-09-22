@@ -1,0 +1,1514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+   <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+      <edmx:Include Namespace="Org.OData.Core.V1" Alias="Core" />
+   </edmx:Reference>
+   <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
+      <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="Capabilities" />
+   </edmx:Reference>
+   <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+      <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common" />
+   </edmx:Reference>
+   <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+      <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI" />
+   </edmx:Reference>
+   <edmx:DataServices>
+      <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="integrated.user.Delivery.svc">
+         <EntityType Name="ApprovalProcessStatus">
+            <Key>
+               <PropertyRef Name="approvalProcessID" />
+            </Key>
+            <Property Name="approvalProcessID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="approvalStepStatus" Type="Collection(integrated.user.Delivery.svc.ApprovalProcessStepStatus)" Precision="0" Scale="0" />
+            <Property Name="CollPropertyString" Type="Collection(Edm.String)"/>
+         </EntityType>
+         <EntityType Name="UserCourse">
+            <Key>
+               <PropertyRef Name="itemID" />
+               <PropertyRef Name="itemTypeID" />
+               <PropertyRef Name="revisionDate" />
+            </Key>
+            <Property Name="assignmentMessage" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="itemID" Type="Edm.String" Nullable="false" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Item ID</String>
+               </Annotation>
+            </Property>
+            <Property Name="itemTypeID" Type="Edm.String" Nullable="false" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Item Type ID</String>
+               </Annotation>
+            </Property>
+            <Property Name="origin" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="revisionDate" Type="Edm.Int64" Nullable="false" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Revision Date</String>
+               </Annotation>
+            </Property>
+         </EntityType>
+         <EntityType Name="Classes">
+            <Key>
+               <PropertyRef Name="classID" />
+            </Key>
+            <Property Name="classID" Type="Edm.Int64" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Class ID</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Class ID</String>
+               </Annotation>
+            </Property>
+            <Property Name="currencyID" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>=OData request filter to format the class price in given currency. If this property is not provided in the request URL, the price will be formatted as per user's preferences</String>
+               </Annotation>
+            </Property>
+            <Property Name="endDate" Type="Edm.Int64" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>End date of class, based on user's preferences</String>
+               </Annotation>
+            </Property>
+            <Property Name="endDateTime" Type="Edm.Int64" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>End time of class, based on user's preferences</String>
+               </Annotation>
+            </Property>
+            <Property Name="facility" Type="integrated.user.Delivery.svc.Facility" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Class facility</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedEndDate" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Formatted end date of class, based on user's preferences</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>End Date</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedEndDay" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Formatted end day of class, based on user's preferences</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Day</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedEndTime" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Formatted end time of class, based on user's preferences</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>End Time</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedPrice" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Formatted price</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Price</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedStartDate" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Formatted start date of class, based on user's preferences</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Start Date</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedStartDay" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Formatted start day of class, based on user's preferences</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Day</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedStartTime" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Formatted start time of class, based on user's preferences</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Start Time</String>
+               </Annotation>
+            </Property>
+            <Property Name="hasScheduleConflict" Type="Edm.Boolean" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Indicates if there is conflict with another class</String>
+               </Annotation>
+            </Property>
+            <Property Name="isRegistered" Type="Edm.Boolean" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Indicates if the user is registered for the class</String>
+               </Annotation>
+            </Property>
+            <Property Name="isSponsored" Type="Edm.Boolean" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Indicates if the class is sponsored</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Sponsored</String>
+               </Annotation>
+            </Property>
+            <Property Name="isVirtualOnly" Type="Edm.Boolean" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Indicates if the class is virtual only</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Virtual Class</String>
+               </Annotation>
+            </Property>
+            <Property Name="isVirtualOrInPerson" Type="Edm.Boolean" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Indicates if the class is physical with option to join virtually</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>In-Person or Virtual</String>
+               </Annotation>
+            </Property>
+            <Property Name="isWithinThreshold" Type="Edm.Boolean" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Indicates if the available seats for a class are within threshold</String>
+               </Annotation>
+            </Property>
+            <Property Name="locationDescription" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Location Description</String>
+               </Annotation>
+            </Property>
+            <Property Name="messages" Type="Collection(integrated.user.Delivery.svc.Message)" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Messages</String>
+               </Annotation>
+            </Property>
+            <Property Name="primaryInstructorLabel" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Primary instructor for the class</String>
+               </Annotation>
+            </Property>
+            <Property Name="registrationStatus" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Indicates the registration status of the user</String>
+               </Annotation>
+            </Property>
+            <Property Name="schedulingConflictLabel" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Message to display if there is any conflicting class</String>
+               </Annotation>
+            </Property>
+            <Property Name="seatsAvailableMessage" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Contains the available seats message for a class</String>
+               </Annotation>
+            </Property>
+            <Property Name="showRegistered" Type="Edm.Boolean" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>OData request filter to fetch only user's registered classes. If it's set to false in the request URL, then it will fetch all the classes for the course.</String>
+               </Annotation>
+            </Property>
+            <Property Name="showUpcoming" Type="Edm.Boolean" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>OData request filter value to show the upcoming classes for the course, ordered as per user's region. If set to false in the request URL, it will sort the classes as per start date, start time and facility.</String>
+               </Annotation>
+            </Property>
+            <Property Name="startDate" Type="Edm.Int64" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Start date of class, based on user's preferences</String>
+               </Annotation>
+            </Property>
+            <Property Name="startDateTime" Type="Edm.Int64" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Start time of class, based on user's preferences</String>
+               </Annotation>
+            </Property>
+            <Property Name="timezoneMessage" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Message to display when class is virtual, indicating it's user's time zone</String>
+               </Annotation>
+            </Property>
+         </EntityType>
+         <EntityType Name="CourseParentCurriculum">
+            <Key>
+               <PropertyRef Name="qualId" />
+            </Key>
+            <Property Name="classification" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Classification</String>
+               </Annotation>
+            </Property>
+            <Property Name="qualId" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Curriculum ID</String>
+               </Annotation>
+            </Property>
+            <Property Name="thumbnailURI" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Thumbnail URL</String>
+               </Annotation>
+            </Property>
+            <Property Name="title" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Title</String>
+               </Annotation>
+            </Property>
+         </EntityType>
+         <EntityType Name="UserCurricula">
+            <Key>
+               <PropertyRef Name="curriculaID" />
+            </Key>
+            <Property Name="assignmentMessage" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="curriculaID" Type="Edm.String" Nullable="false" Precision="0" Scale="0" />
+         </EntityType>
+         <EntityType Name="Category">
+            <Key>
+               <PropertyRef Name="itemID" />
+               <PropertyRef Name="itemTypeID" />
+               <PropertyRef Name="revisionDate" />
+            </Key>
+            <Property Name="categories" Type="Collection(integrated.user.Delivery.svc.CategoryDetail)" Precision="0" Scale="0" />
+            <Property Name="categoriesCount" Type="Edm.Int32" Precision="0" Scale="0" />
+            <Property Name="itemID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="itemTypeID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="revisionDate" Type="Edm.Int64" Precision="0" Scale="0" />
+         </EntityType>
+         <EntityType Name="CourseParentProgram">
+            <Key>
+               <PropertyRef Name="pgmId" />
+            </Key>
+            <Property Name="averageRating" Type="Edm.Double" Precision="28" Scale="3">
+               <Annotation Term="Common.Label">
+                  <String>Average Rating</String>
+               </Annotation>
+            </Property>
+            <Property Name="averageRatingDisplay" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="classification" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Classification</String>
+               </Annotation>
+            </Property>
+            <Property Name="duration" Type="Edm.Int64" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Duration</String>
+               </Annotation>
+            </Property>
+            <Property Name="durationType" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Duration Type</String>
+               </Annotation>
+            </Property>
+            <Property Name="pgmId" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Program ID</String>
+               </Annotation>
+            </Property>
+            <Property Name="thumbnailURI" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Thumbnail URL</String>
+               </Annotation>
+            </Property>
+            <Property Name="title" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Title</String>
+               </Annotation>
+            </Property>
+            <Property Name="totalRatingCount" Type="Edm.Int64" Precision="0" Scale="0" />
+         </EntityType>
+         <EntityType Name="UserClassEnrollment">
+            <Key>
+               <PropertyRef Name="classID" />
+            </Key>
+            <Property Name="accountCode" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="classID" Type="Edm.Int64" Nullable="false" Precision="0" Scale="0" />
+            <Property Name="currencyCode" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="ignoreScheduleConflicitWarnings" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="messages" Type="Collection(integrated.user.Delivery.svc.Message)" Precision="0" Scale="0" />
+            <Property Name="price" Type="Edm.Double" Precision="28" Scale="3" />
+            <Property Name="specialRequestList" Type="Collection(integrated.user.Delivery.svc.UserScheduleCustomColumn)" Precision="0" Scale="0" />
+            <Property Name="studentID" Type="Edm.String" Precision="0" Scale="0" />
+         </EntityType>
+         <EntityType Name="CourseActionsAndStatus">
+            <Key>
+               <PropertyRef Name="itemID" />
+               <PropertyRef Name="itemTypeID" />
+               <PropertyRef Name="revisionDate" />
+            </Key>
+            <Property Name="itemID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="itemTypeID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="revisionDate" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="userActions" Type="Collection(integrated.user.Delivery.svc.ActionsAndStatus)" Precision="0" Scale="0" />
+            <Property Name="userStatus" Type="integrated.user.Delivery.svc.ActionsAndStatus" Precision="0" Scale="0" />
+         </EntityType>
+         <EntityType Name="Order">
+            <Key>
+               <PropertyRef Name="orderNumber" />
+            </Key>
+            <Property Name="orderNumber" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Order ID</String>
+               </Annotation>
+            </Property>
+         </EntityType>
+         <EntityType Name="CourseSubstitute">
+            <Key>
+               <PropertyRef Name="itemID" />
+               <PropertyRef Name="itemTypeID" />
+               <PropertyRef Name="revisionDate" />
+            </Key>
+            <Property Name="collateralComponentClassificationID" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Classification</String>
+               </Annotation>
+            </Property>
+            <Property Name="collateralComponentID" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Substitute Item ID</String>
+               </Annotation>
+            </Property>
+            <Property Name="collateralComponentLearningType" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="collateralComponentLength" Type="Edm.Double" Precision="28" Scale="3">
+               <Annotation Term="Common.Label">
+                  <String>Total Hours</String>
+               </Annotation>
+            </Property>
+            <Property Name="collateralComponentRatings" Type="integrated.user.Delivery.svc.CourseRatings" Precision="0" Scale="0" />
+            <Property Name="collateralComponentRatingsEnabled" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="collateralComponentRevisionDate" Type="Edm.Int64" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Substitute Item Revision Date</String>
+               </Annotation>
+            </Property>
+            <Property Name="collateralComponentTitle" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Substitute Item Title</String>
+               </Annotation>
+            </Property>
+            <Property Name="collateralComponentTypeID" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Substitute Item Type</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedCollateralComponentLength" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Total Hours</String>
+               </Annotation>
+            </Property>
+            <Property Name="itemID" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Item ID</String>
+               </Annotation>
+            </Property>
+            <Property Name="itemTypeID" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Item Type ID</String>
+               </Annotation>
+            </Property>
+            <Property Name="revisionDate" Type="Edm.Int64" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Revision Date</String>
+               </Annotation>
+            </Property>
+            <Property Name="thumbnailURI" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Thumbnail URL</String>
+               </Annotation>
+            </Property>
+         </EntityType>
+         <EntityType Name="ClassDocuments">
+            <Key>
+               <PropertyRef Name="documentID" />
+            </Key>
+            <Property Name="documentID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="documentSource" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="documentTitle" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="documentTypeID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="documentURL" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="reviewFlag" Type="Edm.Boolean" Precision="0" Scale="0" />
+         </EntityType>
+         <EntityType Name="Course">
+            <Key>
+               <PropertyRef Name="itemID" />
+               <PropertyRef Name="itemTypeID" />
+               <PropertyRef Name="revisionDate" />
+            </Key>
+            <Property Name="classificationTypeID" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Classification</String>
+               </Annotation>
+            </Property>
+            <Property Name="contact" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="contactHours" Type="Edm.Double" Precision="28" Scale="3" />
+            <Property Name="courseRatings" Type="integrated.user.Delivery.svc.CourseRatings" Precision="0" Scale="0" />
+            <Property Name="courseRatingsEnabled" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="cpeHours" Type="Edm.Double" Precision="28" Scale="3" />
+            <Property Name="creditHours" Type="Edm.Double" Precision="28" Scale="3" />
+            <Property Name="deliveryMethodDescription" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="deliveryMethodID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="description" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="duration" Type="Edm.Double" Precision="28" Scale="3" />
+            <Property Name="formattedContactHours" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="formattedCpeHours" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="formattedCreditHours" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="formattedDuration" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="formattedRequiredDate" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Required Date</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedRevisionNumberAndDate" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="goals" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="hasAccess" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="htmlDescriptionEnabled" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="itemID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="itemLearningType" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="itemTypeID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="prerequisitesSatisfied" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="revisionDate" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="revisionNumber" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="sourceDescription" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="sourceID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="studentComponentId" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="targetAudience" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="thumbnailURI" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="title" Type="Edm.String" Precision="0" Scale="0" />
+            <NavigationProperty Name="categories" Type="integrated.user.Delivery.svc.Category" />
+            <NavigationProperty Name="classes" Type="Collection(integrated.user.Delivery.svc.Classes)" />
+            <NavigationProperty Name="courseActionsAndStatus" Type="integrated.user.Delivery.svc.CourseActionsAndStatus" />
+            <NavigationProperty Name="courseParentCurricula" Type="Collection(integrated.user.Delivery.svc.CourseParentCurriculum)" />
+            <NavigationProperty Name="courseParentPrograms" Type="Collection(integrated.user.Delivery.svc.CourseParentProgram)" />
+            <NavigationProperty Name="prerequisites" Type="Collection(integrated.user.Delivery.svc.UserCoursePrerequisites)">
+               <Annotation Term="Common.Label">
+                  <String>Prerequisites</String>
+               </Annotation>
+            </NavigationProperty>
+            <NavigationProperty Name="relatedDocuments" Type="Collection(integrated.user.Delivery.svc.RelatedDocument)" />
+            <NavigationProperty Name="substitutesCredits" Type="Collection(integrated.user.Delivery.svc.CourseSubstitute)">
+               <Annotation Term="Common.Label">
+                  <String>Substitute Credits:</String>
+               </Annotation>
+            </NavigationProperty>
+         </EntityType>
+         <EntityType Name="UserClass">
+            <Key>
+               <PropertyRef Name="classID" />
+            </Key>
+            <Property Name="action" Type="integrated.user.Delivery.svc.ScheduleAction" Precision="0" Scale="0" />
+            <Property Name="agenda" Type="Collection(integrated.user.Delivery.svc.Agenda)" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Agenda</String>
+               </Annotation>
+            </Property>
+            <Property Name="approvalRequiredLabel" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="classID" Type="Edm.Int64" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Class ID</String>
+               </Annotation>
+            </Property>
+            <Property Name="contact" Type="integrated.user.Delivery.svc.Contact" Precision="0" Scale="0" />
+            <Property Name="description" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>This is the description for the class dirived from the course this class is associated with.</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Description</String>
+               </Annotation>
+            </Property>
+            <Property Name="enrollmentSeatID" Type="Edm.Int64" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Enrollment Seat ID</String>
+               </Annotation>
+            </Property>
+            <Property Name="facility" Type="integrated.user.Delivery.svc.Facility" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Class facility</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedEndDate" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Formatted end date of class, based on user's preferences</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>End Date</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedEndDay" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Formatted end day of class, based on user's preferences</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Day</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedEndTime" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Formatted end time of class, based on user's preferences</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>End Time</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedPrice" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Formatted price</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Price</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedStartDate" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Formatted start date of class, based on user's preferences</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Start Date</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedStartDay" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Formatted start day of class, based on user's preferences</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Day</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedStartTime" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Formatted start time of class, based on user's preferences</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Start Time</String>
+               </Annotation>
+            </Property>
+            <Property Name="hasScheduleConflict" Type="Edm.Boolean" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Indicates if there is conflict with another class</String>
+               </Annotation>
+            </Property>
+            <Property Name="isApprovalRequired" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="isPriceInUserCurrency" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="isSponsored" Type="Edm.Boolean" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Indicates if the class is sponsored</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Sponsored</String>
+               </Annotation>
+            </Property>
+            <Property Name="isVirtualOnly" Type="Edm.Boolean" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Indicates if the class is virtual only</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>Virtual Class</String>
+               </Annotation>
+            </Property>
+            <Property Name="isVirtualOrInPerson" Type="Edm.Boolean" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Indicates if the class is physical with option to join virtually</String>
+               </Annotation>
+               <Annotation Term="Common.Label">
+                  <String>In-Person or Virtual</String>
+               </Annotation>
+            </Property>
+            <Property Name="isWithinThreshold" Type="Edm.Boolean" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Indicates if the available seats for a class are within threshold</String>
+               </Annotation>
+            </Property>
+            <Property Name="messages" Type="Collection(integrated.user.Delivery.svc.Message)" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Messages</String>
+               </Annotation>
+            </Property>
+            <Property Name="registrationApprovalProcessID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="registrationCutoffMessage" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="registrationStatus" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Indicates the registration status of the user</String>
+               </Annotation>
+            </Property>
+            <Property Name="scheduleConflicts" Type="Collection(integrated.user.Delivery.svc.ScheduleConflict)" Precision="0" Scale="0" />
+            <Property Name="schedulingConflictLabel" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Message to display if there is any conflicting class</String>
+               </Annotation>
+            </Property>
+            <Property Name="schedulingConflictMessage" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="seatsAvailableMessage" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Contains the available seats message for a class</String>
+               </Annotation>
+            </Property>
+            <Property Name="timezoneMessage" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Core.Description">
+                  <String>Message to display when class is virtual, indicating it's user's time zone</String>
+               </Annotation>
+            </Property>
+            <Property Name="title" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Title</String>
+               </Annotation>
+            </Property>
+            <Property Name="withdrawApprovalProcessID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="withdrawCutoffMessage" Type="Edm.String" Precision="0" Scale="0" />
+            <NavigationProperty Name="approvalStatus" Type="integrated.user.Delivery.svc.ApprovalProcessStatus">
+               <Annotation Term="Common.Label">
+                  <String>Approval Information</String>
+               </Annotation>
+            </NavigationProperty>
+            <NavigationProperty Name="documents" Type="Collection(integrated.user.Delivery.svc.ClassDocuments)">
+               <Annotation Term="Common.Label">
+                  <String>Attachment</String>
+               </Annotation>
+            </NavigationProperty>
+            <NavigationProperty Name="instructors" Type="Collection(integrated.user.Delivery.svc.Instructor)">
+               <Annotation Term="Common.Label">
+                  <String>Instructors</String>
+               </Annotation>
+            </NavigationProperty>
+            <NavigationProperty Name="order" Type="integrated.user.Delivery.svc.Order">
+               <Annotation Term="Common.Label">
+                  <String>Order</String>
+               </Annotation>
+            </NavigationProperty>
+         </EntityType>
+         <EntityType Name="Instructor">
+            <Key>
+               <PropertyRef Name="instructorID" />
+            </Key>
+            <Property Name="firstName" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>First Name</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedFullName" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Name</String>
+               </Annotation>
+            </Property>
+            <Property Name="formattedInitials" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="imageID" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Thumbnail URL</String>
+               </Annotation>
+            </Property>
+            <Property Name="instructorID" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Instructor ID</String>
+               </Annotation>
+            </Property>
+            <Property Name="isImagePresent" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="isPrimary" Type="Edm.Boolean" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Primary Instructor</String>
+               </Annotation>
+            </Property>
+            <Property Name="lastName" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Last Name</String>
+               </Annotation>
+            </Property>
+            <Property Name="middleName" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Middle Name</String>
+               </Annotation>
+            </Property>
+         </EntityType>
+         <EntityType Name="RelatedDocument">
+            <Key>
+               <PropertyRef Name="documentID" />
+            </Key>
+            <Property Name="documentID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="documentLocation" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="documentTitle" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="reviewFlag" Type="Edm.Boolean" Precision="0" Scale="0" />
+         </EntityType>
+         <EntityType Name="UserCoursePrerequisites">
+            <Key>
+               <PropertyRef Name="itemID" />
+               <PropertyRef Name="itemTypeID" />
+               <PropertyRef Name="revisionDate" />
+            </Key>
+            <Property Name="groupCompleted" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="itemID" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Item ID</String>
+               </Annotation>
+            </Property>
+            <Property Name="itemTypeID" Type="Edm.String" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Item Type ID</String>
+               </Annotation>
+            </Property>
+            <Property Name="prerequisitesGroupItems" Type="Collection(integrated.user.Delivery.svc.PrerequisiteGroupItem)" Precision="0" Scale="0" />
+            <Property Name="revisionDate" Type="Edm.Int64" Precision="0" Scale="0">
+               <Annotation Term="Common.Label">
+                  <String>Revision Date</String>
+               </Annotation>
+            </Property>
+         </EntityType>
+         <ComplexType Name="ActionsAndStatus">
+            <Property Name="actionStatusName" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="actionStatusText" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="enabled" Type="Edm.Boolean" Precision="0" Scale="0" />
+         </ComplexType>
+         <ComplexType Name="CourseRatings">
+            <Property Name="averageRating" Type="Edm.Double" Precision="28" Scale="3" />
+            <Property Name="averageRatingDisplay" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="rating1Count" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="rating1Percentage" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="rating2Count" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="rating2Percentage" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="rating3Count" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="rating3Percentage" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="rating4Count" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="rating4Percentage" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="rating5Count" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="rating5Percentage" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="totalRatingCount" Type="Edm.Int64" Precision="0" Scale="0" />
+         </ComplexType>
+         <ComplexType Name="Message">
+            <Property Name="code" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="message" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="numericSeverity" Type="Edm.Int32" Precision="0" Scale="0" />
+            <Property Name="target" Type="Edm.String" Precision="0" Scale="0" />
+         </ComplexType>
+         <ComplexType Name="CategoryDetail">
+            <Property Name="displayValue" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="subjectAreaDescription" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="subjectAreaID" Type="Edm.String" Precision="0" Scale="0" />
+         </ComplexType>
+         <ComplexType Name="Agenda">
+            <Property Name="endDate" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="endDateTime" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="formattedEndDate" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="formattedEndDay" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="formattedEndTime" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="formattedStartDate" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="formattedStartDay" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="formattedStartTime" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="isVirtual" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="locationTitle" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="segmentAction" Type="integrated.user.Delivery.svc.ScheduleAction" Precision="0" Scale="0" />
+            <Property Name="segmentNumber" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="sessionDescription" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="startDate" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="startDateTime" Type="Edm.Int64" Precision="0" Scale="0" />
+         </ComplexType>
+         <ComplexType Name="PrerequisiteGroupItem">
+            <Property Name="action" Type="integrated.user.Delivery.svc.ActionsAndStatus" Precision="0" Scale="0" />
+            <Property Name="availableInLearningPlan" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="availableInStudentCatalog" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="componentKey" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="courseRatings" Type="integrated.user.Delivery.svc.CourseRatings" Precision="0" Scale="0" />
+            <Property Name="cpntSysGuid" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="editPrereqAllowed" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="finalOrder" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="groupName" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="groupNameLabelKey" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="groupOrder" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="itemID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="itemTypeID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="prerequisiteCompleteInfo" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="prerequisiteCompleted" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="prerequisiteCompletionDate" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="prerequisiteCompletionStatusId" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="prerequisiteComponentClassificationType" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="prerequisiteComponentID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="prerequisiteComponentTypeID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="prerequisiteCourseRatingsEnabled" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="prerequisiteGroupID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="prerequisiteGroupItemTitle" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="prerequisiteItemOrder" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="prerequisiteQualID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="prerequisiteQualRootQualID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="prerequisiteRevisionDate" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="prerequisiteRevisionNumber" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="revisionDate" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="status" Type="integrated.user.Delivery.svc.ActionsAndStatus" Precision="0" Scale="0" />
+            <Property Name="thumbnailURI" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="title" Type="Edm.String" Precision="0" Scale="0" />
+         </ComplexType>
+         <ComplexType Name="UserScheduleCustomColumn">
+            <Property Name="fieldNumber" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="userProvidedValue" Type="Edm.String" Precision="0" Scale="0" />
+         </ComplexType>
+         <ComplexType Name="Contact">
+            <Property Name="emailAddress" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="faxNumber" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="name" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="phoneNumber" Type="Edm.String" Precision="0" Scale="0" />
+         </ComplexType>
+         <ComplexType Name="ApprovalProcessStepStatus">
+            <Property Name="effectiveApprovers" Type="Collection(integrated.user.Delivery.svc.Approvers)" Precision="0" Scale="0" />
+            <Property Name="formattedApprovedByName" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="formattedApprovedDate" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="formattedStep" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="status" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="statusID" Type="Edm.String" Precision="0" Scale="0" />
+         </ComplexType>
+         <ComplexType Name="ScheduleConflict">
+            <Property Name="courseID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="courseTitle" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="courseTypeID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="isConflictedScheduleABlock" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="message" Type="integrated.user.Delivery.svc.Message" Precision="0" Scale="0" />
+            <Property Name="revisionDate" Type="Edm.Int64" Precision="0" Scale="0" />
+            <Property Name="scheduleBlockDesc" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="scheduleBlockID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="scheduleID" Type="Edm.Int64" Precision="0" Scale="0" />
+         </ComplexType>
+         <ComplexType Name="ScheduleAction">
+            <Property Name="actionType" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="actionURL" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="isEnabled" Type="Edm.Boolean" Precision="0" Scale="0" />
+            <Property Name="label" Type="Edm.String" Precision="0" Scale="0" />
+         </ComplexType>
+         <ComplexType Name="Approvers">
+            <Property Name="firstName" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="formattedName" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="lastName" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="middleName" Type="Edm.String" Precision="0" Scale="0" />
+         </ComplexType>
+         <ComplexType Name="Facility">
+            <Property Name="address" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="city" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="country" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="description" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="facilityID" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="postal" Type="Edm.String" Precision="0" Scale="0" />
+            <Property Name="state" Type="Edm.String" Precision="0" Scale="0" />
+         </ComplexType>
+         <EntityContainer Name="Container">
+            <EntitySet Name="ApprovalProcessStatus" EntityType="integrated.user.Delivery.svc.ApprovalProcessStatus">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="UserCourse" EntityType="integrated.user.Delivery.svc.UserCourse">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>true</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>true</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>true</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="Classes" EntityType="integrated.user.Delivery.svc.Classes">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="CourseParentCurriculum" EntityType="integrated.user.Delivery.svc.CourseParentCurriculum">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="UserCurricula" EntityType="integrated.user.Delivery.svc.UserCurricula">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>true</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>true</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>true</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="Category" EntityType="integrated.user.Delivery.svc.Category">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="CourseParentProgram" EntityType="integrated.user.Delivery.svc.CourseParentProgram">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="UserClassEnrollment" EntityType="integrated.user.Delivery.svc.UserClassEnrollment">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>true</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>true</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>true</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="CourseActionsAndStatus" EntityType="integrated.user.Delivery.svc.CourseActionsAndStatus">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="Order" EntityType="integrated.user.Delivery.svc.Order">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="CourseSubstitute" EntityType="integrated.user.Delivery.svc.CourseSubstitute">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="ClassDocuments" EntityType="integrated.user.Delivery.svc.ClassDocuments">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="Course" EntityType="integrated.user.Delivery.svc.Course">
+               <NavigationPropertyBinding Path="categories" Target="Category" />
+               <NavigationPropertyBinding Path="classes" Target="Classes" />
+               <NavigationPropertyBinding Path="courseActionsAndStatus" Target="CourseActionsAndStatus" />
+               <NavigationPropertyBinding Path="courseParentCurricula" Target="CourseParentCurriculum" />
+               <NavigationPropertyBinding Path="courseParentPrograms" Target="CourseParentProgram" />
+               <NavigationPropertyBinding Path="prerequisites" Target="UserCoursePrerequisites" />
+               <NavigationPropertyBinding Path="relatedDocuments" Target="RelatedDocument" />
+               <NavigationPropertyBinding Path="substitutesCredits" Target="CourseSubstitute" />
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="UserClass" EntityType="integrated.user.Delivery.svc.UserClass">
+               <NavigationPropertyBinding Path="approvalStatus" Target="ApprovalProcessStatus" />
+               <NavigationPropertyBinding Path="documents" Target="ClassDocuments" />
+               <NavigationPropertyBinding Path="instructors" Target="Instructor" />
+               <NavigationPropertyBinding Path="order" Target="Order" />
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="Instructor" EntityType="integrated.user.Delivery.svc.Instructor">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="RelatedDocument" EntityType="integrated.user.Delivery.svc.RelatedDocument">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+            <EntitySet Name="UserCoursePrerequisites" EntityType="integrated.user.Delivery.svc.UserCoursePrerequisites">
+               <Annotation Term="Capabilities.InsertRestrictions">
+                  <Record>
+                     <PropertyValue Property="Insertable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableProperties">
+                        <Collection />
+                     </PropertyValue>
+                     <PropertyValue Property="NonInsertableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.UpdateRestrictions">
+                  <Record>
+                     <PropertyValue Property="Updatable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonUpdatableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+               <Annotation Term="Capabilities.DeleteRestrictions">
+                  <Record>
+                     <PropertyValue Property="Deletable">
+                        <Bool>false</Bool>
+                     </PropertyValue>
+                     <PropertyValue Property="NonDeletableNavigationProperties">
+                        <Collection />
+                     </PropertyValue>
+                  </Record>
+               </Annotation>
+            </EntitySet>
+         </EntityContainer>
+      </Schema>
+   </edmx:DataServices>
+</edmx:Edmx>

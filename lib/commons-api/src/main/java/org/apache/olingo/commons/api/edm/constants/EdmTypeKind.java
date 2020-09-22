@@ -53,6 +53,9 @@ public enum EdmTypeKind {
   /**
    * Function type
    */
-  FUNCTION
-
+  FUNCTION,
+  /**
+   * Term type
+   */
+  TERM
 }

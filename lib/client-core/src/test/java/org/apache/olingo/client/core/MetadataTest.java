@@ -28,6 +28,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.olingo.client.api.ODataClient;
+import org.apache.olingo.client.api.communication.request.retrieve.ODataRawRequest;
+import org.apache.olingo.client.api.communication.response.ODataRawResponse;
+import org.apache.olingo.client.api.edm.xml.Reference;
 import org.apache.olingo.client.api.edm.xml.XMLMetadata;
 import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.edm.Edm;
@@ -36,6 +40,7 @@ import org.apache.olingo.commons.api.edm.EdmActionImport;
 import org.apache.olingo.commons.api.edm.EdmAnnotation;
 import org.apache.olingo.commons.api.edm.EdmAnnotations;
 import org.apache.olingo.commons.api.edm.EdmComplexType;
+import org.apache.olingo.commons.api.edm.EdmElement;
 import org.apache.olingo.commons.api.edm.EdmEntityContainer;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
@@ -49,6 +54,7 @@ import org.apache.olingo.commons.api.edm.EdmProperty;
 import org.apache.olingo.commons.api.edm.EdmSchema;
 import org.apache.olingo.commons.api.edm.EdmSingleton;
 import org.apache.olingo.commons.api.edm.EdmTerm;
+import org.apache.olingo.commons.api.edm.EdmType;
 import org.apache.olingo.commons.api.edm.EdmTypeDefinition;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.annotation.EdmCollection;
@@ -933,6 +939,13 @@ public class MetadataTest extends AbstractTest {
          }
        }
      }
+     
+    EdmSchema schema = edm.getSchemas().get(1);
+    EdmAnnotations annotations = schema.getAnnotationGroups().get(0);
+    EdmExpression exp = annotations.getAnnotations().get(0).getExpression();
+    assertEquals("AnnotationPath", exp.getExpressionName());
+    assertEquals("I_DraftAdministrativeData/ComplexProperty/@UI.AdditionalInfo", 
+    		exp.asDynamic().asAnnotationPath().getValue());
   }
 
   /**
@@ -1186,5 +1199,60 @@ public class MetadataTest extends AbstractTest {
     assertEquals("floating", FloatingDecimalType.getScaleAsString());
     assertEquals(Integer.valueOf(0), FloatingDecimalType.getScale());
     assertEquals(Integer.valueOf(7), FloatingDecimalType.getPrecision());
+  }
+  
+  @Test
+  public void testEdmTermTypes() {
+	  ODataClient client = ODataClientFactory.getClient();
+	  final XMLMetadata metadata = client.getDeserializer(ContentType.APPLICATION_XML)
+			  .toMetadata(getClass().getResourceAsStream("EdmTermTypes.xml"));
+	  List<InputStream> streams = new ArrayList<>();
+	  for (Reference reference : metadata.getReferences()) {
+	      ODataRawRequest request = client.getRetrieveRequestFactory().getRawRequest(reference.getUri());
+	      ODataRawResponse response = request.execute();
+	      streams.add(response.getRawResponse());
+    }
+	Edm edm = client.getReader().readMetadata(metadata, streams);
+	EdmSchema schema = edm.getSchemas().get(2);
+	EdmComplexType complexType = schema.getComplexTypes().get(2);
+	
+	EdmElement element = complexType.getProperty("FilterableProperties");
+	EdmType type = element.getType();
+	assertEquals("FilterableProperties", element.getName());
+	assertEquals("Edm.PropertyPath", type.getFullQualifiedName().getFullQualifiedNameAsString());
+	assertTrue(element.isCollection());
+	
+	element = complexType.getProperty("Supported");
+	type = element.getType();
+	assertEquals("Supported", element.getName());
+	assertEquals("Edm.Boolean", type.getFullQualifiedName().getFullQualifiedNameAsString());
+	assertFalse(element.isCollection());
+	
+	element = complexType.getProperty("ExpandableProperties");
+	type = element.getType();
+	assertEquals("ExpandableProperties", element.getName());
+	assertEquals("Edm.NavigationPropertyPath", type.getFullQualifiedName().getFullQualifiedNameAsString());
+	assertTrue(element.isCollection());
+	
+	complexType = schema.getComplexTypes().get(5);
+	element = complexType.getProperty("FilterFunctions");
+	type = element.getType();
+	assertEquals("FilterFunctions", element.getName());
+	assertEquals("Edm.String", type.getFullQualifiedName().getFullQualifiedNameAsString());
+	assertTrue(element.isCollection());
+	
+	schema = edm.getSchemas().get(0);
+	EdmEntityType entityType = schema.getEntityTypes().get(0);
+	element = entityType.getProperty("CollPropertyString");
+	type = element.getType();
+	assertEquals("CollPropertyString", element.getName());
+	assertEquals("Edm.String", type.getFullQualifiedName().getFullQualifiedNameAsString());
+	assertTrue(element.isCollection());
+	
+	schema = edm.getSchemas().get(3);
+	EdmTerm term = schema.getTerms().get(42);
+	type = term.getType();
+	assertEquals("RelatedRecursiveHierarchy", term.getName());
+	assertEquals("Edm.AnnotationPath", type.getFullQualifiedName().getFullQualifiedNameAsString());
   }
 }

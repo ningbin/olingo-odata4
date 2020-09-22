@@ -32,7 +32,7 @@
   <edmx:DataServices>
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="sepmra_so_man2_anno_mdl.v1">
     <Annotations Target="SEPMRA_SO_MAN2.SEPMRA_SO_MAN2_Entities/I_DraftAdministrativeData/ComplexProperty/PropertyInt16">
-        <Annotation Term="UI.AdditionalInfo"/>
+        <Annotation Term="UI.AdditionalInfo" AnnotationPath="I_DraftAdministrativeData/ComplexProperty/@UI.AdditionalInfo"/>
     </Annotations>
     <Annotations Target="Test.SEPMRA_SO_MAN2_Entities/I_DraftAdministrativeData/ComplexProperty/PropertyInt16">
         <Annotation Term="UI.HeaderInfo"/>

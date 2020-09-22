@@ -30,10 +30,12 @@ import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.edm.EdmEnumType;
 import org.apache.olingo.commons.api.edm.EdmPrimitiveType;
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
+import org.apache.olingo.commons.api.edm.EdmTermTypeKind;
 import org.apache.olingo.commons.api.edm.EdmType;
 import org.apache.olingo.commons.api.edm.EdmTypeDefinition;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.core.edm.primitivetype.EdmPrimitiveTypeFactory;
+import org.apache.olingo.commons.core.edm.termtype.EdmTermTypeFactory;
 
 public class EdmTypeInfo {
 
@@ -70,6 +72,7 @@ public class EdmTypeInfo {
   private EdmEnumType enumType;
   private EdmComplexType complexType;
   private EdmEntityType entityType;
+  private EdmTermTypeKind termType;
 
   private EdmTypeInfo(final Edm edm, final String typeExpression, final boolean includeAnnotations) {
     String baseType;
@@ -110,8 +113,9 @@ public class EdmTypeInfo {
     fullQualifiedName = new FullQualifiedName(namespace, typeName);
 
     primitiveType = EdmPrimitiveTypeKind.getByName(typeName);
+    termType = EdmTermTypeKind.getByName(typeName);
 
-    if (primitiveType == null && edm != null) {
+    if (primitiveType == null && termType == null && edm != null) {
       typeDefinition = edm.getTypeDefinition(fullQualifiedName);
       if (typeDefinition == null) {
         enumType = edm.getEnumType(fullQualifiedName);
@@ -171,10 +175,18 @@ public class EdmTypeInfo {
   public boolean isPrimitiveType() {
     return primitiveType != null;
   }
+  
+  public boolean isTermType() {
+	    return termType != null;
+	  }
 
   public EdmPrimitiveTypeKind getPrimitiveTypeKind() {
     return primitiveType;
   }
+  
+  public EdmTermTypeKind getTermTypeKind() {
+	    return termType;
+	  }
 
   public boolean isTypeDefinition() {
     return typeDefinition != null;
@@ -214,6 +226,7 @@ public class EdmTypeInfo {
         isEnumType() ? getEnumType() :
         isComplexType() ? getComplexType() :
         isEntityType() ? getEntityType() :
+        isTermType() ? EdmTermTypeFactory.getInstance(getTermTypeKind()) :
         null;
   }
 
