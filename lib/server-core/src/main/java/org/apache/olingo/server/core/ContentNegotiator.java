@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.olingo.commons.api.format.AcceptCharset;
 import org.apache.olingo.commons.api.format.AcceptType;
@@ -90,8 +91,10 @@ public final class ContentNegotiator {
           throws ContentNegotiatorException {
     final List<ContentType> supportedContentTypes =
         getSupportedContentTypes(customContentTypeSupport, representationType);
-    final String acceptHeaderValue = request.getHeader(HttpHeader.ACCEPT);
-    String acceptCharset = request.getHeader(HttpHeader.ACCEPT_CHARSET);
+    final List<String> acceptHeaderValueList = request.getHeaders(HttpHeader.ACCEPT);
+    final String acceptHeaderValue = acceptHeaderValueList != null ? acceptHeaderValueList.stream().collect(Collectors.joining(", ")) : null;
+    List<String> acceptCharsetValueList = request.getHeaders(HttpHeader.ACCEPT_CHARSET);
+    String acceptCharset = acceptCharsetValueList != null ? acceptCharsetValueList.stream().collect(Collectors.joining(", ")) : null;
     List<AcceptCharset> charsets = null;
     ContentType result = null;
 
@@ -130,7 +133,7 @@ public final class ContentNegotiator {
             AcceptHeaderContentNegotiatorException.MessageKeys.UNSUPPORTED_FORMAT_OPTION, formatString);
       } catch (final ContentNegotiatorException e) {
         throw new ContentNegotiatorException (
-            "Unsupported $format=" + formatString, e, 
+            "Unsupported $format=" + formatString, e,
             ContentNegotiatorException.MessageKeys.UNSUPPORTED_FORMAT_OPTION, formatString);
       }
       if (result == null) {
@@ -140,13 +143,13 @@ public final class ContentNegotiator {
     } else if (acceptHeaderValue != null) {
       charsets = getAcceptCharset(acceptCharset);
       try {
-        result = getAcceptedType(AcceptType.create(acceptHeaderValue), 
+        result = getAcceptedType(AcceptType.create(acceptHeaderValue),
             supportedContentTypes, charsets);
       } catch (final IllegalArgumentException e) {
           throw new AcceptHeaderContentNegotiatorException(e.getMessage(), e,
-              AcceptHeaderContentNegotiatorException.MessageKeys.UNSUPPORTED_ACCEPT_TYPES, 
+              AcceptHeaderContentNegotiatorException.MessageKeys.UNSUPPORTED_ACCEPT_TYPES,
               e.getMessage().substring(e.getMessage().lastIndexOf(COLON) + 1));
-      } 
+      }
       if (result == null) {
         List<AcceptType> types = AcceptType.create(acceptHeaderValue);
         throw new ContentNegotiatorException(
@@ -157,9 +160,9 @@ public final class ContentNegotiator {
     } else {
       charsets = getAcceptCharset(acceptCharset);
       final ContentType requestedContentType = getDefaultSupportedContentTypes(representationType).get(0);
-      result = getAcceptedType(AcceptType.fromContentType(requestedContentType), 
+      result = getAcceptedType(AcceptType.fromContentType(requestedContentType),
           supportedContentTypes, charsets);
-      
+
       if (result == null) {
         throw new ContentNegotiatorException(
             "unsupported accept content type: " + requestedContentType + " != " + supportedContentTypes,
@@ -181,21 +184,21 @@ public final class ContentNegotiator {
     List<AcceptCharset> charsets = null;
     if (acceptCharset != null) {
       try {
-        charsets = AcceptCharset.create(acceptCharset); 
+        charsets = AcceptCharset.create(acceptCharset);
       } catch (UnsupportedCharsetException e) {
         throw new ContentNegotiatorException(e.getMessage(), e,
-            ContentNegotiatorException.MessageKeys.UNSUPPORTED_ACCEPT_CHARSET, 
+            ContentNegotiatorException.MessageKeys.UNSUPPORTED_ACCEPT_CHARSET,
             e.getMessage().substring(e.getMessage().lastIndexOf(COLON) + 1));
       } catch (IllegalArgumentException e) {
-        throw new AcceptHeaderContentNegotiatorException(e.getMessage(), e, 
-            AcceptHeaderContentNegotiatorException.MessageKeys.UNSUPPORTED_ACCEPT_CHARSET_HEADER_OPTIONS, 
+        throw new AcceptHeaderContentNegotiatorException(e.getMessage(), e,
+            AcceptHeaderContentNegotiatorException.MessageKeys.UNSUPPORTED_ACCEPT_CHARSET_HEADER_OPTIONS,
             e.getMessage().substring(e.getMessage().lastIndexOf(COLON) + 1));
       }
     }
     return charsets;
   }
 
-  private static ContentType mapContentType(final String formatString, 
+  private static ContentType mapContentType(final String formatString,
       RepresentationType representationType) {
     if (representationType.name().equals(METADATA)) {
       return JSON.equalsIgnoreCase(formatString) ||
@@ -205,7 +208,7 @@ public final class ContentNegotiator {
     } else {
       return JSON.equalsIgnoreCase(formatString) ? ContentType.JSON :
           XML.equalsIgnoreCase(formatString) ? ContentType.APPLICATION_XML :
-              ATOM.equalsIgnoreCase(formatString) ? ContentType.APPLICATION_ATOM_XML : 
+              ATOM.equalsIgnoreCase(formatString) ? ContentType.APPLICATION_ATOM_XML :
                 APPLICATION_JSON.equalsIgnoreCase(formatString)? ContentType.APPLICATION_JSON: null;
     }
   }
@@ -245,7 +248,7 @@ public final class ContentNegotiator {
             } else {
               throw new AcceptHeaderContentNegotiatorException(
                   "Illegal charset in Accept header: " + charSetValue,
-                  AcceptHeaderContentNegotiatorException.MessageKeys.UNSUPPORTED_ACCEPT_HEADER_CHARSET, 
+                  AcceptHeaderContentNegotiatorException.MessageKeys.UNSUPPORTED_ACCEPT_HEADER_CHARSET,
                   acceptedType.toString());
             }
           }
@@ -257,7 +260,7 @@ public final class ContentNegotiator {
         } else if ("false".equalsIgnoreCase(ieee754compatibleValue)) {
           contentType = ContentType.create(contentType, ContentType.PARAMETER_IEEE754_COMPATIBLE, "false");
         } else if (ieee754compatibleValue != null) {
-          throw new IllegalArgumentException("Invalid IEEE754Compatible value in accept header:" + 
+          throw new IllegalArgumentException("Invalid IEEE754Compatible value in accept header:" +
         acceptedType.toString());
         }
 
