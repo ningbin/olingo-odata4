@@ -92,9 +92,11 @@ public final class ContentNegotiator {
     final List<ContentType> supportedContentTypes =
         getSupportedContentTypes(customContentTypeSupport, representationType);
     final List<String> acceptHeaderValueList = request.getHeaders(HttpHeader.ACCEPT);
-    final String acceptHeaderValue = acceptHeaderValueList != null ? acceptHeaderValueList.stream().collect(Collectors.joining(", ")) : null;
+    final String acceptHeaderValue = acceptHeaderValueList != null ?
+        acceptHeaderValueList.stream().collect(Collectors.joining(", ")) : null;
     List<String> acceptCharsetValueList = request.getHeaders(HttpHeader.ACCEPT_CHARSET);
-    String acceptCharset = acceptCharsetValueList != null ? acceptCharsetValueList.stream().collect(Collectors.joining(", ")) : null;
+    String acceptCharset = acceptCharsetValueList != null ?
+        acceptCharsetValueList.stream().collect(Collectors.joining(", ")) : null;
     List<AcceptCharset> charsets = null;
     ContentType result = null;
 
