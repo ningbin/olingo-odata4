@@ -457,10 +457,14 @@ public class ODataJsonDeserializer implements ODataDeserializer {
         Link bindingLink = consumeBindingLink(field.getKey(), field.getValue(), edmEntityType);
         entity.getNavigationBindings().add(bindingLink);
         toRemove.add(field.getKey());
-      }
-      if (!field.getKey().contains(ODATA_CONTROL_INFORMATION_PREFIX) && 
-    		  field.getKey().contains(ODATA_ANNOTATION_MARKER)) {
-    	  String[] keySplit = field.getKey().split("@");
+      } else if (!field.getKey().contains(ODATA_CONTROL_INFORMATION_PREFIX) && 
+    		  field.getKey().contains(ODATA_ANNOTATION_MARKER) &&
+    		  field.getKey().substring(field.getKey().indexOf(ODATA_ANNOTATION_MARKER))
+    		  .contains(".")) {
+    	// Instance annotations start with @ sign followed by 
+          // alias or namespace 
+          // followed by a dot and then term name
+    	  String[] keySplit = field.getKey().split(ODATA_ANNOTATION_MARKER);
     		String termName = keySplit[1];
     	  Annotation annotation = instanceAnnotDeserializer.consumeInstanceAnnotation(termName, field.getValue());
     	  // If keySplit has a value at zeroth index then instance annotation is specified like 

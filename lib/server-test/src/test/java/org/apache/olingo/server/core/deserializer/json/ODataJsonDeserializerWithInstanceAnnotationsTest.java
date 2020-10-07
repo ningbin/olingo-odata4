@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.olingo.commons.api.data.Annotation;
@@ -49,12 +50,13 @@ public class ODataJsonDeserializerWithInstanceAnnotationsTest extends AbstractOD
   @Test
   public void instanceAnnotOnEntity() throws Exception {
 	  final String entityString = "{"
-		        + "\"@odata.context\":\"$metadata#ESAllPrim/$entity\","
-		        + "\"@odata.metadataEtag\":\"W/\\\"metadataETag\\\"\","
+		        + "\"@context\":\"$metadata#ESAllPrim/$entity\","
+		        + "\"@metadataEtag\":\"W/\\\"metadataETag\\\"\","
 		        + "\"@com.contoso.display.highlight\":true,"
 		        + "\"@com.contoso.PersonalInfo.PhoneNumbers\":"
 		        + "[\"(203)555-1718\",\"(203)555-1719\"],"
 		        + "\"PropertyInt16\":32767,"
+		        + "\"NavPropertyETTwoPrimOne@bind\": \"ETTwoPrim(1)\","
 		        + "\"PropertyString\":\"First Resource - positive values\","
 		        + "\"PropertyBoolean\":true,"
 		        + "\"PropertyByte\":255,"
@@ -71,7 +73,9 @@ public class ODataJsonDeserializerWithInstanceAnnotationsTest extends AbstractOD
 		        + "\"PropertyGuid\":\"01234567-89ab-cdef-0123-456789abcdef\","
 		        + "\"PropertyTimeOfDay\":\"03:26:05\""
 		        + "}";
-    final Entity entity = deserialize(entityString, "ETAllPrim");
+    final Entity entity = deserializeWithResultWithConstantV401(
+    		new ByteArrayInputStream(entityString.getBytes()), 
+    		"ETAllPrim", ContentType.APPLICATION_JSON).getEntity();
     assertNotNull(entity);
     List<Annotation> annotations = entity.getAnnotations();
     assertEquals(2, annotations.size());
@@ -81,6 +85,9 @@ public class ODataJsonDeserializerWithInstanceAnnotationsTest extends AbstractOD
     assertEquals("com.contoso.PersonalInfo.PhoneNumbers", annotations.get(1).getTerm());
     assertEquals(ValueType.COLLECTION_PRIMITIVE, annotations.get(1).getValueType());
     assertEquals(2, annotations.get(1).asCollection().size());
+    assertEquals(1, entity.getNavigationBindings().size());
+    assertEquals("NavPropertyETTwoPrimOne", entity
+    		.getNavigationBinding("NavPropertyETTwoPrimOne").getTitle());
   }
   
   @Test
@@ -230,6 +237,15 @@ public class ODataJsonDeserializerWithInstanceAnnotationsTest extends AbstractOD
 	    return deserializeWithResult(stream, entityTypeName, contentType).getEntity();
 	  }
 
+  protected static DeserializerResult deserializeWithResultWithConstantV401(final InputStream stream, 
+		  final String entityTypeName, final ContentType contentType) 
+				  throws DeserializerException {
+    final EdmEntityType entityType = edm.getEntityType(new FullQualifiedName(NAMESPACE, entityTypeName));
+    List<String> odataVersions = new ArrayList<>();
+    odataVersions.add("4.01");
+    return odata.createDeserializer(contentType, metadata, odataVersions).entity(stream, entityType);
+  }
+  
   protected static DeserializerResult deserializeWithResult(final InputStream stream, 
 		  final String entityTypeName, final ContentType contentType) 
 				  throws DeserializerException {
