@@ -39,8 +39,10 @@ import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.IConstants;
 import org.apache.olingo.commons.api.constants.Constantsv00;
 import org.apache.olingo.commons.api.constants.Constantsv01;
+import org.apache.olingo.commons.api.data.Annotation;
 import org.apache.olingo.commons.api.data.ComplexValue;
 import org.apache.olingo.commons.api.data.DeletedEntity;
+import org.apache.olingo.commons.api.data.DeletedEntity.Reason;
 import org.apache.olingo.commons.api.data.Delta;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
@@ -48,7 +50,6 @@ import org.apache.olingo.commons.api.data.Link;
 import org.apache.olingo.commons.api.data.Parameter;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
-import org.apache.olingo.commons.api.data.DeletedEntity.Reason;
 import org.apache.olingo.commons.api.edm.EdmAction;
 import org.apache.olingo.commons.api.edm.EdmComplexType;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
@@ -78,9 +79,9 @@ import org.apache.olingo.commons.api.format.ContentType;
 import org.apache.olingo.server.api.ServiceMetadata;
 import org.apache.olingo.server.api.deserializer.DeserializerException;
 import org.apache.olingo.server.api.deserializer.DeserializerException.MessageKeys;
-import org.apache.olingo.server.api.serializer.SerializerException;
 import org.apache.olingo.server.api.deserializer.DeserializerResult;
 import org.apache.olingo.server.api.deserializer.ODataDeserializer;
+import org.apache.olingo.server.api.serializer.SerializerException;
 import org.apache.olingo.server.core.deserializer.DeserializerResultImpl;
 import org.apache.olingo.server.core.deserializer.helper.ExpandTreeBuilder;
 import org.apache.olingo.server.core.deserializer.helper.ExpandTreeBuilderImpl;
@@ -118,7 +119,7 @@ public class ODataJsonDeserializer implements ODataDeserializer {
   private final boolean isIEEE754Compatible;
   private ServiceMetadata serviceMetadata;
   private IConstants constants;
-
+  private ODataJsonInstanceAnnotationDeserializer instanceAnnotDeserializer;
 
   public ODataJsonDeserializer(final ContentType contentType) {
     this(contentType, null, new Constantsv00());
@@ -128,17 +129,20 @@ public class ODataJsonDeserializer implements ODataDeserializer {
     isIEEE754Compatible = ContentTypeHelper.isODataIEEE754Compatible(contentType);
     this.serviceMetadata = serviceMetadata;
     this.constants = new Constantsv00();
+    instanceAnnotDeserializer = new ODataJsonInstanceAnnotationDeserializer();
   }
 
   public ODataJsonDeserializer(ContentType contentType, ServiceMetadata serviceMetadata, IConstants constants) {
     isIEEE754Compatible = ContentTypeHelper.isODataIEEE754Compatible(contentType);
     this.serviceMetadata = serviceMetadata;
     this.constants = constants;
+    instanceAnnotDeserializer = new ODataJsonInstanceAnnotationDeserializer();
   }
 
   public ODataJsonDeserializer(ContentType contentType, IConstants constants) {
     isIEEE754Compatible = ContentTypeHelper.isODataIEEE754Compatible(contentType);
     this.constants = constants;
+    instanceAnnotDeserializer = new ODataJsonInstanceAnnotationDeserializer();
   }
 
 
@@ -454,6 +458,25 @@ public class ODataJsonDeserializer implements ODataDeserializer {
         entity.getNavigationBindings().add(bindingLink);
         toRemove.add(field.getKey());
       }
+      if (!field.getKey().contains(ODATA_CONTROL_INFORMATION_PREFIX) && 
+    		  field.getKey().contains(ODATA_ANNOTATION_MARKER)) {
+    	  String[] keySplit = field.getKey().split("@");
+    		String termName = keySplit[1];
+    	  Annotation annotation = instanceAnnotDeserializer.consumeInstanceAnnotation(termName, field.getValue());
+    	  // If keySplit has a value at zeroth index then instance annotation is specified like 
+    	  // propertyName@Term
+    	  if (!keySplit[0].isEmpty()) {
+    		  if (edmEntityType.getPropertyNames().contains(keySplit[0])) {
+    			  entity.getProperty(keySplit[0]).getAnnotations().add(annotation);
+    		  } else if (edmEntityType.getNavigationPropertyNames().contains(keySplit[0])) {
+    			  Link link = entity.getNavigationLink(keySplit[0]);
+    			  link.getAnnotations().add(annotation);
+    		  }
+    	  } else {
+    		  entity.getAnnotations().add(annotation);
+    	  }
+    	  toRemove.add(field.getKey());
+      }
     }
     // remove here to avoid iterator issues.
     node.remove(toRemove);
@@ -461,7 +484,9 @@ public class ODataJsonDeserializer implements ODataDeserializer {
     removeAnnotations(node);
   }
 
-  private void consumeEntityProperties(final EdmEntityType edmEntityType, final ObjectNode node,
+  
+
+private void consumeEntityProperties(final EdmEntityType edmEntityType, final ObjectNode node,
       final Entity entity) throws DeserializerException {
     List<String> propertyNames = edmEntityType.getPropertyNames();
     for (String propertyName : propertyNames) {

@@ -116,12 +116,14 @@ public class ODataJsonSerializer implements ODataSerializer {
   private final boolean isODataMetadataNone;
   private final boolean isODataMetadataFull;
   private IConstants constants;
+  private ODataJsonInstanceAnnotationSerializer instanceAnnotSerializer;
 
   public ODataJsonSerializer(final ContentType contentType) {
     isIEEE754Compatible = ContentTypeHelper.isODataIEEE754Compatible(contentType);
     isODataMetadataNone = ContentTypeHelper.isODataMetadataNone(contentType);
     isODataMetadataFull = ContentTypeHelper.isODataMetadataFull(contentType);
     this.constants = new Constantsv00();
+    instanceAnnotSerializer = new ODataJsonInstanceAnnotationSerializer(contentType, constants);
   }
 
   public ODataJsonSerializer(final ContentType contentType, final IConstants constants) {
@@ -129,6 +131,7 @@ public class ODataJsonSerializer implements ODataSerializer {
     isODataMetadataNone = ContentTypeHelper.isODataMetadataNone(contentType);
     isODataMetadataFull = ContentTypeHelper.isODataMetadataFull(contentType);
     this.constants = constants;
+    instanceAnnotSerializer = new ODataJsonInstanceAnnotationSerializer(contentType, constants);
   }
   
   @Override
@@ -431,7 +434,7 @@ public class ODataJsonSerializer implements ODataSerializer {
             json.writeStringField(constants.getEditLink(), entity.getEditLink().getHref());
           }
         }
-        
+        instanceAnnotSerializer.writeInstanceAnnotationsOnEntity(entity.getAnnotations(), json);
         writeProperties(metadata, resolvedType, entity.getProperties(), select, json, entity, expand);
         writeNavigationProperties(metadata, resolvedType, entity, expand, toDepth, ancestors, name, json);
         writeOperations(entity.getOperations(), json);      
@@ -444,7 +447,7 @@ public class ODataJsonSerializer implements ODataSerializer {
     }
   }
 
-  private void writeOperations(final List<Operation> operations, final JsonGenerator json)
+private void writeOperations(final List<Operation> operations, final JsonGenerator json)
       throws IOException {
     if (isODataMetadataFull) {
       for (Operation operation : operations) {
@@ -555,7 +558,7 @@ public class ODataJsonSerializer implements ODataSerializer {
     if ((toDepth != null && toDepth > 1) || (toDepth == null && ExpandSelectHelper.hasExpand(expand))) {
       final ExpandItem expandAll = ExpandSelectHelper.getExpandAll(expand);
       for (final String propertyName : type.getNavigationPropertyNames()) {
-        final ExpandItem innerOptions = ExpandSelectHelper.getExpandItemBasedOnType(expand.getExpandItems(), 
+    	final ExpandItem innerOptions = ExpandSelectHelper.getExpandItemBasedOnType(expand.getExpandItems(), 
             propertyName, type, name);
         if (innerOptions != null || expandAll != null || toDepth != null) {
           Integer levels = null;
@@ -685,7 +688,9 @@ public class ODataJsonSerializer implements ODataSerializer {
       final Set<List<String>> selectedPaths, final JsonGenerator json, 
       Set<List<String>> expandedPaths, Linked linked, ExpandOption expand)
       throws IOException, SerializerException, DecoderException {
-    boolean isStreamProperty = isStreamProperty(edmProperty);
+	
+	instanceAnnotSerializer.writeInstanceAnnotationsOnProperties(edmProperty, property, json);
+	boolean isStreamProperty = isStreamProperty(edmProperty);
     writePropertyType(edmProperty, json);
     if (!isStreamProperty) {
       json.writeFieldName(edmProperty.getName());
@@ -709,6 +714,8 @@ public class ODataJsonSerializer implements ODataSerializer {
           expandedPaths, linked, expand);
     }
   }
+  
+  
 
   private void writePropertyType(final EdmProperty edmProperty, JsonGenerator json)
       throws SerializerException, IOException {
