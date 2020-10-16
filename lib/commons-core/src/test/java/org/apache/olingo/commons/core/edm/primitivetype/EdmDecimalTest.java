@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.edm.EdmPrimitiveType;
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
 import org.junit.Test;
@@ -100,6 +101,18 @@ public class EdmDecimalTest extends PrimitiveTypeBaseTest {
     assertEquals(new BigDecimal("12.3"), instance.valueOfString("12.3", null, null, 3, 1, null, BigDecimal.class));
     assertEquals(new BigDecimal("31991163.34"),
         instance.valueOfString("3.199116334E7", null, null, 10, 2, null, BigDecimal.class));
+
+    assertEquals(new BigDecimal("1234567890123456"), instance.valueOfString("1234567890123456", null, null,
+            Constants.DEFAULT_PRECISION, Constants.DEFAULT_SCALE, null, BigDecimal.class));
+    assertEquals(new BigDecimal("12345678901234567890123456789012345678"),
+            instance.valueOfString("12345678901234567890123456789012345678", null, null,
+                    Constants.DEFAULT_PRECISION, Constants.DEFAULT_SCALE, null, BigDecimal.class));
+    assertEquals(new BigDecimal("0.12345678901234567890123456789012345678"),
+            instance.valueOfString("0.12345678901234567890123456789012345678", null, null,
+                    Constants.DEFAULT_PRECISION, Constants.DEFAULT_SCALE, null, BigDecimal.class));
+    assertEquals(new BigDecimal("-12345678901234567890123456789012345678.12345678901234567890123456789012345678"),
+            instance.valueOfString("-12345678901234567890123456789012345678.12345678901234567890123456789012345678",
+                    null, null, Constants.DEFAULT_PRECISION, Constants.DEFAULT_SCALE, null, BigDecimal.class));
     
     expectFacetsErrorInValueOfString(instance, "3.1991163E7", null, 8, 7, null, null);
     expectFacetsErrorInValueOfString(instance, "0.5", null, null, null, null, null);
