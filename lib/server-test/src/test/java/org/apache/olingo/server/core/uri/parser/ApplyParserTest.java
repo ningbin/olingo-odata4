@@ -109,10 +109,8 @@ public class ApplyParserTest {
     parse("ESTwoKeyNav", "aggregate(PropertyInt16 with min as min,PropertyInt16 with max as max)")
         .goAggregate(0).isStandardMethod(StandardMethod.MIN).isAlias("min").goUp()
         .goAggregate(1).isStandardMethod(StandardMethod.MAX).isAlias("max");
-
+    
     parseEx("ESTwoKeyNav", "aggregate()")
-        .isExSyntax(UriParserSyntaxException.MessageKeys.SYNTAX);
-    parseEx("ESTwoKeyNav", "aggregate(PropertyInt16)")
         .isExSyntax(UriParserSyntaxException.MessageKeys.SYNTAX);
     parseEx("ESTwoKeyNav", "aggregate(PropertyInt16 with sum)")
         .isExSyntax(UriParserSyntaxException.MessageKeys.SYNTAX);
@@ -126,6 +124,22 @@ public class ApplyParserTest {
         .isExSemantic(UriParserSemanticException.MessageKeys.IS_PROPERTY);
   }
 
+  @Test
+  public void customAggregate() throws Exception {
+	    parse("ESTwoKeyNav", "aggregate(customAggregate)")
+        .is(Aggregate.class)
+        .goAggregate(0)
+        .goPath().first().isUriPathInfoKind(UriResourceKind.primitiveProperty);
+  }
+
+  @Test
+  public void customAggregateNamedAsProperty() throws Exception {
+	  parse("ESTwoKeyNav", "aggregate(PropertyInt16)")
+	  .is(Aggregate.class)
+	  .goAggregate(0)
+	  .goPath().first().isPrimitiveProperty("PropertyInt16", PropertyProvider.nameInt16, false);
+  }
+  
   @Test
   public void aggregateExpression() throws Exception {
     parse("ESTwoKeyNav", "aggregate(PropertyInt16 mul PropertyComp/PropertyInt16 with sum as s)")
