@@ -320,6 +320,7 @@ public class ApplyParser {
     EdmType edmType = ParserHelper.getTypeInformation((UriResourcePartTyped) lastResourcePart);
     aggregateExpression.setPath(uriInfo);
     aggregateExpression.setAlias(alias);
+    aggregateExpression.setExpression(null);
     ((DynamicStructuredType) referencedType).addProperty(createDynamicProperty(alias, edmType));
   }
 
