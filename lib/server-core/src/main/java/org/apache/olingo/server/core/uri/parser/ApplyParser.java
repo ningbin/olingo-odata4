@@ -306,8 +306,9 @@ public class ApplyParser {
     parseAggregateFrom(aggregateExpression, referencedType);
   }
 
-  private void customAggregateNamedAsProperty(EdmStructuredType referencedType, AggregateExpressionImpl aggregateExpression,
-      UriInfoImpl uriInfo) throws UriParserException {
+  private void customAggregateNamedAsProperty(EdmStructuredType referencedType, 
+		  AggregateExpressionImpl aggregateExpression, UriInfoImpl uriInfo) 
+				  throws UriParserException {
     /*
      * The name of the custom aggregate is identical to the name of a declared
      * property of the structured type. This is typically done when the custom
@@ -323,7 +324,8 @@ public class ApplyParser {
     ((DynamicStructuredType) referencedType).addProperty(createDynamicProperty(alias, edmType));
   }
 
-  private void parseAggregateWith(AggregateExpressionImpl aggregateExpression) throws UriParserException {
+  private void parseAggregateWith(AggregateExpressionImpl aggregateExpression) 
+		  throws UriParserException {
     if (tokenizer.next(TokenKind.WithOperator)) {
       final TokenKind kind = ParserHelper.next(tokenizer,
           TokenKind.SUM, TokenKind.MIN, TokenKind.MAX, TokenKind.AVERAGE, TokenKind.COUNTDISTINCT,
@@ -333,8 +335,10 @@ public class ApplyParser {
             UriParserSyntaxException.MessageKeys.SYNTAX);
       } else if (kind == TokenKind.QualifiedName) {
         // A custom aggregation method is announced in the CustomAggregationMethods
-        // EDM annotation (in namespace Org.OData.Aggregation.V1) of the structured type or of the entity container.
-        // Currently we don't look into annotations, so all custom aggregation methods are allowed and have no type.
+        // EDM annotation (in namespace Org.OData.Aggregation.V1) of the 
+    	// structured type or of the entity container.
+        // Currently we don't look into annotations, so all custom aggregation 
+    	// methods are allowed and have no type.
         aggregateExpression.setCustomMethod(new FullQualifiedName(tokenizer.getText()));
       } else {
         aggregateExpression.setStandardMethod(TOKEN_KIND_TO_STANDARD_METHOD.get(kind));
