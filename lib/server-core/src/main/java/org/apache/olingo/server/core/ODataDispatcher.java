@@ -563,12 +563,26 @@ public class ODataDispatcher {
               ODataHandlerException.MessageKeys.INVALID_PAYLOAD);
         }
       }
-    } else {
+    }else if (method == HttpMethod.PUT && uriInfo.getUriResourceParts().size()==2) {
+        if (isMedia) {
+            validatePreferHeader(request);
+          }
+          validatePreconditions(request, false);
+          final ContentType requestFormat = getSupportedContentType(
+              request.getHeader(HttpHeader.CONTENT_TYPE),
+              RepresentationType.ENTITY, true);
+          final ContentType responseFormat = ContentNegotiator.
+              doContentNegotiation(uriInfo.getFormatOption(),
+              request, handler.getCustomContentTypeSupport(), RepresentationType.ENTITY);
+          handler.selectProcessor(EntityProcessor.class)
+              .updateEntity(request, response, uriInfo, requestFormat, responseFormat);
+        } else {
       throwMethodNotAllowed(method);
     }
   }
 
-  /**Checks if Prefer header is set with return=minimal or 
+
+/**Checks if Prefer header is set with return=minimal or 
    * return=representation for GET and DELETE requests
    * @param request
    * @throws ODataHandlerException
