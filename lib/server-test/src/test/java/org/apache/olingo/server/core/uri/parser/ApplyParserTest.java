@@ -21,6 +21,7 @@ package org.apache.olingo.server.core.uri.parser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -129,6 +130,8 @@ public class ApplyParserTest {
 	    parse("ESTwoKeyNav", "aggregate(customAggregate)")
         .is(Aggregate.class)
         .goAggregate(0)
+   	    .noExpression()
+   	    .noInlineAggregateExpression()
         .goPath().first().isUriPathInfoKind(UriResourceKind.primitiveProperty);
   }
 
@@ -137,9 +140,11 @@ public class ApplyParserTest {
 	  parse("ESTwoKeyNav", "aggregate(PropertyInt16)")
 	  .is(Aggregate.class)
 	  .goAggregate(0)
+	  .noExpression()
+	  .noInlineAggregateExpression()
 	  .goPath().first().isPrimitiveProperty("PropertyInt16", PropertyProvider.nameInt16, false);
   }
-  
+
   @Test
   public void aggregateExpression() throws Exception {
     parse("ESTwoKeyNav", "aggregate(PropertyInt16 mul PropertyComp/PropertyInt16 with sum as s)")
@@ -684,6 +689,13 @@ public class ApplyParserTest {
       return this;
     }
 
+    public AggregateValidator noExpression() {
+        assertNotNull(aggregateExpression);
+        assertNull(aggregateExpression.getExpression());
+
+        return this;
+      }
+
     public FilterValidator goExpression() {
       assertNotNull(aggregateExpression);
       assertNotNull(aggregateExpression.getExpression());
@@ -699,6 +711,12 @@ public class ApplyParserTest {
         resource.addResourcePart(segment);
       }
       return new ResourceValidator().setUpValidator(this).setEdm(edm).setUriInfoPath(resource);
+    }
+
+    public AggregateValidator noInlineAggregateExpression() {
+    	assertNull(aggregateExpression.getInlineAggregateExpression());
+
+    	return this;
     }
 
     public AggregateValidator goInlineAggregateExpression() {
