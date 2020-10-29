@@ -33,9 +33,9 @@ public interface Constants {
 
   String METADATA = "$metadata";
 
-  Integer DEFAULT_PRECISION = 40;
+  Integer DEFAULT_PRECISION = 38+38;
 
-  Integer DEFAULT_SCALE = 25;
+  Integer DEFAULT_SCALE = 38;
 
   // Common Namespaces
   String NS_BASE = "http://docs.oasis-open.org/odata/ns/";
