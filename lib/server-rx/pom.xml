@@ -20,7 +20,7 @@
 	<parent>
 		<groupId>org.apache.olingo</groupId>
 		<artifactId>odata-lib</artifactId>
-		<version>4.7.1-sap-12</version>
+		<version>4.7.1-sap-13-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
